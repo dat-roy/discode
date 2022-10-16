@@ -11,7 +11,7 @@ export default function Login() {
     useEffect(() => {
         const google = window.google;
         google.accounts.id.initialize({
-            client_id: "402489531361-0mispvglt1dlsuo58em8eao7bia0nkvv.apps.googleusercontent.com",
+            client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
             callback: (oauth_response) => {
                 (async () => {
                     const [

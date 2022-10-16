@@ -13,7 +13,7 @@ dotenv.config();
 const frontendHostName = process.env.FRONTEND_HOST;
 
 const corsOptions = {
-    origin: 'http://localhost:3000',
+    origin: frontendHostName,
     credentials: true,          //access-control-allow-credentials: true
     optionSuccessStatus: 200,
 };
