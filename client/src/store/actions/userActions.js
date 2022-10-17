@@ -25,12 +25,22 @@ class UserActions {
         return async () => {
             try {
                 const response = await handleGoogleLoginAPI(data);
-                console.log(response);
-                console.log(response.status);
-                console.log(response.headers);
 
+                let action = null;
+                if (response.status == 200) {
+                    if (response.data.exist) {
+                        action = this.userLoginSuccess(response.data);
+                    }
+                }
+                console.log(response.data);
+                return [
+                    response.status,
+                    response.data.exist, 
+                    response.data.user_data.email,
+                    action,
+                ];
             } catch (err) {
-                console.err(err);
+                console.error(err);
             }
         };
     }

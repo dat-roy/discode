@@ -1,8 +1,11 @@
 import React from "react"
+import { useLocation } from "react-router-dom";
 
-export default function Register(props) {
-    //console.log("Register: " + props.email);
+export default function Register() {
+    const { state } = useLocation();
+    const { email } = state;
+    
     return (
-        <div>Register page { props.email }</div>
+        <div>Register page for: { email }</div>
     )
 } 

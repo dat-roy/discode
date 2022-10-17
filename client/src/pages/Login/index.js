@@ -12,8 +12,7 @@ export default function Login() {
         const google = window.google;
         google.accounts.id.initialize({
             client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
-            callback: (oauth_response) => {
-                (async () => {
+            callback: async (oauth_response) => {
                     const [
                         status_code, 
                         existingAccount,
@@ -23,22 +22,19 @@ export default function Login() {
                         credential: oauth_response.credential,
                     })();
                     
-                    // console.log(status_code);
-                    // console.log(existingAccount);
-                    // console.log(email);
-                    // console.log(action);
-
                     if (status_code === 200) {
                         if (existingAccount) {
                             dispatch(action);
                             navigate("/home");
                         } else {
                             //New account, require completing a registration form:
-                            dispatch(action);
-                            navigate("/register", {email: email});
+                            navigate("/register", {
+                                state: {
+                                    email: email,
+                                }
+                            });
                         }
                     }
-                })()
             },
         });
 
