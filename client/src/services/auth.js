@@ -12,8 +12,13 @@ const handleLoginByTokenAPI = () => {
     //return axios.get("/api/user");
 }
 
+const handleRegisterAPI = (data) => {
+    return axios.post("/api/user/auth/register", data);
+}
+
 export {
     handleGoogleLoginAPI,
     handleNormalLoginAPI,
     handleLoginByTokenAPI,
+    handleRegisterAPI,
 }

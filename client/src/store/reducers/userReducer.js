@@ -1,20 +1,25 @@
 import ActionTypes from "../actions/constants";
 
-const user = localStorage.getItem("user")
-    ? JSON.parse(localStorage.getItem("user")).user
+const user = (localStorage.getItem("session"))
+    ? JSON.parse(localStorage.getItem("session")).user 
     : "";
 
-const token = localStorage.getItem("user")
-    ? JSON.parse(localStorage.getItem("user")).token
+const token = localStorage.getItem("session")
+    ? JSON.parse(localStorage.getItem("session")).token
     : "";
 
 const initialState =  {
-    user: "" || user, 
-    token: "" || token,
+    /**
+     * Caution: ("" || undefined) --> undefined
+     * Don't write: 
+     * * user: ("" || user),
+     */
+    user: (! user) ? "" : user, 
+    token: (! token) ? "" : token,
 }
 
 function reducer(state, action) {
-    console.log("In reducer: " + JSON.stringify(action));
+    //console.log("In reducer: " + JSON.stringify(action));
 
     switch (action.type) {
         case ActionTypes.REQUEST_LOGIN:
@@ -22,8 +27,10 @@ function reducer(state, action) {
                 ...state,
             };
         case ActionTypes.LOGIN_SUCCESS:
-            // localStorage.setItem("user", JSON.stringify(action.payload.user));
-            // localStorage.setItem("token", JSON.stringify(action.payload.token));
+            localStorage.setItem("session", JSON.stringify({
+                user: action.payload.user_data,
+                token: action.payload.token,
+            }));
             return {
                 ...state,
                 user: action.payload.user_data.username, 
