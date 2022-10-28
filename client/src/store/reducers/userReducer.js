@@ -11,11 +11,11 @@ const token = localStorage.getItem("session")
 const initialState =  {
     /**
      * Caution: ("" || undefined) --> undefined
-     * Don't write: 
-     * * user: ("" || user),
+     * Don't write: `user: ("" || user)`,
      */
     user: (! user) ? "" : user, 
     token: (! token) ? "" : token,
+    isLogged: (! token) ? false : true, 
 }
 
 function reducer(state, action) {
@@ -25,6 +25,7 @@ function reducer(state, action) {
         case ActionTypes.REQUEST_LOGIN:
             return {
                 ...state,
+                isLogged: true, 
             };
         case ActionTypes.LOGIN_SUCCESS:
             localStorage.setItem("session", JSON.stringify({
@@ -35,10 +36,20 @@ function reducer(state, action) {
                 ...state,
                 user: action.payload.user_data.username, 
                 token: action.payload.token,
+                isLogged: true, 
+            };
+        case ActionTypes.LOGOUT_SUCCESS:
+            localStorage.removeItem("session");
+            return {
+                ...state,
+                user: initialState.user,
+                token: initialState.token,
+                isLogged: false, 
             };
         default:
             return {
                 ...state, 
+                isLogged: false, 
             }
             //throw new Error(`Unhandled action type: ${action.type}`);
     }

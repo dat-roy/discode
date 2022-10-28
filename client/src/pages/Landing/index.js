@@ -9,7 +9,7 @@ export default function Landing() {
     const context = useContext(UserContext);
     const [state, dispatch] = useStore();
 
-    if (state.user !== "") {
+    if (state.isLogged) {
         return <Navigate to="/home" replace />
     } else {
         return (
