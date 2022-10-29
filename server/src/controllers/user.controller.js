@@ -44,7 +44,7 @@ class userController {
                 console.log(results);
                 const token = jwt.sign({ email: email}, JWTPrivateKey, { expiresIn: '3h'});
                 const user_data = {
-                    user_id: results[0].user_id,
+                    id: results[0].id,
                     username: results[0].username, 
                     email: results[0].email,
                     gender: results[0].gender, 
@@ -144,7 +144,7 @@ class userController {
                 //  before inserting into database.
                 //* Caution: mysql.escape('yyyy-mm-dd') = 'yyyy-mm-dd'
                 const result = await dbConnection.query(
-                    `INSERT INTO users(user_id, email, username, birthday, password, gender, avatar_url)\
+                    `INSERT INTO users(id, email, username, birthday, password, gender, avatar_url)\
                     VALUES (NULL, ${mysql.escape(email)}, ${mysql.escape(username)},\
                     ${(birthday) ? birthday : null}, ${mysql.escape(hashedPwd)},\
                     ${mysql.escape(gender)}, ${mysql.escape(avatar_url)})`
@@ -162,7 +162,7 @@ class userController {
                     throw new Error("Error when inserting into `users` database");
                 }
                 const userRows = await dbConnection.query(
-                    `SELECT * FROM users WHERE user_id=${result.insertId}`
+                    `SELECT * FROM users WHERE id=${result.insertId}`
                 )
                 
                 if (! userRows) {
@@ -178,7 +178,7 @@ class userController {
                     emailExists: emailExists,
                     usernameExists: usernameExists,
                     user_data: {
-                        user_id: userRows[0].user_id,
+                        id: userRows[0].id,
                         username: userRows[0].username, 
                         birthday: userRows[0].birthday,
                         gender: userRows[0].gender,

@@ -1,12 +1,13 @@
 import React  from 'react'
 import { Routes, Route } from 'react-router-dom'
+import PrivateRoute from './routes/PrivateRoute'
 
 import Home from './pages/Home'
 import Landing from './pages/Landing'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import PageNotFound from './pages/PageNotFound'
-import PrivateRoute from './routes/PrivateRoute'
+import Profile from './pages/Profile'
 
 function App() {
     return (
@@ -20,6 +21,13 @@ function App() {
                         <Home/>
                     </PrivateRoute>
                 } 
+            />
+            <Route exact path='/profile' 
+                element={
+                    <PrivateRoute>
+                        <Profile/>
+                    </PrivateRoute>
+                }
             />
             <Route exact path='/*' element={<PageNotFound/>} />
         </Routes>

@@ -42,6 +42,7 @@ export default function Register() {
                         credential: credential,
                     })();
                 dispatch(action);
+                navigate("/home");
             } else {
                 console.log("PASSWORD DO NOT MATCH");
             }
