@@ -8,6 +8,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import PageNotFound from './pages/PageNotFound'
 import Profile from './pages/Profile'
+import Inbox from './pages/Inbox'
 
 function App() {
     return (
@@ -26,6 +27,14 @@ function App() {
                 element={
                     <PrivateRoute>
                         <Profile/>
+                    </PrivateRoute>
+                }
+            />
+
+            <Route exact path='/inbox'
+                element={
+                    <PrivateRoute>
+                        <Inbox/>
                     </PrivateRoute>
                 }
             />

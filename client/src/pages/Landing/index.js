@@ -1,12 +1,10 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Navigate } from "react-router-dom";
 import { Link } from 'react-router-dom';
 
-import { UserContext } from "../../store";
 import { useStore } from "../../store/hooks";
 
 export default function Landing() {
-    const context = useContext(UserContext);
     const [state, dispatch] = useStore();
 
     if (state.isLogged) {

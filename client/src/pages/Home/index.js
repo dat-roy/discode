@@ -1,5 +1,4 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
 import { userActions } from "../../store/actions/userActions";
 import { useStore } from "../../store/hooks";
 import { Link } from "react-router-dom";

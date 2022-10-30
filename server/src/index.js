@@ -1,15 +1,17 @@
 const express = require('express');
+const app = express();
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
+const server = require('http').Server(app);
 
 const dbConnection = require("./config/db/index.db");
+const socketHandler = require('./services/socket');
 const dotenv = require('dotenv');
 const initRoutes = require('./routes/index.route');
 
 dotenv.config();
-
 const frontendHostName = process.env.FRONTEND_HOST;
 
 const corsOptions = {
@@ -18,14 +20,10 @@ const corsOptions = {
     optionSuccessStatus: 200,
 };
 
-// const conn = dbConnection();
-// conn.connect(function(err) {
-//     if (err) throw err;
-//     console.log("Connected!");
-// })
-
-const app = express();
 app.use(cors(corsOptions));
+const io = require('socket.io')(server, {
+    cors: corsOptions
+});
 
 //------ Middleware -----//
 //[express] Serving static files in express
@@ -38,7 +36,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 initRoutes(app);
+io.on('connection', (socket) => {
+    socketHandler(io, socket);
+});
 
-app.listen(3030, () => {
+server.listen(3030, () => {
     console.log(`Running`);
 });
