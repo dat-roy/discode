@@ -1,21 +1,21 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
+import { userActions } from "../../store/actions/userActions";
 import { useStore } from "../../store/hooks";
+import { Link } from "react-router-dom";
 
 export default function Home(props) {
     const [state, dispatch] = useStore();
 
-    if (state.user) {
-        return (
-            <>
-                <h2>Hello my friend!</h2>
-                <h3>Username: { state.user.username }</h3>
-                <h4>Email: { state.user.email }</h4>
-                <img src={state.user.avatar_url} alt="avt"/>
-                <br/><br/>
-            </>
-        )
-    } else {
-        return <Navigate replace to="/"/>
-    }
+    return (
+        <>
+            <h1>Home page:</h1>
+            <h3>Username: { state.user.username }</h3>
+            <h4>Email: { state.user.email }</h4>
+            <img src={state.user.avatar_url} alt="avt"/>
+            <br/><br/>
+            <Link to='/profile'>View my profile</Link>
+            <br/><br/>
+            <button onClick={() => {dispatch(userActions.userLogout())}}>Logout</button>
+        </>
+    )
 } 

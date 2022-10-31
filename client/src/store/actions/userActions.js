@@ -18,6 +18,10 @@ class UserActions {
         payload: payload,   
     })
 
+    userLogout = () => ({
+        type: ActionTypes.LOGOUT_SUCCESS,
+    })
+
     userGoogleLogin = (data) => {
         return async () => {
             try {
@@ -64,11 +68,7 @@ class UserActions {
     }
 
     userLoginByToken = () => {
-
-    }
-
-    userLogout = () => {
-
+        
     }
 }
 

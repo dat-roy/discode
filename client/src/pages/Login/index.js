@@ -1,6 +1,7 @@
 import React from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useStore } from "../../store/hooks";
 import { userActions } from "../../store/actions/userActions";
 import jwt_decode from "jwt-decode";
@@ -50,6 +51,14 @@ export default function Login() {
         );
     }, [state.user]);
     
+    if (state.isLogged) {
+        return (
+            <>
+                You're already logged in. <br/>
+                Just go to <Link to='/home'>Home</Link>
+            </>
+        )
+    }
     return (
         <div id="login-page">
             <p>Login page</p>

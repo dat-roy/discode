@@ -1,14 +1,12 @@
 const jwt = require('jsonwebtoken');
-const dbConnection = require("../config/db/index.db");
-const mysql = require('mysql2/promise');
 const bcrypt = require('bcrypt');
-
 const dotenv = require('dotenv');
 dotenv.config();
 
-// [Google Auth]
-const { OAuth2Client } = require('google-auth-library');
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const Users = require('../models/users.model');
+
+const { pick } = require('../utils/object-handler');
+const { getGooglePayload } = require('../services/google-auth.service');
 
 // [JWT sign]
 // Default algorithm: HMAC SHA256
@@ -18,39 +16,27 @@ const JWTPrivateKey = process.env.JWT_PRIVATE_KEY;
 const saltRounds = 10;
 
 class userController {
-    //[POST] /api//user/auth/google-login
+    //[POST] /api/user/auth/google-login
     async verifyGoogleLogin(req, res, next) {
         /**
          * Request body:
          * * credential: from google sign-in service. 
-         */
-        const client = new OAuth2Client(GOOGLE_CLIENT_ID)
-        
-        const google_token = req.body.credential;
+         */        
         try {
-            const ticket = await client.verifyIdToken({
-                idToken: google_token,
-                audience: GOOGLE_CLIENT_ID,
-            })
-            const payload = ticket.getPayload()
-            const email = payload.email;
-            
-            let sql = `SELECT * FROM users WHERE email=` 
-            + mysql.escape(email);
-
-            const results = await dbConnection.query(sql);
+            const email = (await getGooglePayload(req.body.credential)).email;
+            const results = await Users.findAll({
+                attributes: [
+                    'id', 'username', 'email', 'gender', 'birthday', 'avatar_url',
+                ],
+                where: {
+                    email: email,
+                },
+            });
+            console.log(results);
 
             if (results.length !== 0) {
-                console.log(results);
                 const token = jwt.sign({ email: email}, JWTPrivateKey, { expiresIn: '3h'});
-                const user_data = {
-                    user_id: results[0].user_id,
-                    username: results[0].username, 
-                    email: results[0].email,
-                    gender: results[0].gender, 
-                    birthday: results[0].birthday,
-                    avatar_url: results[0].avatar_url,
-                };
+                const user_data = results[0];
 
                 //Existing email
                 res.status(200).json({
@@ -73,12 +59,11 @@ class userController {
             
         } catch (err) {
             console.error(err.message);
-            console.error(err);
             res.status(500).json({
                 exist: false,
                 user_data: null,
                 token: null,
-                message: "An external error from server",
+                message: "An internal error from server",
             })
         }
     }
@@ -96,25 +81,10 @@ class userController {
          */    
 
         let { email, username, password, gender, birthday, credential } = req.body;
-
         try {
-            const foundEmails = await dbConnection.query( 
-                `SELECT email FROM users WHERE email=` + mysql.escape(email)
-            );
-            //console.log(foundEmails);
-            const emailExists = (foundEmails.length != 0) ? true : false;
-            
-            const foundUsernames = await dbConnection.query(
-                `SELECT email FROM users WHERE username=` + mysql.escape(username)
-            );
-            const usernameExists = (foundUsernames.length != 0) ? true : false;
-            
-            console.log(emailExists);
-            console.log(usernameExists);
-                
-            console.log(email);
-            console.log(username);
-            console.log(password);
+            const emailExists = await Users.checkExistence({ where: {email: email} });
+            const usernameExists = await Users.checkExistence({ where: {username: username} });
+
             if (email && username && password && !emailExists && !usernameExists) {
                 //Encrypt password with bcrypt
                 const hashedPwd = await bcrypt.hash(password, saltRounds);
@@ -122,54 +92,25 @@ class userController {
                     throw new Error("Empty hashedPwd, an error occurred when hashing");
                 }
 
-                //Date formatter
-
-                //Gender formatter
-                const genderTypes = ['m', 'f', 'o'];
-                if (! genderTypes.includes(gender)) {
-                    gender = 'o';
-                }
-
                 //Get avatar_url from credential 
-                const client = new OAuth2Client(GOOGLE_CLIENT_ID); 
-                const ticket = await client.verifyIdToken({
-                    idToken: credential,
-                    audience: GOOGLE_CLIENT_ID,
-                })
-                const payload = ticket.getPayload()
-                const avatar_url = payload.picture;
-                //const avatar_url = null;
-                
-                //* mysql.escape() can help change `undefined` to `NULL` 
-                //  before inserting into database.
-                //* Caution: mysql.escape('yyyy-mm-dd') = 'yyyy-mm-dd'
-                const result = await dbConnection.query(
-                    `INSERT INTO users(user_id, email, username, birthday, password, gender, avatar_url)\
-                    VALUES (NULL, ${mysql.escape(email)}, ${mysql.escape(username)},\
-                    ${(birthday) ? birthday : null}, ${mysql.escape(hashedPwd)},\
-                    ${mysql.escape(gender)}, ${mysql.escape(avatar_url)})`
-                )
+                const avatar_url = (await getGooglePayload(credential)).picture;
 
-                //result: {
-                //     "fieldCount":,
-                //     "affectedRows":,
-                //     "insertId":,
-                //     "info":"",
-                //     "serverStatus":,
-                //     "warningStatus":
-                // }
+                const result = await Users.create({
+                    email: email, 
+                    username: username, 
+                    birthday: birthday,
+                    password: hashedPwd, 
+                    gender: gender, 
+                    avatar_url: avatar_url, 
+                });
                 if (! result) {
-                    throw new Error("Error when inserting into `users` database");
+                    throw new Error("Error when inserting into `users` table");
                 }
-                const userRows = await dbConnection.query(
-                    `SELECT * FROM users WHERE user_id=${result.insertId}`
-                )
-                
-                if (! userRows) {
+                const userRecord = await Users.findOne({ where: {id: result.insertId} });
+                if (! userRecord) {
                     throw new Error("Error when searching from `users` table");
                 }
-                console.log(userRows);
-
+                const user_data = pick(userRecord, "id", "email", "username", "birthday", "gender", "avatar_url");
                 //JWT sign
                 const token = jwt.sign({ email: email}, JWTPrivateKey, { expiresIn: '3h'});
                 return res.status(200).json({
@@ -177,13 +118,7 @@ class userController {
                     saved: true,
                     emailExists: emailExists,
                     usernameExists: usernameExists,
-                    user_data: {
-                        user_id: userRows[0].user_id,
-                        username: userRows[0].username, 
-                        birthday: userRows[0].birthday,
-                        gender: userRows[0].gender,
-                        avatar_url: userRows[0].avatar_url,
-                    },
+                    user_data: user_data, 
                     token: token,
                 })
             }
@@ -198,9 +133,53 @@ class userController {
             })
         } catch (err) {
             console.error(err.message);
-            console.error(err);
             res.status(500).json({
-                message: "An external error from server",
+                message: "An internal error from server",
+            })
+        }
+    }
+
+    //[GET] /api/user/get?username=
+    async getUserByUsername(req, res, next) {
+        if (Object.keys(req.query)[0] !== 'username') {
+            return res.status(400).json({
+                message: "Invalid query key",
+                user_data: null, 
+            })
+        }
+        const username = req.query.username;
+        if (!username || username === '') {
+            return res.status(200).json({
+                message: "Empty query value",
+                user_data: null,
+            })
+        }
+
+        try {
+            const result = await Users.findOne({
+                attributes: [
+                    "id", "username", "email", "birthday", "avatar_url"
+                ], 
+                where: {
+                    username: username,
+                }
+            })
+
+            if (! result) {
+                return res.status(200).json({
+                    message: "Invalid user ID", 
+                    user_data: null,
+                })
+            }
+            console.log(result);
+            res.status(200).json({
+                message: "Get user successfully", 
+                user_data: result
+            });
+        } catch (err) {
+            console.log(err.message);
+            res.status(500).json({
+                message: "Internal Server Error", 
             })
         }
     }
