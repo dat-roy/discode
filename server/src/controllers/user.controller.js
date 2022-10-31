@@ -1,6 +1,4 @@
 const jwt = require('jsonwebtoken');
-const dbConnection = require("../config/db/index.db");
-const mysql = require('mysql2/promise');
 const bcrypt = require('bcrypt');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -18,28 +16,7 @@ const JWTPrivateKey = process.env.JWT_PRIVATE_KEY;
 const saltRounds = 10;
 
 class userController {
-    //[GET] /api/user/test/get 
-    //Used for testing purpose only.
-    async testGet(req, res, next) {
-        try {
-            const emailExists = await Users.findAll({
-                where: {
-                    email: "lvdat.roy@gmail.com",
-                }
-            });
-            console.log(emailExists);
-            return res.json(emailExists);
-        } catch (err) {
-            console.error(err);
-        }
-    }
-    //[POST] /api/user/test/post
-    async testPost(req, res, next) {
-
-    }
-
-    //[POST] /api//user/auth/google-login
-    //Used for testing purpose only.
+    //[POST] /api/user/auth/google-login
     async verifyGoogleLogin(req, res, next) {
         /**
          * Request body:
@@ -86,7 +63,7 @@ class userController {
                 exist: false,
                 user_data: null,
                 token: null,
-                message: "An external error from server",
+                message: "An internal error from server",
             })
         }
     }
@@ -157,7 +134,52 @@ class userController {
         } catch (err) {
             console.error(err.message);
             res.status(500).json({
-                message: "An external error from server",
+                message: "An internal error from server",
+            })
+        }
+    }
+
+    //[GET] /api/user/get?username=
+    async getUserByUsername(req, res, next) {
+        if (Object.keys(req.query)[0] !== 'username') {
+            return res.status(400).json({
+                message: "Invalid query key",
+                user_data: null, 
+            })
+        }
+        const username = req.query.username;
+        if (!username || username === '') {
+            return res.status(200).json({
+                message: "Empty query value",
+                user_data: null,
+            })
+        }
+
+        try {
+            const result = await Users.findOne({
+                attributes: [
+                    "id", "username", "email", "birthday", "avatar_url"
+                ], 
+                where: {
+                    username: username,
+                }
+            })
+
+            if (! result) {
+                return res.status(200).json({
+                    message: "Invalid user ID", 
+                    user_data: null,
+                })
+            }
+            console.log(result);
+            res.status(200).json({
+                message: "Get user successfully", 
+                user_data: result
+            });
+        } catch (err) {
+            console.log(err.message);
+            res.status(500).json({
+                message: "Internal Server Error", 
             })
         }
     }

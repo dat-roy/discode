@@ -9,6 +9,7 @@ import Register from './pages/Register'
 import PageNotFound from './pages/PageNotFound'
 import Profile from './pages/Profile'
 import Inbox from './pages/Inbox'
+import Search from './pages/Search'
 
 function App() {
     return (
@@ -38,6 +39,7 @@ function App() {
                     </PrivateRoute>
                 }
             />
+            <Route exact path='/search' element={<Search/>} />
             <Route exact path='/*' element={<PageNotFound/>} />
         </Routes>
     )

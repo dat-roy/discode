@@ -37,6 +37,7 @@ class Users {
         let attributes = await getAttributes(options);
         let whereClause = await getWhereClause(options);
         let sql = `SELECT ${attributes} FROM ${Users.tableName} ${whereClause}`;
+        console.log(sql);
         return await dbConnection.query(sql);
     }
 
