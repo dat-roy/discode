@@ -12,15 +12,14 @@ import { userActions } from "../../store/actions/userActions";
 export default function Register() {
     const navigate = useNavigate();
     const location  = useLocation();
+    const [loading, setLoading] = useState(false);
+    const [state, dispatch] = useStore();
     
     if (! location.state) {
         return <Navigate replace to="/err/invalid-email"/>
     }
     const { email } = location.state || null;
     const { credential } = location.state || null;
-    
-    const [loading, setLoading] = useState(false);
-    const [state, dispatch] = useStore();
 
     const handleSubmit = async (event) => {
         try {

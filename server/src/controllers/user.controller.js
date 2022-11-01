@@ -167,7 +167,7 @@ class userController {
 
             if (! result) {
                 return res.status(200).json({
-                    message: "Invalid user ID", 
+                    message: "Invalid username", 
                     user_data: null,
                 })
             }
