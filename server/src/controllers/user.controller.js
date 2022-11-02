@@ -139,15 +139,9 @@ class userController {
         }
     }
 
-    //[GET] /api/user/get?username=
+    //[GET] /api/user/get/:username
     async getUserByUsername(req, res, next) {
-        if (Object.keys(req.query)[0] !== 'username') {
-            return res.status(400).json({
-                message: "Invalid query key",
-                user_data: null, 
-            })
-        }
-        const username = req.query.username;
+        const { username } = req.params;
         if (!username || username === '') {
             return res.status(200).json({
                 message: "Empty query value",
@@ -180,22 +174,6 @@ class userController {
             console.log(err.message);
             res.status(500).json({
                 message: "Internal Server Error", 
-            })
-        }
-    }
-
-    //[POST] /api/user/get-me
-    getLoggedInUserData(req, res, next) {
-        const user = req.user;
-        if (user) {
-            res.status(200).json({
-                message: 'Get user data successfully',
-                user_data: user,
-            })
-        } else {
-            res.status(404).json({
-                message: 'Something went wrong',
-                user_data: null,
             })
         }
     }

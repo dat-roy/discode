@@ -1,21 +1,34 @@
 import React from "react";
 import { userActions } from "../../store/actions/userActions";
 import { useStore } from "../../store/hooks";
-import { Link } from "react-router-dom";
+import MenuBar from "../../components/MenuBar";
+import LeftBar from "../../components/LeftBar";
+import Main from "../../components/Main";
+import RightBar from "../../components/RightBar";
 
-export default function Home(props) {
+import { Box } from "@mui/system";
+
+export default function Home() {
     const [state, dispatch] = useStore();
 
     return (
-        <>
-            <h1>Home page:</h1>
-            <h3>Username: { state.user.username }</h3>
-            <h4>Email: { state.user.email }</h4>
-            <img src={state.user.avatar_url} alt="avt"/>
-            <br/><br/>
-            <Link to='/profile'>View my profile</Link>
-            <br/><br/>
-            <button onClick={() => {dispatch(userActions.userLogout())}}>Logout</button>
-        </>
-    )
+        <Box className="homeContainer"
+            sx={{
+                minWidth: 100, 
+                minHeight: 100, 
+                top: 0, 
+                bottom: 0,
+                left: 0, 
+                right: 0, 
+                position: "fixed",
+                display: "flex",
+                justifyContent: "flex-start"
+            }}
+        >  
+            <MenuBar />
+            <LeftBar />
+            <Main />
+            <RightBar />
+        </Box>
+    )   
 } 

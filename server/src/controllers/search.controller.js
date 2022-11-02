@@ -1,15 +1,9 @@
 const Users = require('../models/users.model')
 
 class searchController {
-    //[GET] /api/search/user?v=
+    //[GET] /api/search/user/:param
     async searchUser(req, res, next) {
-        if (Object.keys(req.query)[0] !== 'v') {
-            return res.status(400).json({
-                message: "Invalid query key",
-                results: null, 
-            })
-        }
-        const param = req.query.v;
+        const { param } = req.params;
         if (param === '') {
             return res.status(200).json({
                 message: "Empty query value",

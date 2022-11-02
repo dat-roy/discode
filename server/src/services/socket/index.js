@@ -1,7 +1,6 @@
 //Handle event when having any client connection.
 const socketHandler = (io, socket) => {
     console.log("New client connected: " + socket.id);
-    socket.emit("getId", socket.id);
 
     socket.on("joinRoom", (room, cb) => {
         socket.join(room);

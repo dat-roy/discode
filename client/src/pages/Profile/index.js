@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react"
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "../../store/hooks"
 import { userActions } from "../../store/actions/userActions";
 import PageNotFound from "../PageNotFound";
 import { handleSearchUserByUsername } from "../../services/app";
 
 export default function Profile() {
+    const navigate = useNavigate();
     const [state, dispatch] = useStore();
     const [userInfo, setUserInfo] = useState(null);
     const param = new URLSearchParams(useLocation().search).get("username");
@@ -31,6 +32,15 @@ export default function Profile() {
             </>
         )
     } else {
+
+        const handleOpenInbox = () => {
+            navigate("/inbox", {
+                state: {
+                    user_id: userInfo.id
+                }
+            })
+        }
+
         return (
             <>
                 <h2>User: "{ userInfo.username }" (Another people)</h2>
@@ -38,6 +48,7 @@ export default function Profile() {
                 <img src={ userInfo.avatar_url } />
                 <h5><i>There's more...</i></h5>
                 <button>Follow</button>
+                <button onClick={handleOpenInbox}>Open chat inbox</button>
             </>
         )
     }

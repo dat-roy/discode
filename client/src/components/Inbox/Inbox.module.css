@@ -43,17 +43,16 @@
   }
   
   .boxChatMessage {
-    min-height: 60vh;  
+    /* min-height: 60vh;  
     max-height: 60vh;  
-    overflow-y: auto;
-    
+    overflow-y: auto;  */
   }
   .boxChat {
-    width:70%;
+    width:90%;
+    height: 100vh;
     margin: 0 auto;
-    margin-top: 100px;
+    margin-top: 0px;
     box-shadow: 0 0 10px 0 black;
-    border-radius: 1em;
   }
   
   .sendBox {

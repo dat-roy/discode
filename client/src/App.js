@@ -8,8 +8,9 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import PageNotFound from './pages/PageNotFound'
 import Profile from './pages/Profile'
-import Inbox from './pages/Inbox'
 import Search from './pages/Search'
+import Chatbox from './pages/Chatbox'
+import "./App.css"
 
 function App() {
     return (
@@ -32,12 +33,12 @@ function App() {
                 }
             />
 
-            <Route exact path='/inbox'
+            <Route exact path='/chatbox' 
                 element={
                     <PrivateRoute>
-                        <Inbox/>
+                        <Chatbox/>
                     </PrivateRoute>
-                }
+                } 
             />
             <Route exact path='/search' element={<Search/>} />
             <Route exact path='/*' element={<PageNotFound/>} />
