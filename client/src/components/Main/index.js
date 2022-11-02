@@ -15,16 +15,7 @@ export default function Main() {
                 minHeight: 100,
             }}
         >
-            <Typography 
-                sx={{
-                    variant: "subtitle1",
-                    color: "#bdbdbd",
-                    textAlign: "center", 
-                    paddingTop: 4, 
-                }}
-            >
-                <Inbox/>
-            </Typography>
+            <Inbox/>
         </Box>
     )
 }

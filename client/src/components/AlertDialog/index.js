@@ -9,13 +9,10 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 export default function AlertDialog({ openDialog, setOpenDialog, dialogTitle, dialogText, handleAgree}) {
     const [open, setOpen] = React.useState(false);
-    // if (openDialog) {
-    //     setOpen(true);
-    // }
     useEffect(() => {
         setOpen(openDialog)
     }, [openDialog])
-    console.log(openDialog);
+
     const handleClose = () => {
         setOpen(false);
         setOpenDialog(false);
