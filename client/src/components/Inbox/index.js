@@ -59,14 +59,6 @@ export default function Inbox() {
             : (obj.sender_id === myID)
                 ? "right" : "left";
 
-        // let notificationStyle = null;
-        // if (side === "center") {
-        //     notificationStyle = {
-        //         textAlign: "center", 
-        //         fontStyle: "italic", 
-        //     }
-        // }
-
         return (
             <ChatMsg
                 key={index}
@@ -75,10 +67,6 @@ export default function Inbox() {
                 messages={[
                     obj.content,
                 ]}
-                style={{
-                    textAlign: "center", 
-                    fontStyle: "italic", 
-                }}
             />
         )
     })

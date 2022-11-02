@@ -1,7 +1,11 @@
-import React from "react"
-
 export default function PageNotFound(props) {
     return (
-        <div>404 not found!</div>
+        <div
+            style={{
+                textAlign: "center",
+                fontSize: 32,
+                padding: 30,
+            }}
+        >404 not found!</div>
     )
 } 

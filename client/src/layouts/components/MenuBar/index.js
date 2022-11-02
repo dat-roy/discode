@@ -3,26 +3,27 @@ import { Link } from "react-router-dom"
 
 import { Box } from '@mui/material';
 import { FormControlLabel } from '@mui/material';
-import MaterialUISwitch from "../MaterialUISwitch";
+import MaterialUISwitch from "../../../components/MaterialUISwitch";
 import HomeIcon from '@mui/icons-material/Home';
-import SettingsIcon from '@mui/icons-material/Settings';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import MarkunreadIcon from '@mui/icons-material/Markunread';
+import MailIcon from '@mui/icons-material/Mail';
 import GroupsIcon from '@mui/icons-material/Groups';
+import ExploreIcon from '@mui/icons-material/Explore';
+import Badge from '@mui/material/Badge';
+import IconButton from '@mui/material/IconButton';
 
 import AccountMenu from "../AccountMenu";
-import logo from "../../assets/img/github_logo.svg"
 
+const logoLink = process.env.PUBLIC_URL + "assets/img/github_logo.svg";
 
 function Item(props) {
     const { sx, ...other } = props;
     return (
         <Box
             sx={{
-                padding: 1,
-                margin: 1,
+                padding: 0,
+                margin: 0.5,
                 color: 'grey.300',
                 borderRadius: 5,
                 fontSize: '0.875rem',
@@ -56,34 +57,67 @@ export default function MenuBar() {
                 <Item>
                     <Link to="/" style={{ textDecoration: "none" }}>
                         <img
+                            alt="Logo"
                             style={{
                                 width: 50,
                             }}
-                            src={logo}
+                            src={logoLink}
                         />
                     </Link>
                 </Item>
                 <Item>
-                    <HomeIcon
-                        sx={{
-                            fontSize: 30,
-                        }}
-                    />
+                    <IconButton 
+                        size="large" aria-label="home page" color="inherit"
+                        component={Link} to="/home"
+                    >
+                        <HomeIcon/>
+                    </IconButton>
                 </Item>
                 <Item>
-                    <NotificationsIcon/>
+                    <IconButton 
+                        size="large" color="inherit"
+                        component={Link} to="/notifications"
+                    >
+                        <Badge badgeContent={1000} color="error">
+                            <NotificationsIcon/>
+                        </Badge>
+                    </IconButton>
                 </Item>
                 <Item>
-                    <MarkunreadIcon/>
+                    <IconButton 
+                        size="large" color="inherit"
+                        component={Link} to="/chat"
+                    >
+                        <Badge badgeContent={10} color="error">
+                            <MailIcon/>
+                        </Badge>
+                    </IconButton>
                 </Item>
                 <Item>
-                    <GroupsIcon/>
+                    <IconButton 
+                        size="large" color="inherit"
+                        component={Link} to="/channels"
+                    >
+                        <Badge badgeContent={1} color="error">
+                            <GroupsIcon/>
+                        </Badge>
+                    </IconButton>
                 </Item>
                 <Item>
-                    <MenuBookIcon/>
+                    <IconButton 
+                        size="large" color="inherit"
+                        component={Link} to="/posts"
+                    >
+                        <MenuBookIcon/>
+                    </IconButton>
                 </Item>
                 <Item>
-                    <AddCircleIcon/>
+                    <IconButton 
+                        size="large" color="inherit"
+                        component={Link} to="/explore"
+                    >
+                        <ExploreIcon/>
+                    </IconButton>
                 </Item>
             </Box>
 
@@ -95,16 +129,6 @@ export default function MenuBar() {
                     marginBottom: 2,
                 }}
             >
-                {/* <Item>
-                    <FormControlLabel 
-                        control={
-                            <Switch 
-                                sx={{
-                                    marginLeft: 3,
-                                }}
-                            defaultChecked />
-                        } label="" />
-                </Item> */}
                 <Item
                     sx={{
                         alignSelf: "center",
@@ -120,16 +144,10 @@ export default function MenuBar() {
                         }
                     />
                 </Item>
-                {/* <Item>
-                    <SettingsIcon
-                        color="primary"
-                        sx={{
-                            fontSize: 30
-                        }}
-                    />
-                </Item> */}
                 <Item>
-                    <AccountMenu/>
+                    <IconButton size="large" aria-label="show account menu" color="inherit">
+                        <AccountMenu/>
+                    </IconButton>
                 </Item>
             </Box>
         </Box>

@@ -1,12 +1,8 @@
 import React from "react";
 
 import { Box } from "@mui/system";
-import { Typography } from '@mui/material';
 
-import Inbox from '../Inbox'
-
-
-export default function Main() {
+export default function Main({children}) {
     return (
         <Box
             sx={{
@@ -15,7 +11,7 @@ export default function Main() {
                 minHeight: 100,
             }}
         >
-            <Inbox/>
+            {children}
         </Box>
     )
 }

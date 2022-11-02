@@ -11,11 +11,11 @@ import Tooltip from '@mui/material/Tooltip';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 
-import { useStore } from '../../store/hooks';
-import { userActions } from '../../store/actions/userActions';
+import { useStore } from '../../../store/hooks';
+import { userActions } from '../../../store/actions/userActions'
 import { useNavigate } from 'react-router-dom';
 
-import AlertDialog from '../AlertDialog';
+import AlertDialog from '../../../components/AlertDialog'
 
 export default function AccountMenu() {
     const [openDialog, setOpenDialog] = useState(false);

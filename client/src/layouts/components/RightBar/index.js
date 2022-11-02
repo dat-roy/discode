@@ -4,7 +4,7 @@ import { Box } from "@mui/system";
 import { Typography } from '@mui/material';
 
 
-export default function RightBar() {
+export default function RightBar({children}) {
     return (
         <Box
             sx={{
@@ -12,7 +12,7 @@ export default function RightBar() {
                 bgcolor: "rgba(19, 47, 76, 0.4)",
             }}
         >
-            <Typography 
+            {/* <Typography 
                 sx={{
                     variant: "subtitle1",
                     color: "#bdbdbd",
@@ -21,7 +21,8 @@ export default function RightBar() {
                 }}
             >
                 Friend list:
-            </Typography>
+            </Typography> */}
+            {children}
         </Box>
     )
 }

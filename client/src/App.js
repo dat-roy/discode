@@ -1,49 +1,75 @@
-import React  from 'react'
+import React, { Fragment } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import PrivateRoute from './routes/PrivateRoute'
 
-import Home from './pages/Home'
-import Landing from './pages/Landing'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import PageNotFound from './pages/PageNotFound'
-import Profile from './pages/Profile'
-import Search from './pages/Search'
-import Chatbox from './pages/Chatbox'
+import { publicRoutes, privateRoutes } from './routes'
+import { DefaultLayout } from './layouts'
 import "./App.css"
 
 function App() {
     return (
         <Routes>
-            <Route exact path='/' element={<Landing/>} />
-            <Route exact path='/login' element={<Login/>} />
-            <Route exact path='/register' element={<Register/>} />
-            <Route exact path='/home' 
+            {publicRoutes.map((route, index) => {
+                return getRouteComponents(route, index, false);
+            })}
+
+            {privateRoutes.map((route, index) => {
+                return getRouteComponents(route, index, true);
+            })}
+        </Routes>
+    )
+}
+
+function getRouteComponents(route, index, isPrivate) {
+    let Layout = DefaultLayout
+    if (route.layout) {
+        Layout = route.layout
+    } else if (route.layout === null) {
+        Layout = Fragment
+        return (
+            <Route
+                key={index}
+                exact path={route.path}
                 element={
-                    <PrivateRoute>
-                        <Home/>
-                    </PrivateRoute>
-                } 
+                    <Layout>
+                        {route.mainElement}
+                    </Layout>
+                }
             />
-            <Route exact path='/profile' 
+        )
+    }
+
+    if (!isPrivate) {
+        return (
+            <Route
+                key={index}
+                exact path={route.path}
                 element={
-                    <PrivateRoute>
-                        <Profile/>
+                    <Layout
+                        leftElement={route.leftElement}
+                        mainElement={route.mainElement}
+                        rightElement={route.rightElement}
+                    />
+                }
+            />
+        )
+    } else {
+        return (
+            <Route
+                key={index}
+                exact path={route.path}
+                element={
+                    <PrivateRoute key={index}>
+                        <Layout
+                            leftElement={route.leftElement}
+                            mainElement={route.mainElement}
+                            rightElement={route.rightElement}
+                        />
                     </PrivateRoute>
                 }
             />
-
-            <Route exact path='/chatbox' 
-                element={
-                    <PrivateRoute>
-                        <Chatbox/>
-                    </PrivateRoute>
-                } 
-            />
-            <Route exact path='/search' element={<Search/>} />
-            <Route exact path='/*' element={<PageNotFound/>} />
-        </Routes>
-    )
+        )
+    }
 }
 
 export default App

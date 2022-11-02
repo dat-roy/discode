@@ -5,9 +5,6 @@ import { useStore } from "../../store/hooks";
 import Box from '@mui/material/Box';
 import { Button, TextField, Typography } from "@mui/material";
 import { userActions } from "../../store/actions/userActions";
-//import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-//import { LocalizationProvider } from '@mui/x-date-pickers';
-//import { DatePicker } from '@mui/x-date-pickers';
 
 export default function Register() {
     const navigate = useNavigate();
@@ -84,15 +81,6 @@ export default function Register() {
                     autoComplete="username"
                     autoFocus
                 />
-                {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                        label="Birthday"
-                        onChange={(newValue) => {
-                            setValue(newValue);
-                        }}
-                        renderInput={(params) => <TextField {...params} />}
-                    />
-                </LocalizationProvider> */}
 
                 <TextField
                     margin="normal"

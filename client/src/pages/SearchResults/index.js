@@ -3,13 +3,16 @@ import { Link } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import { handleSearchUserAPI } from "../../services/app";
 
-export default function Search() {
+export default function SearchResults() {
     const [inputText, setInputText] = useState("");
     const [results, setResults] = useState([]);
 
-    useEffect(async () => {
-        const users = await handleSearchUserAPI(inputText);
-        setResults(users.data.results);
+    useEffect(() => {
+        async function fetchData() {
+            const users = await handleSearchUserAPI(inputText);
+            setResults(users.data.results); 
+        }
+        fetchData();
     }, [inputText])
 
     function List() {

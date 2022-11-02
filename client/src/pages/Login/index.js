@@ -49,7 +49,7 @@ export default function Login() {
                 size: "medium",
             }
         );
-    }, [state.user]);
+    }, [state.user, dispatch, navigate]);
     
     if (state.isLogged) {
         return (

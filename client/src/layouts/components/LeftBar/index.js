@@ -4,7 +4,7 @@ import { Box } from "@mui/system";
 import { Typography } from '@mui/material';
 
 
-export default function LeftBar() {
+export default function LeftBar({children}) {
     return (
         <Box
             sx={{
@@ -12,7 +12,7 @@ export default function LeftBar() {
                 bgcolor: "rgba(19, 47, 76, 0.4)",
             }}
         >
-            <Typography 
+            {/* <Typography 
                 sx={{
                     variant: "subtitle1",
                     color: "#bdbdbd",
@@ -21,7 +21,8 @@ export default function LeftBar() {
                 }}
             >
                 All my conversations:
-            </Typography>
+            </Typography> */}
+            {children}
         </Box>
     )
 }
