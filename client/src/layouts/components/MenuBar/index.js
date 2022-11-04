@@ -145,9 +145,7 @@ export default function MenuBar() {
                     />
                 </Item>
                 <Item>
-                    <IconButton size="large" aria-label="show account menu" color="inherit">
-                        <AccountMenu/>
-                    </IconButton>
+                    <AccountMenu/>
                 </Item>
             </Box>
         </Box>

@@ -35,10 +35,12 @@ export default function AccountMenu() {
                 <Tooltip title="Account settings">
                     <IconButton
                         onClick={handleClick}
-                        size="small"
+                        size="large"
                         aria-controls={open ? 'account-menu' : undefined}
                         aria-haspopup="true"
                         aria-expanded={open ? 'true' : undefined}
+                        aria-label="show account menu"
+                        color="inherit"
                     >
                         <Avatar
                             alt={state.user.username}
@@ -107,10 +109,8 @@ export default function AccountMenu() {
                     Settings
                 </MenuItem>
                 <MenuItem 
-                    //onClick={() => {dispatch(userActions.userLogout())}}
                     onClick={() => {
                         setOpenDialog(true);
-                        console.log("Render 1")
                     }}
                 >
                     <ListItemIcon>

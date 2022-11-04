@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useStore } from "../../store/hooks";
 import { userActions } from "../../store/actions/userActions";
-import jwt_decode from "jwt-decode";
+//import jwt_decode from "jwt-decode";
 
 export default function Login() {
     const navigate = useNavigate();
@@ -24,7 +24,7 @@ export default function Login() {
                             credential: oauth_response.credential,
                         })();
 
-                    console.log(jwt_decode(oauth_response.credential));
+                    //console.log(jwt_decode(oauth_response.credential));
                     
                     if (status_code === 200) {
                         if (existingAccount) {

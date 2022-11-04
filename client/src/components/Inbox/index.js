@@ -5,7 +5,7 @@ import io from "socket.io-client";
 import { useStore } from "../../store/hooks";
 
 import { Box, TextareaAutosize, Button } from "@mui/material";
-import ChatMsg from '@mui-treasury/components/chatMsg/ChatMsg';
+import ChatMsg from '../ChatMsg';
 import SendIcon from '@mui/icons-material/Send';
 
 
@@ -89,15 +89,17 @@ export default function Inbox() {
                 width: "90%",
                 height: "100vh",
                 margin: "0 auto",
-                marginTop: 0,
+                marginTop: 2,
                 boxShadow: "0 0 10px 0 black",
             }}
         >
             <Box
                 className="boxChatMessage"
                 sx={{
-                    minHeight: "90vh", 
-                    maxHeight: "90vh", 
+                    padding: 3, 
+                    width: "90%",
+                    minHeight: "80vh", 
+                    maxHeight: "80vh", 
                     overflowX: "hidden",
                     overflowY: "auto",
                 }}
