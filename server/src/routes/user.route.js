@@ -5,6 +5,6 @@ const checkSession = require('../middlewares/check-session');
 
 router.post('/auth/google-login', userController.verifyGoogleLogin);
 router.post('/auth/register', userController.registerNewAccount);
-router.get('/get/:username', userController.getUserByUsername);
+router.get('/get', userController.getUserByUniqueKey);
 
 module.exports = router;

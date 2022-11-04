@@ -6,7 +6,7 @@ import Login from '../pages/Login'
 import Register from '../pages/Register'
 import PageNotFound from '../pages/PageNotFound'
 import Profile from '../pages/Profile'
-import SearchResults from '../pages/SearchResults'
+import Explore from '../pages/Explore'
 import {ChatList, Inbox, ChatDetails} from '../pages/Chat'
 
 const publicRoutes = [
@@ -26,10 +26,6 @@ const publicRoutes = [
         layout: null, 
     },
     {
-        path: '/search',
-        mainElement: <SearchResults/>,
-    },
-    {
         path: '/*',
         mainElement: <PageNotFound/>,
     },
@@ -47,7 +43,18 @@ const privateRoutes = [
         layout: DefaultLayout,
     },
     {
+        path: '/explore',
+        mainElement: <Explore/>,
+    },
+    {
         path: '/chat',
+        leftElement: <ChatList/>,
+        mainElement: <Inbox/>,
+        rightElement: <ChatDetails/>,
+        layout: DefaultLayout,
+    },
+    {
+        path: '/chat/:id',
         leftElement: <ChatList/>,
         mainElement: <Inbox/>,
         rightElement: <ChatDetails/>,

@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { handleGetJoinedConversations } from "../../../services/app";
+import { handleGetJoinedConversationsAPI } from "../../../services";
 import { useStore } from "../../../store/hooks"
 import { ConversationTypes } from "../../../types/db.type";
 
@@ -10,7 +10,7 @@ export default function ChatList() {
     const [groupConv, setGroupConv] = useState([])
     useEffect(() => {
         async function fetchData() {
-            const result = await handleGetJoinedConversations(state.user.id, ConversationTypes.ALL);
+            const result = await handleGetJoinedConversationsAPI(state.user.id, ConversationTypes.ALL);
             console.log(result);
             let { convList } = result.data;
             if (! convList) {

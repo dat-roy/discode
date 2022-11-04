@@ -1,18 +1,61 @@
 import React from "react";
 import { useState, useEffect, useRef } from "react";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import io from "socket.io-client";
 import { useStore } from "../../store/hooks";
 
 import { Box, TextareaAutosize, Button } from "@mui/material";
 import ChatMsg from '../ChatMsg';
 import SendIcon from '@mui/icons-material/Send';
+import { handleGetUserByIdAPI } from "../../services";
 
 
 const serverHost = "http://localhost:3030";
 
 export default function Inbox() {
-    const location = useLocation();
+    const navigate = useNavigate();
+    const params = useParams();
+
+    const [state, dispatch] = useStore();
+    const [otherUser, setOtherUser] = useState({});
+    const [havingConversation, setHavingConversation] = useState(false);
+
+    const myID = state.user.id;
+    const otherID = params.id;
+    console.log("My id: " + myID);
+    console.log("Other id: " + otherID);
+
+    useEffect(() => {
+        if (otherID && otherID != myID) {
+            async function checkOtherID() {
+                const response = await handleGetUserByIdAPI(otherID);
+                if (!response) {
+                    return navigate('/err/invalid-user-id')
+                } else {
+                    console.log(response);
+                    setOtherUser(response.data.user_data);
+                }
+            }
+            const result = checkOtherID()
+        }
+    }, [])
+
+    if (!otherID || otherID === myID) {
+        return (
+            <>
+                <h3>Please select a conversation or create new one</h3>
+            </>
+        )
+    }
+    return <InnerInbox
+        myID={myID}
+        otherUser={otherUser}
+        setOtherUser={setOtherUser}
+    />
+}
+
+function InnerInbox({myID, otherUser, setOtherUser}) {
+    const navigate = useNavigate();
     const socketRef = useRef();
     const latestMessage = useRef();
 
@@ -21,18 +64,9 @@ export default function Inbox() {
     const [message, setMessage] = useState('');
     const [room, setRoom] = useState();
 
-    // if (! location.state) {
-    //     return <Navigate replace to="/err/invalid-user-id"/>
-    // }
-
-    const myID = state.user.id;
-    // const otherID = location.state.user_id || null; 
-    // console.log("My id: " + myID);
-    // console.log("Other id: " + otherID);
-
     useEffect(() => {
         socketRef.current = io.connect(serverHost);
-        const param = new URLSearchParams(location.search).get("room");
+        const param = 1;
         if (!room) {
             setRoom(param);
             socketRef.current.emit('joinRoom', param, (message) => {
@@ -62,7 +96,7 @@ export default function Inbox() {
         return (
             <ChatMsg
                 key={index}
-                avatar={''}
+                avatar={otherUser.avatar_url}
                 side={side}
                 messages={[
                     obj.content,
@@ -96,16 +130,16 @@ export default function Inbox() {
             <Box
                 className="boxChatMessage"
                 sx={{
-                    padding: 3, 
+                    padding: 3,
                     width: "90%",
-                    minHeight: "80vh", 
-                    maxHeight: "80vh", 
+                    minHeight: "80vh",
+                    maxHeight: "80vh",
                     overflowX: "hidden",
                     overflowY: "auto",
                 }}
             >
                 <ChatMsg
-                    avatar={''}
+                    avatar={otherUser.avatar_url}
                     side={'left'}
                     messages={[
                         'Hi Jenny, How r u today?',
@@ -147,18 +181,18 @@ export default function Inbox() {
                         width: "50%",
                         margin: 0,
                         background: "#ebf5ff",
-                        borderRadius: 30, 
+                        borderRadius: 30,
                         resize: "none",
                         overflow: "auto",
-                        border: "none", 
+                        border: "none",
                         outline: "none",
                         "&:focus": {
                             border: "none"
                         }
                     }}
                 />
-                <Button 
-                    variant="contained" 
+                <Button
+                    variant="contained"
                     endIcon={<SendIcon />}
                     onClick={sendMessage}
                 >
@@ -167,4 +201,4 @@ export default function Inbox() {
             </Box>
         </Box>
     )
-} 
+}

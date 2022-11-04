@@ -139,10 +139,13 @@ class userController {
         }
     }
 
-    //[GET] /api/user/get/:username
-    async getUserByUsername(req, res, next) {
-        const { username } = req.params;
-        if (!username || username === '') {
+    //[GET] /api/user/get?id=
+    //[GET] /api/user/get?username=
+    async getUserByUniqueKey(req, res, next) {
+        const id = parseInt(req.query.id);
+        const { username } = req.query;
+
+        if (!id && !username) {
             return res.status(200).json({
                 message: "Empty query value",
                 user_data: null,
@@ -150,18 +153,31 @@ class userController {
         }
 
         try {
+            let whereClause;
+            if (id && username) {
+                whereClause = {
+                    id: id, 
+                    username: username, 
+                }
+            } else if (id) {
+                whereClause = {
+                    id: id, 
+                }
+            } else if (username) {
+                whereClause = {
+                    username: username,
+                }
+            }
             const result = await Users.findOne({
                 attributes: [
                     "id", "username", "email", "birthday", "avatar_url"
-                ], 
-                where: {
-                    username: username,
-                }
+                ],
+                where: whereClause, 
             })
 
             if (! result) {
                 return res.status(200).json({
-                    message: "Invalid username", 
+                    message: "Invalid id/username", 
                     user_data: null,
                 })
             }

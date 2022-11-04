@@ -1,8 +1,7 @@
 const Conversations = require("../models/conversation.model");
 const Users = require('../models/users.model');
-class conversationController {
+class channelController {
     //[POST] /api/channel/create
-
     async createChannel(req, res, next) {
         let {id, title} = req.body;
         if (title === '') {
@@ -33,6 +32,7 @@ class conversationController {
         }
     }
     
+    //[POST] /api/channel/delete
     async deleteChannel(req, res, next) {
         let {conversation_id, user_id} = req.body;
 
@@ -41,12 +41,12 @@ class conversationController {
             const checkConversationIdExists = await Conversations.checkExistence({where: {id: conversation_id}});
             if (!checkUserIdExists) {
                 return res.status(404).json({
-                    message: "Can not find UsernameId",
+                    message: "Can not find User Id",
                 })
             }
             if (!checkConversationIdExists) {
                 return res.status(404).json({
-                    message: "Can not find ConversationID",
+                    message: "Can not find Conversation ID",
                 })
             }
             const result = await Conversations.deleteChannel(user_id, conversation_id);
@@ -64,4 +64,4 @@ class conversationController {
     }
 }
 
-module.exports = new conversationController();
+module.exports = new channelController();

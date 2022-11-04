@@ -1,22 +1,19 @@
 import axios from "../config/axios";
 
-const handleSearchUserAPI = (value) => {
-    return axios.get(`/api/search/user/${value}`)
+const handleGetUserByIdAPI = (id) => {
+    return axios.get(`/api/user/get/?id=${id}`)
 }
 
-const handleSearchUserByUsername = (username) => {
-    return axios.get(`/api/user/get/${username}`)
+const handleGetUserByUsernameAPI = (username) => {
+    return axios.get(`/api/user/get/?username=${username}`)
 }
 
-const handleGetJoinedConversations = (user_id, conv_type) => {
-    return axios.post(`/api/chat/get/joined-conversations`, {
-        user_id: user_id, 
-        conv_type: conv_type,
-    })
+const handleSearchUserByTextAPI = (text) => {
+    return axios.get(`/api/search/user/${text}`)
 }
 
 export {
-    handleSearchUserAPI,
-    handleSearchUserByUsername, 
-    handleGetJoinedConversations,
+    handleGetUserByIdAPI,
+    handleGetUserByUsernameAPI, 
+    handleSearchUserByTextAPI,
 }

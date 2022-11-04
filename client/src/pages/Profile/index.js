@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "../../store/hooks"
 import PageNotFound from "../PageNotFound";
-import { handleSearchUserByUsername } from "../../services/app";
+import { handleGetUserByUsernameAPI } from "../../services";
 
 export default function Profile() {
     const navigate = useNavigate();
@@ -11,7 +11,7 @@ export default function Profile() {
     const param = new URLSearchParams(useLocation().search).get("username");
     useEffect(() => {
         async function fetchData() {
-            const response = await handleSearchUserByUsername(param)
+            const response = await handleGetUserByUsernameAPI(param)
             console.log(response);
             if (response.data.user_data) {
                 setUserInfo(response.data.user_data);
@@ -35,11 +35,7 @@ export default function Profile() {
     } else {
 
         const handleOpenInbox = () => {
-            navigate("/inbox", {
-                state: {
-                    user_id: userInfo.id
-                }
-            })
+            navigate(`/chat/${userInfo.id}`)
         }
 
         return (
