@@ -77,10 +77,11 @@ class userController {
          * * password,
          * * gender, 
          * * birthday,
+         * * nation
          * * credential,
          */    
 
-        let { email, username, password, gender, birthday, credential } = req.body;
+        let { email, username, password, gender, birthday, nation, credential } = req.body;
         try {
             const emailExists = await Users.checkExistence({ where: {email: email} });
             const usernameExists = await Users.checkExistence({ where: {username: username} });
@@ -102,6 +103,7 @@ class userController {
                     password: hashedPwd, 
                     gender: gender, 
                     avatar_url: avatar_url, 
+                    nation: nation,
                 });
                 if (! result) {
                     throw new Error("Error when inserting into `users` table");
