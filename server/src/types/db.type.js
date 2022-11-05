@@ -4,7 +4,7 @@ const GenderTypes = Object.freeze({
     OTHER: "other",
 })
 
-const ConversationTypes = Object.freeze({
+const RoomTypes = Object.freeze({
     SINGLE: "single", 
     GROUP: "group", 
     ALL: "all", 
@@ -12,5 +12,5 @@ const ConversationTypes = Object.freeze({
 
 module.exports = {
     GenderTypes, 
-    ConversationTypes, 
+    RoomTypes, 
 }
