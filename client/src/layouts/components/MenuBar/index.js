@@ -44,6 +44,7 @@ export default function MenuBar() {
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-between",
+                borderRight: "0.2px solid #424242",
             }}
         >
             <Box
@@ -55,7 +56,10 @@ export default function MenuBar() {
                 }}
             >
                 <Item>
-                    <Link to="/" style={{ textDecoration: "none" }}>
+                    <IconButton 
+                        size="large" color="inherit"
+                        component={Link} to="/"
+                    >
                         <img
                             alt="Logo"
                             style={{
@@ -63,7 +67,7 @@ export default function MenuBar() {
                             }}
                             src={logoLink}
                         />
-                    </Link>
+                    </IconButton>
                 </Item>
                 <Item>
                     <IconButton 

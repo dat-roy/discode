@@ -27,7 +27,11 @@ export default function ChatList() {
     }, [state.user.id])
 
     return (
-        <>
+        <div 
+            style={{
+                padding: 20,
+            }}
+        >
             <h2>Here's all my conversations:</h2>
             <h3>Number: {singleConv.length}</h3>
             <ul>{
@@ -38,6 +42,6 @@ export default function ChatList() {
                     </li>
                 })
             }</ul>
-        </>
+        </div>
     )
 } 

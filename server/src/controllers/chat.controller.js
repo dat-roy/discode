@@ -72,21 +72,44 @@ class chatController {
 
     ///[POST] /api/chat/get/common-conversations/
     async getCommonConversations(req, res, next) {
-        //Note: `my_id, other_id` 
+        //Note: `my_id, other_id` are guaranteed to be valid.
         const {my_id, other_id, type} = req.body;
 
         try {
-            //find all single conversation of my_id, 
-            const convList = Participants.findAll({
+            //find all conversations of my_id that having correct `type` 
+            const myConvList = await Participants.findAll({
                 attributes: [
                     "conv_id", "users_id", "type", 
                 ], 
                 where: 
-                    `users_id=${my_id} AND type=${ConversationTypes.SINGLE}`
+                    `users_id=${my_id} AND type='${type}'`
             })
+            if (!myConvList || myConvList.length === 0) {
+                return res.status(200).json({
+                    message: "No conversation found"
+                })
+            }
 
-            res.status(200).json(convList);
-            //for each: find which conversation that have a participant is other_id
+            //find conversations whose a participant is other_id
+            let commonConv = []
+            for (const conv of myConvList) {
+                const existence = await Participants.checkExistence({
+                    where: 
+                        `conv_id=${conv.conv_id} AND users_id=${other_id} AND type='${type}'`, 
+                })
+                if (existence) {
+                    commonConv.push({
+                        conv_id: conv.conv_id, 
+                        my_id: my_id, 
+                        other_id: other_id, 
+                        type: conv.type, 
+                    })
+                }
+            }
+            res.status(200).json({
+                message: "Find all common conversations successfully (result may be empty)", 
+                commonConv: commonConv
+            });
         } catch (err) {
             console.log(err);
             return res.status(500).json({

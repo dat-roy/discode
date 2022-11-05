@@ -26,7 +26,7 @@ export default function Inbox() {
     console.log("Other id: " + otherID);
 
     useEffect(() => {
-        if (otherID && otherID != myID) {
+        if (otherID && otherID !== myID) {
             async function checkOtherID() {
                 const response = await handleGetUserByIdAPI(otherID);
                 if (!response) {
@@ -42,9 +42,9 @@ export default function Inbox() {
 
     if (!otherID || otherID === myID) {
         return (
-            <>
+            <div style={{padding: 20}}>
                 <h3>Please select a conversation or create new one</h3>
-            </>
+            </div>
         )
     }
     return <InnerInbox

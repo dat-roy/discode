@@ -2,11 +2,9 @@ import React from'react';
 import { Box } from "@mui/system";
 
 import MenuBar from '../components/MenuBar';
-import LeftBar from "../components/LeftBar";
-import Main from '../components/Main';
-import RightBar from "../components/RightBar";
+import { Outlet } from 'react-router-dom';
 
-export default function DefaultLayout({leftElement, mainElement, rightElement}) {
+export default function DefaultLayout() {
     return(
         <Box className="homeContainer"
             sx={{
@@ -22,15 +20,7 @@ export default function DefaultLayout({leftElement, mainElement, rightElement}) 
             }}
         >  
             <MenuBar />
-            <LeftBar>
-                {leftElement}
-            </LeftBar>
-            <Main>
-                {mainElement}
-            </Main>
-            <RightBar>
-                {rightElement}
-            </RightBar>
+            <Outlet />
         </Box>
     ) 
 }
