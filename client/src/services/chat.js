@@ -1,7 +1,7 @@
 import axios from "../config/axios";
 
-const handleGetJoinedConversationsAPI = (user_id, conv_type) => {
-    return axios.post(`/api/chat/get/joined-conversations`, {
+const handleGetJoinedSingleRoomsAPI = (user_id, conv_type) => {
+    return axios.post(`/api/chat/get/joined/single-rooms`, {
         user_id: user_id, 
         conv_type: conv_type,
     })
@@ -16,6 +16,6 @@ const handleGetCommonConversationsAPI = (myID, otherID, type) => {
 }
 
 export {
-    handleGetJoinedConversationsAPI, 
+    handleGetJoinedSingleRoomsAPI, 
     handleGetCommonConversationsAPI,
 }

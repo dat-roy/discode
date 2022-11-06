@@ -30,39 +30,67 @@ class chatController {
         const { user_id } = req.body;
 
         try {
-            const rows = await UserRoom.findAll({
-                where: {
-                    user_id: user_id,
-                }
+            const single_room_list = await UserRoom.getSingleRoomsByUserID({
+                user_id: user_id,
             })
-            if (!rows || rows.length === 0) {
-                return res.status(200).json({
-                    message: "No room found",
-                    room_list: [],
-                })
-            }
-
-            const room_list = [];
-            for (const row of rows) {
-                const room = await Room.findOne({
-                    where: 
-                        `id=${row.room_id} AND type=${RoomTypes.SINGLE}`,
-                }) 
-                
-                if (!room || room.length === 0) {
-                    throw new Error("Database server error");
-                }
-                room_list.push(room);
-            }
-
             return res.status(200).json({
                 message: "Get joined rooms successfully",
-                room_list: room_list,
+                room_list: single_room_list,
             })
         } catch (err) {
             console.log(err.message);
             res.status(500).json({
-                message: "Internal Server Error"
+                message: "Internal Server Error", 
+                error: err.message,
+            })
+        }
+    }
+
+    //[POST] /api/chat/get/common/single-rooms
+    async getCommonSingleRooms(req, res, next) {
+        //Note: `my_id`, `other_id` are guaranteed to be valid.
+        let {my_id, other_id} = req.body;
+
+        try {
+            const my_single_rooms = await UserRoom.getSingleRoomsByUserID({
+                user_id: my_id,
+            })
+
+            if (!my_single_rooms || my_single_rooms.length === 0) {
+                return res.status(404).json({
+                    message: "No room found", 
+                    common_room: [], 
+                })
+            } 
+
+            const common_room = []
+            for (const room of my_single_rooms) {
+                const result = await UserRoom.findOne({
+                    where: 
+                        `user_id=${other_id} AND room_id=${room.room_id}`, 
+                })
+                if (result) {
+                    common_room.push(room);
+                }
+            }
+
+            if (common_room.length === 0) {
+                return res.status(404).json({
+                    message: "There's no common room", 
+                    common_room: [], 
+                })
+            } else {
+                return res.status(200).json({
+                    message: "Get common single rooms successfully", 
+                    note: "common_room is expected to have only one element", 
+                    common_room: common_room, 
+                })
+            }
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({
+                message: "Internal Server Error", 
+                error: err.message, 
             })
         }
     }

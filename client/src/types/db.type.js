@@ -4,7 +4,7 @@ export const GenderTypes = Object.freeze({
     OTHER: "other",
 })
 
-export const ConversationTypes = Object.freeze({
+export const RoomTypes = Object.freeze({
     SINGLE: "single", 
     GROUP: "group", 
     ALL: "all", 

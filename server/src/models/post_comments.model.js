@@ -1,7 +1,6 @@
 const mysql = require('mysql2/promise');
 const dbConnection = require("../config/db/index.db");
 const { Model } = require('./Model');
-const { RoomTypes } = require('../types/db.type');
 
 class PostComments extends Model {
     constructor(tableName) {

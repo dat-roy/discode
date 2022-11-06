@@ -17,8 +17,8 @@ export default function Inbox() {
     const params = useParams();
 
     const [state, dispatch] = useStore();
-    const [otherUser, setOtherUser] = useState({});
-    const [havingConversation, setHavingConversation] = useState(false);
+    const [otherUser, setOtherUser] = useState(null);
+    const [havingCommonRoom, setHavingCommonRoom] = useState(false);
 
     const myID = state.user.id;
     const otherID = params.id;
@@ -36,26 +36,27 @@ export default function Inbox() {
                     setOtherUser(response.data.user_data);
                 }
             }
-            const result = checkOtherID()
+            checkOtherID();
         }
     }, [])
 
     if (!otherID || otherID === myID) {
         return (
-            <div style={{padding: 20}}>
+            <div style={{ padding: 20 }}>
                 <h3>Please select a conversation or create new one</h3>
             </div>
         )
     }
-    return <InnerInbox
-        myID={myID}
-        otherUser={otherUser}
-        setOtherUser={setOtherUser}
-    />
+    if (myID && otherUser) {
+        return <InnerInbox
+            myID={myID}
+            otherUser={otherUser}
+        />
+    }
 }
 
-function InnerInbox({myID, otherUser, setOtherUser}) {
-    const navigate = useNavigate();
+function InnerInbox({ myID, otherUser }) {
+    console.log("Inner box")
     const socketRef = useRef();
     const latestMessage = useRef();
 
