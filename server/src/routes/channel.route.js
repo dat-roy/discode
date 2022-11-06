@@ -6,4 +6,5 @@ const router = express.Router();
 router.post('/create', channelController.createChannel);
 router.post('/remove', channelController.deleteChannel);
 router.post('/remove-member', channelController.deleteMember);
+router.post('/add-member', channelController.addMemberToConversation);
 module.exports = router;

@@ -45,6 +45,7 @@ class Model {
         let attributes = await this.getAttributes(options);
         let whereClause = await this.getWhereClause(options);
         let sql = `SELECT ${attributes} FROM ${this.tableName} ${whereClause} LIMIT 1`;
+        console.log(sql);
         return (await dbConnection.query(sql))[0];
     }
 
