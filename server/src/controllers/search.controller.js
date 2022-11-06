@@ -21,7 +21,7 @@ class searchController {
                     + `OR SUBSTRING(email FROM 1 FOR LOCATE('@', email)) LIKE '%${param}%'`,
                     // `MATCH(username, email)  AGAINST ('${param}' IN NATURAL LANGUAGE MODE)`
             })
-            console.log(results);
+            //console.log(results);
             return res.status(200).json({
                 results: results
             })

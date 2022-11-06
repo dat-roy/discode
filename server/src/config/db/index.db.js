@@ -18,7 +18,7 @@ async function query(sql, params) {
     //});
 
     if (connection) {
-        console.log("Connected database");
+        //console.log("Connected database");
     }
     const [rows, fields] = await connection.execute(sql, params);
     return rows;

@@ -13,7 +13,7 @@ class MessageAttachments extends Model {
 
         let sql = `INSERT INTO ${this.tableName}(message_id, attachment_content)\
                 VALUES(${message_id}, ${attachment_content})`;
-        console.log(sql);
+        //console.log(sql);
         return await dbConnection.query(sql);
     }
 }

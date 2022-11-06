@@ -37,7 +37,7 @@ class Model {
         let attributes = await this.getAttributes(options);
         let whereClause = await this.getWhereClause(options);
         let sql = `SELECT ${attributes} FROM ${this.tableName} ${whereClause}`;
-        console.log(sql);
+        //console.log(sql);
         return await dbConnection.query(sql);
     }
 

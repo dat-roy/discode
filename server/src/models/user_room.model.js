@@ -15,7 +15,7 @@ class UserRoom extends Model {
 
         let sql = `INSERT INTO ${this.tableName}(user_id, room_id)\
                     VALUES(${user_id}, ${room_id})`;
-        console.log(sql);
+        //console.log(sql);
         return await dbConnection.query(sql);
     }
 
@@ -25,7 +25,7 @@ class UserRoom extends Model {
 
         let sql = `DELETE FROM ${this.tableName}\
                 WHERE user_id=${deleted_id} AND room_id=${room_id}`;
-        console.log(sql);
+        //console.log(sql);
         return await dbConnection.query(sql);
     }
 
@@ -34,7 +34,7 @@ class UserRoom extends Model {
         let sql = `SELECT * FROM ${this.tableName}\
                 RIGHT JOIN ${Room.tableName} ON ${this.tableName}.room_id = ${Room.tableName}.id\
                 WHERE ${this.tableName}.user_id = ${user_id} AND ${Room.tableName}.type = '${RoomTypes.SINGLE}'`;
-        console.log(sql);
+        //console.log(sql);
         return await dbConnection.query(sql);
     }
 }

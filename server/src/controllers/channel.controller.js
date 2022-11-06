@@ -27,7 +27,7 @@ class channelController {
                     avatar_url: avatar_url,
                 });
 
-                console.log(result);
+                //console.log(result);
                 return res.status(200).json({
                     message: "Create new channel successfully",
                     results: result,

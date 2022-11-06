@@ -13,7 +13,7 @@ class PostComments extends Model {
         let content = mysql.escape(params.content);
 
         let sql = ``;
-        console.log(sql);
+        //console.log(sql);
         return await dbConnection.query(sql);
     }
 
@@ -23,7 +23,7 @@ class PostComments extends Model {
         let user_id = mysql.escape(params.post_id);
 
         let sql = ``;
-        console.log(sql);
+        //console.log(sql);
         return await dbConnection.query(sql);
     }
 }

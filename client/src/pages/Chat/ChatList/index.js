@@ -10,7 +10,7 @@ export default function ChatList() {
     useEffect(() => {
         async function fetchData() {
             const result = await handleGetJoinedSingleRoomsAPI(state.user.id, RoomTypes.SINGLE);
-            console.log(result);
+            //console.log(result);
             let roomList = result.data.room_list || [];
             setSingleRoom(roomList);
         }

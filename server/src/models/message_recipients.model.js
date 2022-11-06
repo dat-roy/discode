@@ -11,10 +11,11 @@ class MessageRecipients extends Model {
         let recipient_id = mysql.escape(params.recipient_id);
         let recipient_room_id = mysql.escape(params.recipient_room_id);
         let message_id = mysql.escape(params.message_id);
+        let is_read = mysql.escape(params.is_read);
 
-        let sql = `INSERT INTO ${this.tableName}(recipient_id, recipient_room_id, message_id)\
-                VALUES(${recipient_id}, ${recipient_room_id}, ${message_id})`;
-        console.log(sql);
+        let sql = `INSERT INTO ${this.tableName}(recipient_id, recipient_room_id, message_id, is_read)\
+                VALUES(${recipient_id}, ${recipient_room_id}, ${message_id}, ${is_read})`;
+        //console.log(sql);
         return await dbConnection.query(sql);
     }
 }

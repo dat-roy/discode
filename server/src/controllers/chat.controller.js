@@ -57,9 +57,9 @@ class chatController {
             })
 
             if (!my_single_rooms || my_single_rooms.length === 0) {
-                return res.status(404).json({
+                return res.status(200).json({
                     message: "No room found", 
-                    common_room: [], 
+                    //common_room: [], 
                 })
             } 
 
@@ -75,9 +75,9 @@ class chatController {
             }
 
             if (common_room.length === 0) {
-                return res.status(404).json({
+                return res.status(200).json({
                     message: "There's no common room", 
-                    common_room: [], 
+                    //common_room: [], 
                 })
             } else {
                 return res.status(200).json({

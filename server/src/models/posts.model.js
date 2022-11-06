@@ -12,21 +12,21 @@ class Posts extends Model {
         let content = mysql.escape(content);
 
         let sql = ``;
-        console.log(sql);
+        //console.log(sql);
         return await dbConnection.query(sql);
     }
 
     async modify(params) {
         let sql = ``;
 
-        console.log(sql);
+        //console.log(sql);
         return await dbConnection.query(sql);
     }
 
     async delete(params) {
         
         let sql = ``;
-        console.log(sql);
+        //console.log(sql);
         return await dbConnection.query(sql);
     }
 }

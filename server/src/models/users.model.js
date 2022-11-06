@@ -23,7 +23,7 @@ class Users extends Model {
                                 gender, avatar_url, nation, joined_date)\
                 VALUES(${email}, ${username}, ${birthday}, ${password},\ 
                         ${gender}, ${avatar_url}, ${nation}, NOW())`;
-        console.log(sql);
+        //console.log(sql);
         return await dbConnection.query(sql);
         //Return: {
         //     "fieldCount":,

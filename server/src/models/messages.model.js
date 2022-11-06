@@ -16,7 +16,7 @@ class Messages extends Model {
         let sql = `INSERT INTO ${this.tableName}(sender_id, content, message_type,\ 
                     parent_message_id, created_at)\
                 VALUES(${sender_id}, ${content}, ${message_type}, ${parent_message_id}, NOW())`;
-        console.log(sql);
+        //console.log(sql);
         return await dbConnection.query(sql);
     }
 
@@ -26,7 +26,7 @@ class Messages extends Model {
 
         let sql = `DELETE FROM ${this.tableName}\
                 WHERE id=${message_id} AND sender_id=${sender_id}`;
-        console.log(sql);
+        //console.log(sql);
         return await dbConnection.query(sql);
     }
 }

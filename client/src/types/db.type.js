@@ -9,3 +9,10 @@ export const RoomTypes = Object.freeze({
     GROUP: "group", 
     ALL: "all", 
 })
+
+export const MessageTypes = Object.freeze({
+    TEXT: "text", 
+    IMAGE: "image", 
+    VIDEO: "video", 
+    AUDIO: "audio", 
+})

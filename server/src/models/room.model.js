@@ -28,7 +28,7 @@ class Room extends Model {
             return "Deleting this room is restricted"
         }
         let sql = `DELETE FROM ${this.tableName} WHERE id = ${room_id}`;
-        console.log(sql);
+        //console.log(sql);
         return await dbConnection.query(sql);
     }
 }
