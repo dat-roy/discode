@@ -32,7 +32,7 @@ class userController {
                     email: email,
                 },
             });
-            console.log(results);
+            //console.log(results);
 
             if (results.length !== 0) {
                 const token = jwt.sign({ email: email}, JWTPrivateKey, { expiresIn: '3h'});
@@ -183,7 +183,7 @@ class userController {
                     user_data: null,
                 })
             }
-            console.log(result);
+            //console.log(result);
             res.status(200).json({
                 message: "Get user successfully", 
                 user_data: result
