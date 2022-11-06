@@ -38,6 +38,10 @@ export default function Inbox() {
             }
             checkOtherID();
         }
+
+        if (myID && otherUser) {
+            
+        }
     }, [])
 
     if (!otherID || otherID === myID) {
