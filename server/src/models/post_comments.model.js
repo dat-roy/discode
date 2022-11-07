@@ -28,4 +28,4 @@ class PostComments extends Model {
     }
 }
 
-module.exports = new PostComments("post_comment")
+module.exports = new PostComments("post_comments")
