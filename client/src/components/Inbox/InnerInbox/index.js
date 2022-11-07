@@ -9,6 +9,7 @@ import SendIcon from '@mui/icons-material/Send';
 
 import { handleGetOldMessages, handleSaveNewMessage } from "../../../services/message";
 import { MessageTypes } from "../../../types/db.type"
+import { handleCreateNewSingleRoomAPI } from "../../../services";
 
 const serverHost = "http://localhost:3030";
 
@@ -23,11 +24,10 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
 
     useEffect(() => {
         if (commonRoom) {
-            handleGetOldMessages(myID, commonRoom[0].room_id)
+            handleGetOldMessages(myID, commonRoom.room_id)
                 .then(response => {
                     console.log(response.data.messages);
                     setAllMessages(response.data.messages);
-                    //console.log()
                 })
         }
     }, [myID, commonRoom])
@@ -37,17 +37,17 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
             //console.log("Common Room")
             //console.log(commonRoom) 
             socketRef.current = io.connect(serverHost);
-            socketRef.current.emit('joinRoom', commonRoom[0].room_id);
+            socketRef.current.emit('joinRoom', commonRoom.room_id);
 
             //Add a new message to oldMsg
             socketRef.current.on('sendDataServer', newMsg => {
-                console.log(newMsg);
+                //console.log(newMsg);
                 setAllMessages(oldMsgs => [...oldMsgs, newMsg]);
-                console.log(allMessages);
+                //console.log(allMessages);
                 scrollToBottom()
             })
         }
-    }, [commonRoom]);
+    }, [allMessages, commonRoom]);
 
     const scrollToBottom = () => {
         latestMessage.current.scrollIntoView({ behavior: "smooth" });
@@ -56,15 +56,15 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
     const filterAllMessages = () => {
         let lastSide = null;
         const result = [];
-        console.log("All messages")
-        console.log(allMessages);
-    
+        //console.log("All messages")
+        //console.log(allMessages);
+
         for (const msg of allMessages) {
             const side = (!msg.sender_id)
                 ? "center"
                 : (msg.sender_id === myID)
                     ? "right" : "left";
-            
+
             if (side !== lastSide) {
                 result.push({
                     avatar: otherUser.avatar_url,
@@ -88,22 +88,44 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                 //Create new room, user_room, message, message_recipient.
                 //Join room.
             } else {
-                socketRef.current.emit('sendDataClient', msg, commonRoom[0].room_id);
+                socketRef.current.emit('sendDataClient', msg, commonRoom.room_id);
                 const message_type = MessageTypes.TEXT;
-                const savedMessage = message;
                 handleSaveNewMessage({
                     sender_id: myID,
-                    room_id: commonRoom[0].room_id,
-                    content: savedMessage,
+                    room_id: commonRoom.room_id,
+                    content: message,
                     message_type: message_type,
                     parent_message_id: null,
                 })
                     .then(response => {
-                        console.log(response);
+                        //console.log(response);
                         setMessage('');
                     })
             }
             //setMessage('');
+        }
+    }
+
+    const handleCreateNewRoom = async () => {
+        const response = await handleCreateNewSingleRoomAPI(myID, otherUser.id)   
+        //console.log(response); 
+
+        if (response.status === 200) {
+            const newRoom = response.data.room_data[0]
+            const message_type = MessageTypes.TEXT
+
+            handleSaveNewMessage({
+                sender_id: myID, 
+                room_id: newRoom.room_id, 
+                content: "HELLO HELLO",
+                message_type: message_type, 
+                parent_message_id: null, 
+            })
+                .then(response => {
+                    //console.log(response);
+                    setMessage('');
+                    setCommonRoom(newRoom);
+                })  
         }
     }
 
@@ -129,6 +151,14 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                     overflowY: "auto",
                 }}
             >
+                <Button
+                    style={{
+                        display: (commonRoom) ? "none" : "block"
+                    }} 
+                    onClick={handleCreateNewRoom}
+                >
+                    Start a chat
+                </Button>
                 {
                     filterAllMessages().map((obj, index) => {
                         const {
@@ -163,7 +193,8 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                 }}
             >
                 <TextareaAutosize
-                    //disable={true}
+                    disabled={(commonRoom) ? false : true}
+                    autoFocus={true}
                     value={message}
                     onKeyDown={(e) => {
                         if (e.key === 'Enter' && e.shiftKey === false) {
@@ -189,9 +220,16 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                     }}
                 />
                 <Button
+                    disabled={(commonRoom) ? false : true}
                     variant="contained"
                     endIcon={<SendIcon />}
                     onClick={sendMessage}
+                    sx={{
+                        "&:disabled": {
+                            color: "white",
+                            backgroundColor: 'gray'
+                        }
+                    }}
                 >
                     Send
                 </Button>

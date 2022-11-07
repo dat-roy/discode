@@ -35,9 +35,9 @@ export default function Inbox() {
             async function checkCommonSingleRoom() {
                 const response = await handleGetCommonSingleRoomsAPI(myID, otherID);
                 if (response) {
-                    //console.log("Check common room: ")
-                    //console.log(response);
-                    setCommonRoom(response?.data?.common_room)
+                    if (response.data.common_room) {
+                        setCommonRoom(response?.data?.common_room[0])
+                    }
                 }
             }
             checkCommonSingleRoom();
@@ -47,7 +47,7 @@ export default function Inbox() {
     if (!otherID || otherID === myID) {
         return (
             <div style={{ padding: 20 }}>
-                <h3>Please select a conversation or create new one</h3>
+                <h3>Select a chat or create a new conversation</h3>
             </div>
         )
     }

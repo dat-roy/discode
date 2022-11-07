@@ -94,6 +94,63 @@ class chatController {
             })
         }
     }
+
+    //[POST] /api/chat/create/single-room 
+    async createNewSingleRoom(req, res, next) {
+        const { my_id, other_id } = req.body;
+        const type = RoomTypes.SINGLE;
+        const channel_id = null;
+        const title = null;
+        const removable = false;
+
+        try {
+            if (my_id === other_id) {
+                throw new Error("Same user id")
+            }
+            const result = await Room.create({
+                channel_id: channel_id, 
+                type: type, 
+                title: title, 
+                removable: removable, 
+            })
+            if (result.affectedRows === 0) {
+                throw new Error("DB server error: no row affected");
+            } else {
+                //Create two user_room record.
+                const room_id = result.insertId;
+                const savingMyID = await UserRoom.create({
+                    user_id: my_id, 
+                    room_id: room_id, 
+                })
+
+                const savingOtherID = await UserRoom.create({
+                    user_id: other_id, 
+                    room_id: room_id, 
+                })
+
+                if (!savingMyID.affectedRows || !savingOtherID.affectedRows) {
+                    throw new Error("DB server error: no row affected")
+                } else {
+                    return res.status(200).json({
+                        message: "Create a new single room successfully", 
+                        room_data:[{
+                            room_id: room_id,
+                            title: title, 
+                            channel_id: channel_id, 
+                            type: type, 
+                            removable: removable, 
+                        }]
+                    })
+                }
+            }
+        } catch(err) {
+            console.log(err);
+            return res.status(500).json({
+                message: "Internal Server Error",
+                error: err.message,
+            })
+        }
+    }
 }
 
 module.exports = new chatController();

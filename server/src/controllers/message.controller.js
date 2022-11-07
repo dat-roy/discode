@@ -90,42 +90,43 @@ class messageController {
             //Save `messages`
             //Find all user_room -> save `message_recipient` (including sender);
 
-            const messagesSaving = await Messages.create({
-                sender_id: sender_id,
-                content: content,
-                message_type: message_type,
-                parent_message_id: parent_message_id,
-            })
-
             const recipientsList = await UserRoom.findAll({
                 where: {
                     room_id: room_id,
                 }
             })
 
-            if (messagesSaving.affectedRows === 0) {
-                throw new Error("DB error: No row affected");
-            }
             if (!recipientsList || recipientsList.length === 0) {
                 throw new Error("DB error: No recipient found");
-            }
-
-            for (const recipient of recipientsList) {
-                const is_read = (recipient.user_id === sender_id) ? true : false;
-                const messageRecipientsSaving = await MessageRecipients.create({
-                    recipient_id: recipient.user_id,
-                    recipient_room_id: recipient.id,
-                    message_id: messagesSaving.insertId,
-                    is_read: is_read,
+            } else {
+                const messagesSaving = await Messages.create({
+                    sender_id: sender_id,
+                    content: content,
+                    message_type: message_type,
+                    parent_message_id: parent_message_id,
                 })
-                if (messageRecipientsSaving.affectedRows === 0) {
-                    throw new Error("DB error: No row affected")
-                }
-            }
 
-            return res.status(200).json({
-                message: "Save new message successfully",
-            })
+                if (messagesSaving.affectedRows === 0) {
+                    throw new Error("DB error: No row affected");
+                }
+                
+                for (const recipient of recipientsList) {
+                    const is_read = (recipient.user_id === sender_id) ? true : false;
+                    const messageRecipientsSaving = await MessageRecipients.create({
+                        recipient_id: recipient.user_id,
+                        recipient_room_id: recipient.id,
+                        message_id: messagesSaving.insertId,
+                        is_read: is_read,
+                    })
+                    if (messageRecipientsSaving.affectedRows === 0) {
+                        throw new Error("DB error: No row affected")
+                    }
+                }
+    
+                return res.status(200).json({
+                    message: "Save new message successfully",
+                })
+            }
         } catch (err) {
             console.log(err);
             return res.status(500).json({

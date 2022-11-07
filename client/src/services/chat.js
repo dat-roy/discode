@@ -13,7 +13,15 @@ const handleGetCommonSingleRoomsAPI = (myID, otherID) => {
     })
 }
 
+const handleCreateNewSingleRoomAPI = (myID, otherID) => {
+    return axios.post(`/api/chat/create/single-room`, {
+        my_id: myID, 
+        other_id: otherID,
+    })
+}
+
 export {
     handleGetJoinedSingleRoomsAPI, 
     handleGetCommonSingleRoomsAPI,
+    handleCreateNewSingleRoomAPI,
 }

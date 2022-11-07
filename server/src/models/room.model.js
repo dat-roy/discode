@@ -13,7 +13,7 @@ class Room extends Model {
         let channel_id = (type === RoomTypes.SINGLE)
                         ? null : mysql.escape(params.channel_id);
         let title = mysql.escape(params.title);
-        let removable = mysql.escape(removable); 
+        let removable = mysql.escape(params.removable); 
 
         let sql = `INSERT INTO\ 
             ${this.tableName}(channel_id, type, title, removable, created_at)\
@@ -23,7 +23,7 @@ class Room extends Model {
     }
 
     async delete(params) {
-        let { room_id } = params;
+        let { room_id, removable } = params;
         if (! removable) {
             return "Deleting this room is restricted"
         }

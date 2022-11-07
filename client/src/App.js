@@ -11,13 +11,13 @@ import LayoutWrapper from './layouts/LayoutWrapper'
 function App() {
     return (
         <Routes>
-            <Route path='/'>  
+            <Route path='/' key={"public-routes"}>  
                 {publicRoutes.map((route, index) => {
                     return getRouteComponents(route, index, false);
                 })}
             </Route>
 
-            <Route path='/' element={
+            <Route path='/' key={"private-routes"} element={
                 <PrivateRoute>
                     <DefaultLayout />
                 </PrivateRoute>
@@ -40,7 +40,7 @@ function getRouteComponents(route, index, isPrivate) {
 
     //Special case: Landing page
     if (route.path === '/' && !isPrivate) {
-        return <Route index element={ route.mainElement } />
+        return <Route index key={"index-route"} element={ route.mainElement } />
     }
 
     return (
