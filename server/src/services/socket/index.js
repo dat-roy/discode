@@ -15,6 +15,7 @@ const socketHandler = (io, socket) => {
 
     socket.on("disconnect", () => {
         console.log("Client disconnected");
+        socket.removeAllListeners();
     })
 }
 

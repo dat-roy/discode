@@ -24,43 +24,45 @@ class messageController {
                 return res.status(200).json({
                     message: "User not found",
                 })
-            }
-
-            //check if user_id joined room_id or not.
-            const userRoomId = await UserRoom.findOne({
-                where: `user_id=${user_id} AND room_id=${room_id}`,
-            })
-
-            if (!userRoomId) {
-                return res.status(200).json({
-                    message: "User does not join this room",
-                })
-            } else {
-                //console.log(userRoomId);
-                const allMessagesID = await MessageRecipients.findAll({
-                    attributes: [
-                        "message_id",
-                    ],
-                    where:
-                        `recipient_id = ${user_id} AND recipient_room_id = ${userRoomId.id}`,
+            } 
+            
+            if (checkRoomIdExists && checkUserIdExists) {
+                //check if user_id joined room_id or not.
+                const userRoomId = await UserRoom.findOne({
+                    where: `user_id=${user_id} AND room_id=${room_id}`,
                 })
 
-                const allMessages = []
-                for (const messageID of allMessagesID) {
-                    const message = await Messages.findOne({
-                        where: {
-                            id: messageID.message_id,
-                        }
+                if (!userRoomId) {
+                    return res.status(200).json({
+                        message: "User does not join this room",
                     })
-                    if (message) {
-                        allMessages.push(message);
-                    }
-                }
+                } else {
+                    //console.log(userRoomId);
+                    const allMessagesID = await MessageRecipients.findAll({
+                        attributes: [
+                            "message_id",
+                        ],
+                        where:
+                            `recipient_id = ${user_id} AND recipient_room_id = ${userRoomId.id}`,
+                    })
 
-                res.status(200).json({
-                    message: "Get all messages successfully",
-                    messages: allMessages,
-                })
+                    const allMessages = []
+                    for (const messageID of allMessagesID) {
+                        const message = await Messages.findOne({
+                            where: {
+                                id: messageID.message_id,
+                            }
+                        })
+                        if (message) {
+                            allMessages.push(message);
+                        }
+                    }
+
+                    res.status(200).json({
+                        message: "Get all messages successfully",
+                        messages: allMessages,
+                    })
+                }
             }
         } catch (err) {
             console.log(err);
@@ -111,10 +113,10 @@ class messageController {
             for (const recipient of recipientsList) {
                 const is_read = (recipient.user_id === sender_id) ? true : false;
                 const messageRecipientsSaving = await MessageRecipients.create({
-                    recipient_id: recipient.user_id, 
-                    recipient_room_id: recipient.id, 
-                    message_id: messagesSaving.insertId, 
-                    is_read: is_read, 
+                    recipient_id: recipient.user_id,
+                    recipient_room_id: recipient.id,
+                    message_id: messagesSaving.insertId,
+                    is_read: is_read,
                 })
                 if (messageRecipientsSaving.affectedRows === 0) {
                     throw new Error("DB error: No row affected")
@@ -122,7 +124,7 @@ class messageController {
             }
 
             return res.status(200).json({
-                message: "Save new message successfully", 
+                message: "Save new message successfully",
             })
         } catch (err) {
             console.log(err);

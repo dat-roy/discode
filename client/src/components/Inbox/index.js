@@ -10,21 +10,20 @@ export default function Inbox() {
     const navigate = useNavigate();
     const params = useParams();
 
-    const [state, ] = useStore();
+    const [state,] = useStore();
     const [otherUser, setOtherUser] = useState(null);
     const [commonRoom, setCommonRoom] = useState(null);
 
     const myID = state.user.id;
-    const otherID = params.id;
-    //console.log("My id: " + myID);
-    //console.log("Other id: " + otherID);
+    const otherID = parseInt(params.id);
+    // console.log("My id: " + myID);
+    // console.log("Other id: " + otherID);
 
     useEffect(() => {
         if (otherID && otherID !== myID && !otherUser) {
-            handleGetUserByIdAPI(otherID) 
+            handleGetUserByIdAPI(otherID)
                 .then(response => {
                     if (!response.data.user_data) {
-                        console.log("Hello")
                         return navigate('/err/invalid-user-id')
                     } else {
                         setOtherUser(response.data.user_data);
