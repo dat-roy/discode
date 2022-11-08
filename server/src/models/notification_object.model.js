@@ -13,7 +13,7 @@ class NotificationObject extends Model{
         
         let sql = `INSERT INTO ${this.tableName}(notification_type, entity_id, created_at)
         VALUES(${notification_type}, ${entity_id}, NOW())`;
-
+        console.log(sql);
         return dbConnection.query(sql);
     }
 }
