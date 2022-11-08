@@ -2,6 +2,7 @@ const mysql = require('mysql2/promise');
 const dbConnection = require("../config/db/index.db");
 const { RoomTypes } = require('../types/db.type');
 const { Model } = require('./Model');
+const Users = require('./users.model')
 const Room = require('./room.model')
 
 class UserRoom extends Model {
@@ -32,10 +33,20 @@ class UserRoom extends Model {
     async getSingleRoomsByUserID(params) {
         let user_id = mysql.escape(params.user_id);
         let sql = `SELECT * FROM ${this.tableName}\
-                RIGHT JOIN ${Room.tableName} ON ${this.tableName}.room_id = ${Room.tableName}.id\
+                INNER JOIN ${Room.tableName} ON ${this.tableName}.room_id = ${Room.tableName}.id\
                 WHERE ${this.tableName}.user_id = ${user_id} AND ${Room.tableName}.type = '${RoomTypes.SINGLE}'`;
         //console.log(sql);
         return await dbConnection.query(sql);
+    }
+
+    async getPartnerData(params) {
+        let user_id = mysql.escape(params.user_id);
+        let room_id = mysql.escape(params.room_id);
+        let sql = `SELECT * FROM ${this.tableName}\
+                INNER JOIN ${Users.tableName} ON ${this.tableName}.user_id = ${Users.tableName}.id\
+                WHERE ${this.tableName}.user_id != ${user_id} AND ${this.tableName}.room_id = ${room_id}`;
+        //console.log(sql);
+        return (await dbConnection.query(sql))[0];
     }
 }
 

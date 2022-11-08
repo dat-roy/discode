@@ -15,9 +15,16 @@ export default function Inbox() {
     const [commonRoom, setCommonRoom] = useState(null);
 
     const myID = state.user.id;
-    const otherID = parseInt(params.id);
+    let otherID = parseInt(params.id);
     // console.log("My id: " + myID);
     // console.log("Other id: " + otherID);
+
+    useEffect(() => {
+        otherID = parseInt(params.id);
+        setOtherUser(null);
+        setCommonRoom(null);
+        //console.log("Params: " + params.id);
+    }, [params])
 
     useEffect(() => {
         if (otherID && otherID !== myID && !otherUser) {
@@ -42,6 +49,7 @@ export default function Inbox() {
             }
             checkCommonSingleRoom();
         }
+        console.log("change otherID")
     }, [myID, otherID, otherUser, navigate, commonRoom])
 
     if (!otherID || otherID === myID) {

@@ -62,8 +62,6 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
     const filterAllMessages = () => {
         let lastSide = null;
         const result = [];
-        //console.log("All messages")
-        //console.log(allMessages);
 
         for (const msg of allMessages) {
             const side = (!msg.sender_id)
@@ -167,12 +165,14 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                     >
                         <BadgeAvatar
                             online={true}
+                            alt={otherUser.username}
+                            src={otherUser.avatar_url}
                         />
                         <Stack
                             spacing={0.2}
                         >
                             <Typography variant="subtitle2">
-                                @datRoy
+                                @{otherUser.username}
                             </Typography>
                             <Typography variant="caption">
                                 Online
@@ -271,7 +271,7 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                                 }
                             },
                             endAdornment:
-                                <InputAdornment>
+                                <InputAdornment position="end">
                                     <IconButton
                                         sx={{
                                             color: "white",

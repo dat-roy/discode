@@ -10,12 +10,12 @@ async function query(sql, params) {
         database: "discode",
     });
 
-    //const connection = await mysql.createConnection({
-    //  host: process.env.DATABASE_HOST,
-    //  user: process.env.DATABASE_USER, 
-    //  password: process.env.DATABASE_PWD,
-    //  database: process.env.DATABASE_NAME,
-    //});
+    // const connection = await mysql.createConnection({
+    //     host: process.env.DATABASE_HOST,
+    //     user: process.env.DATABASE_USER,
+    //     password: process.env.DATABASE_PWD,
+    //     database: process.env.DATABASE_NAME,
+    // });
 
     if (connection) {
         //console.log("Connected database");
