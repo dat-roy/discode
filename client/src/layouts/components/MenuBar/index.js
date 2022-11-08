@@ -1,7 +1,8 @@
-import React from "react"
+import React, { useState } from "react"
 import { Link } from "react-router-dom"
 
-import { Box } from '@mui/material';
+//import { useTheme } from "@mui/material"
+import { Box, Stack } from '@mui/material';
 import { FormControlLabel } from '@mui/material';
 import MaterialUISwitch from "../../../components/MaterialUISwitch";
 import HomeIcon from '@mui/icons-material/Home';
@@ -17,115 +18,113 @@ import AccountMenu from "../AccountMenu";
 
 const logoLink = process.env.PUBLIC_URL + "assets/img/github_logo.svg";
 
-function Item(props) {
-    const { sx, ...other } = props;
-    return (
-        <Box
-            sx={{
-                padding: 0,
-                margin: 0.5,
-                color: 'grey.300',
-                borderRadius: 5,
-                fontSize: '0.875rem',
-                fontWeight: '700',
-                ...sx,
-            }}
-            {...other}
-        />
-    )
-}
-
 export default function MenuBar() {
+    //const theme = useTheme();
+    const [selected, setSelected] = useState(0);
+
+    const NavButtons = [
+        {
+            path: "/home",
+            element: <HomeIcon />,
+            badge: null,
+        },
+        {
+            path: "/notifications",
+            element: <NotificationsIcon />,
+            badge: 100,
+        },
+        {
+            path: "/chat",
+            element: <MailIcon />,
+            badge: 5,
+        },
+        {
+            path: "/channels",
+            element: <GroupsIcon />,
+            badge: 1,
+        },
+        {
+            path: "/posts",
+            element: <MenuBookIcon />,
+            badge: null,
+        },
+        {
+            path: "/explore",
+            element: <ExploreIcon />,
+            badge: null,
+        }
+    ]
+
     return (
         <Box
             sx={{
                 width: "5%",
+                height: "100vh",
                 zIndex: 999,
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-between",
-                borderRight: "0.2px solid #424242",
+                boxShadow: "0px 0px 2px rgba(0, 0, 0, 0.25)",
             }}
         >
-            <Box
+            <Stack
+                direction="column"
+                alignItems={"center"}
+                spacing={1}
                 sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    marginTop: 1,
+                    width: "100%",
                 }}
             >
-                <Item>
-                    <IconButton 
-                        size="large" color="inherit"
-                        component={Link} to="/"
-                    >
-                        <img
-                            alt="Logo"
-                            style={{
-                                width: 50,
-                            }}
-                            src={logoLink}
-                        />
-                    </IconButton>
-                </Item>
-                <Item>
-                    <IconButton 
-                        size="large" aria-label="home page" color="inherit"
-                        component={Link} to="/home"
-                    >
-                        <HomeIcon/>
-                    </IconButton>
-                </Item>
-                <Item>
-                    <IconButton 
-                        size="large" color="inherit"
-                        component={Link} to="/notifications"
-                    >
-                        <Badge badgeContent={1000} color="error">
-                            <NotificationsIcon/>
-                        </Badge>
-                    </IconButton>
-                </Item>
-                <Item>
-                    <IconButton 
-                        size="large" color="inherit"
-                        component={Link} to="/chat"
-                    >
-                        <Badge badgeContent={10} color="error">
-                            <MailIcon/>
-                        </Badge>
-                    </IconButton>
-                </Item>
-                <Item>
-                    <IconButton 
-                        size="large" color="inherit"
-                        component={Link} to="/channels"
-                    >
-                        <Badge badgeContent={1} color="error">
-                            <GroupsIcon/>
-                        </Badge>
-                    </IconButton>
-                </Item>
-                <Item>
-                    <IconButton 
-                        size="large" color="inherit"
-                        component={Link} to="/posts"
-                    >
-                        <MenuBookIcon/>
-                    </IconButton>
-                </Item>
-                <Item>
-                    <IconButton 
-                        size="large" color="inherit"
-                        component={Link} to="/explore"
-                    >
-                        <ExploreIcon/>
-                    </IconButton>
-                </Item>
-            </Box>
 
-            <Box
+                <IconButton
+                    size="large" color="inherit"
+                    component={Link} to="/"
+                >
+                    <img
+                        alt="Logo"
+                        style={{
+                            width: 50,
+                        }}
+                        src={logoLink}
+                    />
+                </IconButton>
+
+                {
+                    NavButtons.map((obj, index) => {
+                        let boxSx = {};
+                        let iconSx = {}
+                        if (index === selected) {
+                            boxSx = {
+                                bgcolor: "#3f51b5", 
+                                borderRadius: 3.5,
+                            }
+                            iconSx = {
+                                //color: "red", 
+                            }
+                        }
+                        return <Box 
+                            sx={boxSx}
+                        >
+                            <IconButton
+                                key={index}
+                                size="large" color="inherit"
+                                component={Link} to={obj.path}
+                                sx={iconSx}
+                                onClick={() => {setSelected(index)}}
+                            >
+                                {obj.badge
+                                    ? <Badge badgeContent={obj.badge} color="error">
+                                        {obj.element}
+                                    </Badge>
+                                    : obj.element}
+                            </IconButton>
+                        </Box>
+                    })
+                }
+
+            </Stack>
+
+            <Stack
                 sx={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -133,7 +132,7 @@ export default function MenuBar() {
                     marginBottom: 2,
                 }}
             >
-                <Item
+                <Box
                     sx={{
                         alignSelf: "center",
                     }}
@@ -147,11 +146,11 @@ export default function MenuBar() {
                                 defaultChecked />
                         }
                     />
-                </Item>
-                <Item>
-                    <AccountMenu/>
-                </Item>
-            </Box>
+                </Box>
+                <Box>
+                    <AccountMenu />
+                </Box>
+            </Stack>
         </Box>
     )
 }

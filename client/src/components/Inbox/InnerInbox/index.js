@@ -3,9 +3,16 @@ import { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
 //import { useStore } from "../../../store/hooks";
 
-import { Box, TextareaAutosize, Button } from "@mui/material";
+import {
+    Box, Stack, TextField,
+    Button, Typography, IconButton, InputAdornment
+} from "@mui/material";
 import ChatMsg from '../../ChatMsg';
 import SendIcon from '@mui/icons-material/Send';
+import VideocamIcon from '@mui/icons-material/Videocam';
+import SentimentSatisfiedRoundedIcon from '@mui/icons-material/SentimentSatisfiedRounded';
+
+import BadgeAvatar from "../../BadgeAvatar"
 
 import { handleGetOldMessages, handleSaveNewMessage } from "../../../services/message";
 import { MessageTypes } from "../../../types/db.type"
@@ -14,13 +21,12 @@ import { handleCreateNewSingleRoomAPI } from "../../../services";
 const serverHost = "http://localhost:3030";
 
 export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom }) {
-    //console.log("Inner box")
     const socketRef = useRef();
     const latestMessage = useRef();
+    let message = useRef();
 
     //const [state, dispatch] = useStore();
     const [allMessages, setAllMessages] = useState([]);
-    const [message, setMessage] = useState('');
 
     useEffect(() => {
         if (commonRoom) {
@@ -34,16 +40,16 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
 
     useEffect(() => {
         if (commonRoom) {
-            //console.log("Common Room")
-            //console.log(commonRoom) 
-            socketRef.current = io.connect(serverHost);
+            socketRef.current = io.connect(serverHost, { reconnection: false });
             socketRef.current.emit('joinRoom', commonRoom.room_id);
+        }
+    }, [commonRoom])
 
+    useEffect(() => {
+        if (commonRoom) {
             //Add a new message to oldMsg
             socketRef.current.on('sendDataServer', newMsg => {
-                //console.log(newMsg);
                 setAllMessages(oldMsgs => [...oldMsgs, newMsg]);
-                //console.log(allMessages);
                 scrollToBottom()
             })
         }
@@ -79,35 +85,34 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
     }
 
     const sendMessage = () => {
-        if (message !== null && message !== '') {
+        if (message.current.value !== null && message.current.value !== '') {
             const msg = {
-                content: message,
+                content: message.current.value,
                 sender_id: myID,
             }
             if (!commonRoom) {
                 //Create new room, user_room, message, message_recipient.
                 //Join room.
             } else {
+                setAllMessages(oldMsgs => [...oldMsgs, msg]);
                 socketRef.current.emit('sendDataClient', msg, commonRoom.room_id);
                 const message_type = MessageTypes.TEXT;
                 handleSaveNewMessage({
-                    sender_id: myID,
+                    sender_id: msg.sender_id,
                     room_id: commonRoom.room_id,
-                    content: message,
+                    content: msg.content,
                     message_type: message_type,
                     parent_message_id: null,
                 })
                     .then(response => {
-                        //console.log(response);
-                        setMessage('');
+                        console.log(response);
                     })
             }
-            //setMessage('');
         }
     }
 
     const handleCreateNewRoom = async () => {
-        const response = await handleCreateNewSingleRoomAPI(myID, otherUser.id)   
+        const response = await handleCreateNewSingleRoomAPI(myID, otherUser.id)
         //console.log(response); 
 
         if (response.status === 200) {
@@ -115,38 +120,84 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
             const message_type = MessageTypes.TEXT
 
             handleSaveNewMessage({
-                sender_id: myID, 
-                room_id: newRoom.room_id, 
+                sender_id: myID,
+                room_id: newRoom.room_id,
                 content: "HELLO HELLO",
-                message_type: message_type, 
-                parent_message_id: null, 
+                message_type: message_type,
+                parent_message_id: null,
             })
                 .then(response => {
                     //console.log(response);
-                    setMessage('');
                     setCommonRoom(newRoom);
-                })  
+                })
         }
     }
 
     return (
-        <Box
+        <Stack
             className="boxChat"
             sx={{
-                width: "90%",
+                width: "auto",
                 height: "100vh",
+                maxHeight: "100vh",
                 margin: "0 auto",
-                marginTop: 2,
-                boxShadow: "0 0 10px 0 black",
             }}
         >
             <Box
+                className="boxChatHeader"
+                sx={{
+                    height: 100,
+                    width: "100%",
+                    bgcolor: "inherit",
+                }}
+            >
+                <Stack
+                    alignItems={"center"}
+                    direction="row"
+                    justifyContent={"space-between"}
+                    sx={{
+                        width: "100%",
+                        height: "100%",
+                    }}
+                >
+                    <Stack
+                        direction={"row"}
+                        spacing={2}
+                        marginLeft={3}
+                    >
+                        <BadgeAvatar
+                            online={true}
+                        />
+                        <Stack
+                            spacing={0.2}
+                        >
+                            <Typography variant="subtitle2">
+                                @datRoy
+                            </Typography>
+                            <Typography variant="caption">
+                                Online
+                            </Typography>
+                        </Stack>
+                    </Stack>
+                    <Stack
+                        direction="row"
+                        alignItems={"center"}
+                        spacing={3}
+                        marginRight={2}
+                    >
+                        <IconButton
+                            size="large" color="inherit"
+                        >
+                            <VideocamIcon />
+                        </IconButton>
+                    </Stack>
+                </Stack>
+            </Box>
+            <Box
                 className="boxChatMessage"
                 sx={{
-                    padding: 3,
-                    width: "90%",
-                    minHeight: "80vh",
-                    maxHeight: "80vh",
+                    width: "100%",
+                    flexGrow: 1,
                     overflowX: "hidden",
                     overflowY: "auto",
                 }}
@@ -154,7 +205,7 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                 <Button
                     style={{
                         display: (commonRoom) ? "none" : "block"
-                    }} 
+                    }}
                     onClick={handleCreateNewRoom}
                 >
                     Start a chat
@@ -186,54 +237,67 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
             <Box
                 className="sendBox"
                 sx={{
-                    float: "bottom",
                     width: "100%",
-                    minHeight: "10vh",
-                    bottom: 0,
+                    //bgcolor: "#000",
                 }}
             >
-                <TextareaAutosize
-                    disabled={(commonRoom) ? false : true}
-                    autoFocus={true}
-                    value={message}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter' && e.shiftKey === false) {
-                            sendMessage()
-                        }
-                    }}
-                    onChange={(e) => {
-                        setMessage(e.target.value)
-                    }}
-                    placeholder={"Enter message..."}
-                    style={{
-                        width: "50%",
-                        margin: 0,
-                        background: "#ebf5ff",
-                        borderRadius: 30,
-                        resize: "none",
-                        overflow: "auto",
-                        border: "none",
-                        outline: "none",
-                        "&:focus": {
-                            border: "none"
-                        }
-                    }}
-                />
-                <Button
-                    disabled={(commonRoom) ? false : true}
-                    variant="contained"
-                    endIcon={<SendIcon />}
-                    onClick={sendMessage}
-                    sx={{
-                        "&:disabled": {
-                            color: "white",
-                            backgroundColor: 'gray'
-                        }
-                    }}
+                <Stack
+                    direction="row"
+                    alignItems={"center"}
+                    justifyContent={"space-between"}
+                    spacing={3}
+                    padding={1}
+                    marginLeft={2}
+                    marginRight={2}
                 >
-                    Send
-                </Button>
+                    <TextField
+                        disabled={(commonRoom) ? false : true}
+                        fullWidth
+                        multiline
+                        placeholder="Write a message..."
+                        variant="filled"
+                        inputRef={message}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' && e.shiftKey === false) {
+                                sendMessage()
+                                console.log(message.current.value)
+                                message.current.value = ''
+                            }
+                        }}
+                        InputProps={{
+                            inputProps: {
+                                style: {
+                                    color: "white",
+                                }
+                            },
+                            endAdornment:
+                                <InputAdornment>
+                                    <IconButton
+                                        sx={{
+                                            color: "white",
+                                        }}
+                                    >
+                                        <SentimentSatisfiedRoundedIcon />
+                                    </IconButton>
+                                </InputAdornment>
+                        }}
+                    />
+                    <Button
+                        disabled={(commonRoom) ? false : true}
+                        variant="contained"
+                        endIcon={<SendIcon />}
+                        onClick={sendMessage}
+                        sx={{
+                            "&:disabled": {
+                                color: "white",
+                                backgroundColor: 'gray'
+                            }
+                        }}
+                    >
+                        Send
+                    </Button>
+                </Stack>
             </Box>
-        </Box>
+        </Stack>
     )
 }

@@ -10,7 +10,8 @@ const socketHandler = (io, socket) => {
     socket.on("sendDataClient", (message, room_id) => {
         console.log(message);
         console.log(room_id);
-        io.in(room_id).emit("sendDataServer", message);
+        //io.in(room_id).emit("sendDataServer", message);
+        socket.broadcast.to(room_id).emit("sendDataServer", message);
     })
 
     socket.on("disconnect", () => {
