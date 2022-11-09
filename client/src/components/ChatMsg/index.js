@@ -96,7 +96,7 @@ const ChatMsg = withStyles(defaultChatMsgStyles, { name: 'ChatMsg' })(props => {
                                             )}
                                         >
                                             <Typography
-                                                variant="body3"
+                                                variant="body2"
                                                 className={cx(
                                                     classes.msg,
                                                     TypographyProps.className

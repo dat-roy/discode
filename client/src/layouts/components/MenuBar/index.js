@@ -104,6 +104,7 @@ export default function MenuBar() {
                             }
                         }
                         return <Box 
+                            key={index}
                             sx={boxSx}
                         >
                             <IconButton
