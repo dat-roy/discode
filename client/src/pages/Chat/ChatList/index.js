@@ -1,6 +1,8 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { handleGetJoinedSingleRoomsAPI } from "../../../services";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
+
+import { handleGetJoinedSingleRoomsAPI, handleGetLastMessageAPI, handleGetUnreadMessagesAPI } from "../../../services";
 import { useStore } from "../../../store/hooks"
 
 import { Box, Stack } from "@mui/system";
@@ -8,20 +10,24 @@ import { Typography } from "@mui/material";
 import { Badge } from "@mui/material";
 import { IconButton } from "@mui/material";
 import { Link } from "@mui/material";
-import Divider from '@mui/material/Divider';
+import { Divider } from '@mui/material';
 import CreateIcon from '@mui/icons-material/Create';
 import SearchBar from "../../../components/SearchBar";
 import BadgeAvatar from "../../../components/BadgeAvatar";
 
-const ChatElement = ({
-    index, selected, setSelected,
-    id, username, online, avatar_url, new_messages_count,
-    last_message, sender_id, time, is_read,
-}) => {
+const ChatElement = ({ selected, setSelected, room_data }) => {
     const [state, dispatch] = useStore();
+    const navigate = useNavigate();
+
+    const {
+        room_id, last_message, unread_messages, partner_data
+    } = room_data;
+
+    const last_message_time = last_message.created_at.split(' ')[1].substr(0, 5);
+    //console.log(last_message);
 
     let mycolor = "#263238"
-    if (selected === index) {
+    if (selected === room_id) {
         mycolor = "#01579b"
     }
     return (
@@ -39,7 +45,14 @@ const ChatElement = ({
                     cursor: "pointer",
                 }
             }}
-            onClick={() => { setSelected(index) }}
+            onClick={() => {
+                navigate(`/chat/${partner_data.id}`, {
+                    state: {
+                        selected_room_id: room_id,
+                        partner_data: partner_data, 
+                    }
+                })
+            }}
         >
             <Stack
                 width="100%"
@@ -53,9 +66,9 @@ const ChatElement = ({
                     spacing={2}
                 >
                     <BadgeAvatar
-                        online={online}
-                        alt={username}
-                        src={avatar_url}
+                        online={true}
+                        alt={partner_data.username}
+                        src={partner_data.avatar_url}
                     />
                     <Stack spacing={0.4}
                         style={{
@@ -65,14 +78,14 @@ const ChatElement = ({
                         }}
                     >
                         <Typography variant="subtitle2">
-                            @{username}
+                            @{partner_data.username}
                         </Typography>
                         <Typography variant="caption" noWrap>
                             {
-                                (state.user.id === sender_id)
+                                (state.user.id === last_message.sender_id)
                                 && "You: "
                             }
-                            {last_message}
+                            {last_message.content}
                         </Typography>
                     </Stack>
                 </Stack>
@@ -81,10 +94,10 @@ const ChatElement = ({
                         variant="caption"
                         sx={{ fontWeight: 600 }}
                     >
-                        {time}
+                        {last_message_time}
                     </Typography>
 
-                    <Badge color="primary" badgeContent={new_messages_count} />
+                    <Badge color="primary" badgeContent={unread_messages.length} />
                 </Stack>
             </Stack>
         </Box>
@@ -93,36 +106,34 @@ const ChatElement = ({
 }
 
 export default function ChatList() {
+    const location = useLocation();
     const [state, dispatch] = useStore();
-    const [selected, setSelected] = useState(null);
-    const [singleRooms, setSingleRooms] = useState([
-        {
-            id: 1,
-            username: "datRoy",
-            online: true,
-            avatar_url: "",
-            new_messages_count: 0,
-            last_message: "How are you",
-            sender_id: 5,
-            time: "10:30",
-            is_read: false,
-        },
-        {
-            id: 1,
-            username: "sakura",
-            online: false,
-            avatar_url: "",
-            new_messages_count: 2,
-            last_message: "かわいい",
-            sender_id: 2,
-            time: "10:30",
-            is_read: false,
-        }
-    ])
+    const [selected, setSelected] = useState(location.state?.selected_room_id || null);
+    const [singleRooms, setSingleRooms] = useState([])
+
+    useEffect(() => {
+        setSelected(location.state?.selected_room_id || null);
+    }, [location])
+
     useEffect(() => {
         async function fetchData() {
-            const result = await handleGetJoinedSingleRoomsAPI(state.user.id);
-            let roomList = result.data.room_list || [];
+            const result = await handleGetJoinedSingleRoomsAPI(state.user.id, true);
+            const roomList = result.data.room_list || [];
+
+            for (const room of roomList) {
+                const lastMsgRes = await handleGetLastMessageAPI(state.user.id, room.room_id);
+                const unreadMsgRes = await handleGetUnreadMessagesAPI(state.user.id, room.room_id);
+                room.last_message = lastMsgRes.data.last_message || null;
+                //console.log(lastMsgRes.data.last_message || null);
+                room.unread_messages = unreadMsgRes.data.unread_messages || [];
+            }
+
+            //Sort roomList:
+            roomList.sort((a, b) => {
+                return new Date(a.last_message.created_at) - new Date(b.last_message.created_at);
+            })
+
+            //console.log(roomList);
             setSingleRooms(roomList);
         }
         fetchData();
@@ -185,16 +196,9 @@ export default function ChatList() {
                         return (
                             <ChatElement
                                 key={index}
-                                index={index}
                                 selected={selected}
                                 setSelected={setSelected}
-                                id={obj.id}
-                                username={obj.username}
-                                sender_id={obj.sender_id}
-                                last_message={obj.last_message}
-                                time={obj.time}
-                                online={obj.online}
-                                new_messages_count={obj.new_messages_count}
+                                room_data={obj}
                             />
                         )
                     })

@@ -1,3 +1,4 @@
+import React from "react";
 import { DefaultLayout } from '../layouts'
 
 import Home from '../pages/Home'

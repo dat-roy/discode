@@ -1,16 +1,19 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { useState, useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
 import io from "socket.io-client";
 //import { useStore } from "../../../store/hooks";
 
 import {
     Box, Stack, TextField,
-    Button, Typography, IconButton, InputAdornment
+    Button, Typography, IconButton, InputAdornment,
 } from "@mui/material";
 import ChatMsg from '../../ChatMsg';
 import SendIcon from '@mui/icons-material/Send';
 import VideocamIcon from '@mui/icons-material/Videocam';
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import SentimentSatisfiedRoundedIcon from '@mui/icons-material/SentimentSatisfiedRounded';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 import BadgeAvatar from "../../BadgeAvatar"
 
@@ -21,12 +24,25 @@ import { handleCreateNewSingleRoomAPI } from "../../../services";
 const serverHost = "http://localhost:3030";
 
 export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom }) {
+    const params = useParams();
+
     const socketRef = useRef();
     const latestMessage = useRef();
     let message = useRef();
 
     //const [state, dispatch] = useStore();
     const [allMessages, setAllMessages] = useState([]);
+    const [imageFile, setImageFile] = useState(null);
+    const [imageBase64, setImageBase64] = useState(null);
+
+    const scrollToBottom = () => {
+        latestMessage.current.scrollIntoView({ behavior: "smooth" });
+    }
+
+    useEffect(() => {
+        message.current.value = '';
+        setImageBase64(null);
+    }, [params])
 
     useEffect(() => {
         if (commonRoom) {
@@ -34,6 +50,7 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                 .then(response => {
                     console.log(response.data.messages);
                     setAllMessages(response.data.messages);
+                    scrollToBottom()
                 })
         }
     }, [myID, commonRoom])
@@ -55,57 +72,56 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
         }
     }, [allMessages, commonRoom]);
 
-    const scrollToBottom = () => {
-        latestMessage.current.scrollIntoView({ behavior: "smooth" });
-    }
+    const renderAllMessages = allMessages.map((obj, index) => {
+        const side = (!obj.sender_id)
+            ? "center"
+            : (obj.sender_id === myID)
+                ? "right" : "left";
 
-    const filterAllMessages = () => {
-        let lastSide = null;
-        const result = [];
-        //console.log("All messages")
-        //console.log(allMessages);
+        // let notificationStyle = null;
+        // if (side === "center") {
+        //     notificationStyle = {
+        //         textAlign: "center", 
+        //         fontStyle: "italic", 
+        //     }
+        // }
+        if (obj.message_type === MessageTypes.IMAGE) {
 
-        for (const msg of allMessages) {
-            const side = (!msg.sender_id)
-                ? "center"
-                : (msg.sender_id === myID)
-                    ? "right" : "left";
-
-            if (side !== lastSide) {
-                result.push({
-                    avatar: otherUser.avatar_url,
-                    side: side,
-                    msgArr: [],
-                })
-            }
-            result[result.length - 1].msgArr.push(msg.content)
-            lastSide = side;
         }
-        return result;
-    }
+        return (
+            <ChatMsg
+                key={index}
+                avatar={otherUser.avatar_url}
+                side={side}
+                messageObj={obj}
+            />
+        )
+    })
 
     const sendMessage = () => {
-        if (message.current.value !== null && message.current.value !== '') {
+        if ((message.current?.value && message.current?.value !== '')
+            || ((!message.current?.value || message.current?.value === '') && imageBase64)) {
             const msg = {
-                content: message.current.value,
+                message_type: (imageBase64) ? MessageTypes.IMAGE : MessageTypes.TEXT,
                 sender_id: myID,
+                room_id: commonRoom.room_id,
+                content: message.current?.value,
+                parent_message_id: null,
             }
-            if (!commonRoom) {
-                //Create new room, user_room, message, message_recipient.
-                //Join room.
-            } else {
+
+            let formData = new FormData();
+            formData.append("document", JSON.stringify(msg))
+            if (imageBase64) {
+                formData.append("file", imageFile);
+                // console.log(formData);
+            }
+
+            if (commonRoom) {
                 setAllMessages(oldMsgs => [...oldMsgs, msg]);
-                socketRef.current.emit('sendDataClient', msg, commonRoom.room_id);
-                const message_type = MessageTypes.TEXT;
-                handleSaveNewMessage({
-                    sender_id: msg.sender_id,
-                    room_id: commonRoom.room_id,
-                    content: msg.content,
-                    message_type: message_type,
-                    parent_message_id: null,
-                })
+                //socketRef.current.emit('sendDataClient', msg, commonRoom.room_id);
+                handleSaveNewMessage(formData)
                     .then(response => {
-                        console.log(response);
+                        //console.log(response);
                     })
             }
         }
@@ -113,7 +129,6 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
 
     const handleCreateNewRoom = async () => {
         const response = await handleCreateNewSingleRoomAPI(myID, otherUser.id)
-        //console.log(response); 
 
         if (response.status === 200) {
             const newRoom = response.data.room_data[0]
@@ -131,6 +146,21 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                     setCommonRoom(newRoom);
                 })
         }
+    }
+
+    const handleUploadClick = (event) => {
+        let file = event.target.files[0];
+        setImageFile(file);
+        // console.log(file);
+        const reader = new FileReader();
+        //let url = 
+        reader.readAsDataURL(file);
+
+        reader.onloadend = (e) => {
+            setImageBase64(reader.result)
+            //console.log(reader.result);
+        }
+        //console.log(url);
     }
 
     return (
@@ -167,12 +197,14 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                     >
                         <BadgeAvatar
                             online={true}
+                            alt={otherUser.username}
+                            src={otherUser.avatar_url}
                         />
                         <Stack
                             spacing={0.2}
                         >
                             <Typography variant="subtitle2">
-                                @datRoy
+                                @{otherUser.username}
                             </Typography>
                             <Typography variant="caption">
                                 Online
@@ -196,10 +228,11 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
             <Box
                 className="boxChatMessage"
                 sx={{
-                    width: "100%",
+                    width: "92%",
                     flexGrow: 1,
                     overflowX: "hidden",
                     overflowY: "auto",
+                    padding: 3,
                 }}
             >
                 <Button
@@ -210,23 +243,9 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                 >
                     Start a chat
                 </Button>
-                {
-                    filterAllMessages().map((obj, index) => {
-                        const {
-                            avatar, side, msgArr
-                        } = obj
-                        return (
-                            <ChatMsg
-                                key={index}
-                                avatar={avatar}
-                                side={side}
-                                messages={msgArr}
-                            />
-                        )
-                    })
-                }
+                {renderAllMessages}
                 <Box
-                    sx={{
+                    style={{
                         float: "left",
                         clear: "both",
                     }}
@@ -260,8 +279,18 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                         onKeyDown={(e) => {
                             if (e.key === 'Enter' && e.shiftKey === false) {
                                 sendMessage()
-                                console.log(message.current.value)
+                                //console.log(message.current?.value)
                                 message.current.value = ''
+                            }
+                        }}
+
+                        sx={{
+                            ".MuiOutlinedInput-root": {
+                                paddingTop: "1rem",
+                                flexDirection: "column"
+                            },
+                            img: {
+                                paddingRight: "1rem"
                             }
                         }}
                         InputProps={{
@@ -270,8 +299,55 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                                     color: "white",
                                 }
                             },
+                            startAdornment:
+                                <Fragment>
+                                    {
+                                        imageBase64
+                                            ? <Stack
+                                                position="relative"
+                                                style={{
+                                                    width: 180,
+                                                    paddingRight: 20,
+                                                }}
+                                            >
+                                                <img alt="uploaded" src={imageBase64} style={{ width: "100%" }} />
+                                                <IconButton
+                                                    sx={{
+                                                        position: "absolute",
+                                                        color: "yellow",
+                                                        top: -15,
+                                                        right: 4,
+                                                    }}
+                                                    component="label"
+                                                    onClick={() => setImageBase64(null)}
+                                                >
+                                                    <HighlightOffIcon />
+                                                </IconButton>
+                                            </Stack>
+                                            : <InputAdornment
+                                                position="end"
+                                                style={{
+                                                    paddingRight: 15,
+                                                }}
+                                            >
+
+                                                <IconButton
+                                                    sx={{
+                                                        color: "white",
+                                                    }}
+                                                    component="label"
+                                                >
+                                                    <input hidden accept="image/*" type="file" alt="Image Upload"
+                                                        onChange={handleUploadClick}
+                                                    />
+                                                    <PhotoCamera />
+                                                </IconButton>
+                                            </InputAdornment>
+                                    }
+                                </Fragment>,
+
                             endAdornment:
-                                <InputAdornment>
+                                <InputAdornment position="end">
                                     <IconButton
                                         sx={{
                                             color: "white",
@@ -279,7 +355,7 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                                     >
                                         <SentimentSatisfiedRoundedIcon />
                                     </IconButton>
-                                </InputAdornment>
+                                </InputAdornment>,
                         }}
                     />
                     <Button

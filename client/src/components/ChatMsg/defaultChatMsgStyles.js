@@ -1,6 +1,6 @@
 export default ({ palette, spacing }) => {
     //console.log(palette)
-    const radius = spacing(2.5);
+    const radius = spacing(2.2);
     const size = spacing(4);
     return {
         avatar: {
@@ -25,31 +25,47 @@ export default ({ palette, spacing }) => {
             fontSize: '14px',
         },
         left: {
-            borderTopRightRadius: radius,
-            borderBottomRightRadius: radius,
+            // borderTopRightRadius: radius,
+            // borderBottomRightRadius: radius,
+            borderRadius: radius,
             backgroundColor: palette.info.light,
             color: palette.info.contrastText,
         },
         right: {
-            borderTopLeftRadius: radius,
-            borderBottomLeftRadius: radius,
+            // borderTopLeftRadius: radius,
+            // borderBottomLeftRadius: radius,
+            borderRadius: radius,
             backgroundColor: palette.primary.main,
             color: palette.primary.contrastText,
         },
-        leftFirst: {
-            borderTopLeftRadius: radius,
-        },
-        leftLast: {
-            borderBottomLeftRadius: radius,
-        },
-        rightFirst: {
-            borderTopRightRadius: radius,
-        },
-        rightLast: {
-            borderBottomRightRadius: radius,
-        },
+        // leftFirst: {
+        //     borderTopLeftRadius: radius,
+        // },
+        // leftLast: {
+        //     borderBottomLeftRadius: radius,
+        // },
+        // rightFirst: {
+        //     borderTopRightRadius: radius,
+        // },
+        // rightLast: {
+        //     borderBottomRightRadius: radius,
+        // },
         center: {
             fontStyle: "italic", 
+        },
+        leftCaption: {
+            borderRadius: 0, 
+            padding: 0,
+        }, 
+        rightCaption: {
+            borderRadius: 0, 
+            padding: 0,
+        },
+        leftCard: {
+            float: "left", 
+        },
+        rightCard: {
+            float: "right", 
         }
     };
 };

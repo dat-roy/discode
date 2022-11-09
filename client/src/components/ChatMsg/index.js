@@ -4,15 +4,20 @@ import cx from 'clsx';
 import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import { CardActionArea } from '@mui/material';
 
 import withStyles from '@material-ui/core/styles/withStyles';
 import defaultChatMsgStyles from './defaultChatMsgStyles';
+import { MessageTypes } from '../../types/db.type';
 
 const ChatMsg = withStyles(defaultChatMsgStyles, { name: 'ChatMsg' })(props => {
     const {
         classes,
         avatar,
-        messages,
+        messageObj,
         side,
         GridContainerProps,
         GridItemProps,
@@ -20,16 +25,17 @@ const ChatMsg = withStyles(defaultChatMsgStyles, { name: 'ChatMsg' })(props => {
         getTypographyProps,
     } = props;
 
-    const attachClass = index => {
-        if (index === 0) {
-            return classes[`${side}First`];
-        }
-        if (index === messages.length - 1) {
-            return classes[`${side}Last`];
-        }
-        return '';
-    };
-    
+
+    const {
+        id,
+        //sender_id, 
+        content,
+        message_type,
+        //parent_message_id, 
+        //created_at, 
+        message_attachments,
+    } = messageObj;
+
     return (
         <Grid
             container
@@ -47,26 +53,85 @@ const ChatMsg = withStyles(defaultChatMsgStyles, { name: 'ChatMsg' })(props => {
                 </Grid>
             )}
             <Grid item xs={8}>
-                {messages.map((msg, i) => {
-                    const TypographyProps = getTypographyProps(msg, i, props);
+                {(() => {
+                    const TypographyProps = getTypographyProps(content, id, props);
+                    if (message_type === MessageTypes.IMAGE) {
+                        if (content === '') {
+                            return <div key={id} className={classes[`${side}Row`]}>
+                                <Card
+                                    style={{
+                                        borderRadius: 20,
+                                        maxWidth: 400,
+                                    }}
+                                    className={cx(
+                                        classes[`${side}Card`]
+                                    )}
+                                >
+                                    <CardActionArea>
+                                        <CardMedia
+                                            component="img"
+                                            src={message_attachments}
+                                            alt="green iguana"
+                                        />
+                                    </CardActionArea>
+                                </Card>
+                            </div>
+                        }
+                        return (
+                            <div key={id} className={classes[`${side}Row`]}>
+                                <Card
+                                    style={{
+                                        borderRadius: 20,
+                                        maxWidth: 400,
+                                    }}
+                                    className={cx(
+                                        classes[`${side}Card`]
+                                    )}
+                                >
+                                    <CardActionArea>
+                                        <CardContent
+                                            className={cx(
+                                                classes[side],
+                                                classes[`${side}Caption`]
+                                            )}
+                                        >
+                                            <Typography
+                                                variant="body3"
+                                                className={cx(
+                                                    classes.msg,
+                                                    TypographyProps.className
+                                                )}
+                                            >
+                                                {content}
+                                            </Typography>
+                                        </CardContent>
+                                        <CardMedia
+                                            component="img"
+                                            src={message_attachments}
+                                            alt="green iguana"
+                                        />
+                                    </CardActionArea>
+                                </Card>
+                            </div>
+                        )
+                    }
                     return (
                         // eslint-disable-next-line react/no-array-index-key
-                        <div key={msg.id || i} className={classes[`${side}Row`]}>
+                        <div key={id} className={classes[`${side}Row`]}>
                             <Typography
                                 align={'left'}
                                 {...TypographyProps}
                                 className={cx(
                                     classes.msg,
                                     classes[side],
-                                    attachClass(i),
                                     TypographyProps.className
                                 )}
                             >
-                                {msg}
+                                {content}
                             </Typography>
                         </div>
                     );
-                })}
+                })()}
             </Grid>
         </Grid>
     );
@@ -74,7 +139,7 @@ const ChatMsg = withStyles(defaultChatMsgStyles, { name: 'ChatMsg' })(props => {
 
 ChatMsg.propTypes = {
     avatar: PropTypes.string,
-    messages: PropTypes.arrayOf(PropTypes.string),
+    messageType: PropTypes.string,
     side: PropTypes.oneOf(['left', 'right', 'center']),
     GridContainerProps: PropTypes.shape({}),
     GridItemProps: PropTypes.shape({}),
@@ -83,7 +148,6 @@ ChatMsg.propTypes = {
 };
 ChatMsg.defaultProps = {
     avatar: '',
-    messages: [],
     side: 'left',
     GridContainerProps: {},
     GridItemProps: {},

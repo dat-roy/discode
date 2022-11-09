@@ -23,7 +23,7 @@ export default function Register() {
             event.preventDefault();
             const data = new FormData(event.currentTarget);
             
-            console.log(data.get("password") + " " +  data.get("confirmPassword"));
+            //console.log(data.get("password") + " " +  data.get("confirmPassword"));
 
             if (data.get("password") === data.get("confirmPassword")) {
                 setLoading(true);

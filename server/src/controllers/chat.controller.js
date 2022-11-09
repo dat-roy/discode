@@ -1,11 +1,14 @@
 const UserRoom = require('../models/user_room.model')
 const Room = require('../models/room.model')
+const Messages = require('../models/messages.model')
+
+const { pick } = require('../utils/object-handler');
 const { RoomTypes } = require('../types/db.type')
 
 class chatController {
     //[GET] /api/chat/get/room/:id
     async getRoomByID(req, res, next) {
-        const room_id = req.params.id;
+        const room_id = parseInt(req.params.id);
         try {
             const room_data = await Room.findOne({
                 where: {
@@ -25,22 +28,82 @@ class chatController {
         }
     }
 
+    //[POST] /api/chat/get/last-message
+    async getLastMessage(req, res, next) {
+        const user_id = parseInt(req.body.user_id);
+        const room_id = parseInt(req.body.room_id);
+        try {
+            const result = await Messages.fetchLastMessage({
+                user_id: user_id,
+                room_id: room_id,
+            })
+            return res.status(200).json({
+                message: "Fetch last message successfully",
+                last_message: result[0],
+            })
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({
+                message: "Internal Server Error",
+                error: err.message,
+            })
+        }
+    }
+
+    //[POST] /api/chat/get/unread-messages
+    async getUnreadMessages(req, res, next) {
+        const user_id = parseInt(req.body.user_id);
+        const room_id = parseInt(req.body.room_id);
+        try {
+            const result = await Messages.fetchUnreadMessages({
+                user_id: user_id,
+                room_id: room_id,
+            })
+            return res.status(200).json({
+                message: "Fetch unread messages successfully",
+                unread_messages: result,
+            })
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({
+                message: "Internal Server Error",
+                error: err.message,
+            })
+        }
+    }
+
     //[POST] /api/chat/get/joined/single-rooms
     async getJoinedRooms(req, res, next) {
-        const { user_id } = req.body;
+        const { user_id, fetch_partner_data } = req.body;
 
         try {
             const single_room_list = await UserRoom.getSingleRoomsByUserID({
                 user_id: user_id,
             })
-            return res.status(200).json({
-                message: "Get joined rooms successfully",
-                room_list: single_room_list,
-            })
+            if (fetch_partner_data) {
+                for (const room of single_room_list) {
+                    let partner_data = await UserRoom.getPartnerData({
+                        user_id: user_id,
+                        room_id: room.room_id
+                    })
+                    if (partner_data) {
+                        room.partner_data = pick(partner_data, "id", "email", "username", "gender", "nation", "avatar_url");
+                    }
+                }
+                return res.status(200).json({
+                    message: "Get joined rooms successfully",
+                    room_list: single_room_list,
+                })
+            } else {
+                return res.status(200).json({
+                    message: "Get joined rooms successfully",
+                    room_list: single_room_list,
+                })
+            }
         } catch (err) {
-            console.log(err.message);
+            console.log(err);
             res.status(500).json({
-                message: "Internal Server Error", 
+                message: "Internal Server Error",
                 error: err.message,
             })
         }
@@ -49,7 +112,7 @@ class chatController {
     //[POST] /api/chat/get/common/single-rooms
     async getCommonSingleRooms(req, res, next) {
         //Note: `my_id`, `other_id` are guaranteed to be valid.
-        let {my_id, other_id} = req.body;
+        let { my_id, other_id } = req.body;
 
         try {
             const my_single_rooms = await UserRoom.getSingleRoomsByUserID({
@@ -58,16 +121,16 @@ class chatController {
 
             if (!my_single_rooms || my_single_rooms.length === 0) {
                 return res.status(200).json({
-                    message: "No room found", 
+                    message: "No room found",
                     //common_room: [], 
                 })
-            } 
+            }
 
             const common_room = []
             for (const room of my_single_rooms) {
                 const result = await UserRoom.findOne({
-                    where: 
-                        `user_id=${other_id} AND room_id=${room.room_id}`, 
+                    where:
+                        `user_id=${other_id} AND room_id=${room.room_id}`,
                 })
                 if (result) {
                     common_room.push(room);
@@ -76,21 +139,21 @@ class chatController {
 
             if (common_room.length === 0) {
                 return res.status(200).json({
-                    message: "There's no common room", 
+                    message: "There's no common room",
                     //common_room: [], 
                 })
             } else {
                 return res.status(200).json({
-                    message: "Get common single rooms successfully", 
-                    note: "common_room is expected to have only one element", 
-                    common_room: common_room, 
+                    message: "Get common single rooms successfully",
+                    note: "common_room is expected to have only one element",
+                    common_room: common_room,
                 })
             }
         } catch (err) {
             console.log(err);
             return res.status(500).json({
-                message: "Internal Server Error", 
-                error: err.message, 
+                message: "Internal Server Error",
+                error: err.message,
             })
         }
     }
@@ -108,10 +171,10 @@ class chatController {
                 throw new Error("Same user id")
             }
             const result = await Room.create({
-                channel_id: channel_id, 
-                type: type, 
-                title: title, 
-                removable: removable, 
+                channel_id: channel_id,
+                type: type,
+                title: title,
+                removable: removable,
             })
             if (result.affectedRows === 0) {
                 throw new Error("DB server error: no row affected");
@@ -119,31 +182,31 @@ class chatController {
                 //Create two user_room record.
                 const room_id = result.insertId;
                 const savingMyID = await UserRoom.create({
-                    user_id: my_id, 
-                    room_id: room_id, 
+                    user_id: my_id,
+                    room_id: room_id,
                 })
 
                 const savingOtherID = await UserRoom.create({
-                    user_id: other_id, 
-                    room_id: room_id, 
+                    user_id: other_id,
+                    room_id: room_id,
                 })
 
                 if (!savingMyID.affectedRows || !savingOtherID.affectedRows) {
                     throw new Error("DB server error: no row affected")
                 } else {
                     return res.status(200).json({
-                        message: "Create a new single room successfully", 
-                        room_data:[{
+                        message: "Create a new single room successfully",
+                        room_data: [{
                             room_id: room_id,
-                            title: title, 
-                            channel_id: channel_id, 
-                            type: type, 
-                            removable: removable, 
+                            title: title,
+                            channel_id: channel_id,
+                            type: type,
+                            removable: removable,
                         }]
                     })
                 }
             }
-        } catch(err) {
+        } catch (err) {
             console.log(err);
             return res.status(500).json({
                 message: "Internal Server Error",
