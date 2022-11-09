@@ -2,13 +2,13 @@ const NotifyReceiver = require('../models/notification_receiver.model');
 const NotifyObject = require('../models/notification_object.model');
 const PostLikes = require('../models/post_likes.model');
 const PostComments = require('../models/post_comments.model');
-const InviteChannel = require('../models/channels.model');
+const Channels = require('../models/channels.model');
 const Posts = require('../models/posts.model');
 const Users = require('../models/users.model');
 
 class notificationController {
     async createPostLikeNotify(req, res, next) {
-        const {post_id, user_id} = req.body;
+        const {post_id, user_id, author_id} = req.body;
 
         try {
             const checkPostIdExists = await Posts.checkExistence({where: {id: post_id}});
@@ -30,7 +30,7 @@ class notificationController {
                     message: "Like Post already in database "
                 })
             } else {
-                const result = PostLikes.create({
+                const result = await PostLikes.create({
                     post_id: post_id,
                     user_id: user_id
                 })
@@ -42,25 +42,158 @@ class notificationController {
                         notification_type: 'like',
                         entity_id: entity_id,
                     })
-
-                    return res.status(200).json({
-                        message: "Create Like notification successfully",
-                        result: createNotify
-                    })
+                    
+                    if (createNotify.affectedRows !== 0) {
+                        const notifyID = createNotify.insertId;
+                        
+                        // create notify in author_id
+                        const createNotifyAuthor = await NotifyReceiver.createNotificationReceiver({
+                            notification_object_id: notifyID,
+                            receiver_id: author_id,
+                        })
+                        
+                        return res.status(200).json({
+                            message: "Send notification successfully",
+                        })
+                    }
                 }
             }
             
         } catch (error) {
-            console.log(err.message);
+            console.log(error.message);
             return res.status(500).json({
                 message: "An internal error from server"
-            })
+            });
         }
     }
-    async getNotification(req, res, next) {
-        const {post_id, sender_id, content, parent_comment_id, notification_type} = req.body;
 
+    async createPostCommentNotify(req, res, next) {
+        let {author_id, post_id, sender_id, content, parent_comment_id} = req.body;
+        
+        try {
+            const checkPostIdExists = await Posts.checkExistence({where: {id: post_id}});
+            const checkSenderIdExists = await Users.checkExistence({where: {id: sender_id}});
+            const checkParentCmtIDExists = await PostComments.checkExistence({where: {id: parent_comment_id}});
+            if (!checkPostIdExists) {
+                return res.status(404).json({
+                    message: "Can not detect postID"
+                })
+            } else if (!checkSenderIdExists) {
+                return res.status(404).json({
+                    message: "Can not detect userID"
+                })
+            } else {
+                // Check parent_comment_id is valid or not
+                if (!checkParentCmtIDExists) {
+                    parent_comment_id = null;
+                }
+                // Insert data in database
+                const insertCommentInPost = await PostComments.create({
+                    post_id: post_id,
+                    sender_id: sender_id,
+                    content: content,
+                    parent_comment_id: parent_comment_id,
+                })
+                console.log(insertCommentInPost);
+                // check insert data successfully 
+                if (insertCommentInPost.affectedRows !== 0) {
+                    const entity_id = insertCommentInPost.insertId;
+                    
+                    const createNotify = await NotifyObject.createNotification({
+                        notification_type: 'comment',
+                        entity_id: entity_id,
+                    })
+                    // check insert data in dtb successfully 
+                    if (createNotify.affectedRows !== 0) {
+                        const notifyID = createNotify.insertId;
+                        
+                        // create notify in author_id
+                        const createNotifyAuthor = await NotifyReceiver.createNotificationReceiver({
+                            notification_object_id: notifyID,
+                            receiver_id: author_id,
+                        })
+                        
+                        // check parent_comment_id is not null and diffrent author_id
+                        if (parent_comment_id !== author_id && checkParentCmtIDExists) {
+                            //create notify in parent_comment_id
+                            const createNotifyReceiver = await NotifyReceiver.createNotificationReceiver({
+                                notification_object_id: notifyID,
+                                receiver_id: parent_comment_id,
+                            })
+                        }
+
+                        return res.status(200).json({
+                            message: "Send notification successfully",
+                        })
+                    }
+                }
+            }
+
+        } catch (error) {
+            console.log(error.message);
+            return res.status(500).json({
+                message: "An internal error from server"
+            });
+        }
     }
+
+    async createInviteUserNotify(req, res, next) {
+        const {userInvite_id, channel_id, admin_id} = req.body;
+
+        try {
+            const checkUserInviteIDExists = await Users.checkExistence({where: {id: userInvite_id}});
+
+            //check channel_id and admin_id 
+            const checkValidChannelInvite = await Channels.checkExistence({
+                where:
+                    `id = ${channel_id} AND admin_id = ${admin_id}`
+            })
+            if (!checkUserInviteIDExists) {
+                return res.status(404).json({
+                    message: "Invite User not exists"
+                })
+            } else if (!checkValidChannelInvite) {
+                return res.status(404).json({
+                    message: "Invalid channel_id"
+                })
+            } else {
+                const checkAlreadyInvite = await NotifyObject.checkExistence({
+                    where:
+                        `entity_id = ${channel_id} AND notification_type = 'invite'`
+                })
+    
+                if (checkAlreadyInvite) {
+                    return res.status(404).json({
+                        message: "Already Invite"
+                    })
+                } else {
+                    const createNotifyInvite = await NotifyObject.createNotification({
+                        notification_type: 'invite',
+                        entity_id: channel_id,
+                    })
+    
+                    if (createNotifyInvite.affectedRows !== 0) {
+                        const notifyID = createNotifyInvite.insertId;
+                        
+                        // create notify in userInvite_Id
+                        const createInviteUserNotify = await NotifyReceiver.createNotificationReceiver({
+                            notification_object_id: notifyID,
+                            receiver_id: userInvite_id,
+                        })
+                        return res.status(200).json({
+                            message: "Send notification successfully",
+                        })
+                    }
+                }
+            }
+        } catch (error) {
+            console.log(error.message);
+            return res.status(500).json({
+                message: "An internal error from server"
+            });
+        }
+    }
+
 }
 
 module.exports = new notificationController();

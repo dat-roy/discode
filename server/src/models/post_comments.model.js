@@ -9,11 +9,13 @@ class PostComments extends Model {
 
     async create(params) {
         let post_id = mysql.escape(params.post_id);
-        let user_id = mysql.escape(params.user_id);
+        let sender_id = mysql.escape(params.sender_id);
         let content = mysql.escape(params.content);
+        let parent_comment_id = mysql.escape(params.parent_comment_id);
 
-        let sql = ``;
-        //console.log(sql);
+        let sql = `INSERT INTO ${this.tableName}(post_id, sender_id, content, parent_comment_id) 
+        VALUES(${post_id}, ${sender_id}, ${content}, ${parent_comment_id})`;
+        console.log(sql);
         return await dbConnection.query(sql);
     }
 
