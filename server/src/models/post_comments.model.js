@@ -14,7 +14,7 @@ class PostComments extends Model {
         let parent_comment_id = mysql.escape(params.parent_comment_id);
 
         let sql = `INSERT INTO ${this.tableName}(post_id, sender_id, content, parent_comment_id) 
-        VALUES(${post_id}, ${sender_id}, "${content}", ${parent_comment_id})`;
+        VALUES(${post_id}, ${sender_id}, ${content}, ${parent_comment_id})`;
         console.log(sql);
         return await dbConnection.query(sql);
     }

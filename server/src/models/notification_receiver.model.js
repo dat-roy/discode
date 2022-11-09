@@ -13,7 +13,6 @@ class NotificationReceiver extends Model {
         
         let sql = `INSERT INTO ${this.tableName}(notification_object_id, receiver_id, status)
         VALUES(${notification_object_id}, ${receiver_id}, 0)`;
-        console.log(receiver_id);
         return dbConnection.query(sql);
     }
 }
