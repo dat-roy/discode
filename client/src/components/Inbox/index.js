@@ -1,12 +1,13 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useStore } from "../../store/hooks";
 import InnerInbox from "./InnerInbox";
 
 import { handleGetCommonSingleRoomsAPI, handleGetUserByIdAPI } from "../../services";
 
 export default function Inbox() {
+    const location = useLocation();
     const navigate = useNavigate();
     const params = useParams();
 
@@ -20,11 +21,17 @@ export default function Inbox() {
     // console.log("Other id: " + otherID);
 
     useEffect(() => {
-        otherID = parseInt(params.id);
-        setOtherUser(null);
-        setCommonRoom(null);
-        //console.log("Params: " + params.id);
-    }, [params])
+        setOtherUser(location.state?.partner_data);
+        async function checkCommonSingleRoom() {
+            const response = await handleGetCommonSingleRoomsAPI(myID, otherID);
+            if (response) {
+                if (response.data.common_room) {
+                    setCommonRoom(response?.data?.common_room[0])
+                }
+            }
+        }
+        checkCommonSingleRoom()
+    }, [params, myID, otherID, location.state?.partner_data])
 
     useEffect(() => {
         if (otherID && otherID !== myID && !otherUser) {
@@ -49,7 +56,6 @@ export default function Inbox() {
             }
             checkCommonSingleRoom();
         }
-        console.log("change otherID")
     }, [myID, otherID, otherUser, navigate, commonRoom])
 
     if (!otherID || otherID === myID) {

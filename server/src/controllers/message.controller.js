@@ -1,8 +1,15 @@
+const url = require('node:url');
+
 const Room = require('../models/room.model')
 const Users = require('../models/users.model')
 const UserRoom = require('../models/user_room.model')
 const Messages = require('../models/messages.model')
 const MessageRecipients = require('../models/message_recipients.model')
+const MessageAttachments = require('../models/message_attachments.model')
+const { MessageTypes } = require('../types/db.type')
+const dotenv = require('dotenv');
+dotenv.config();
+const backendHostname = process.env.BACKEND_HOST;
 
 class messageController {
     //[POST] /api/message/get/old
@@ -24,8 +31,8 @@ class messageController {
                 return res.status(200).json({
                     message: "User not found",
                 })
-            } 
-            
+            }
+
             if (checkRoomIdExists && checkUserIdExists) {
                 //check if user_id joined room_id or not.
                 const userRoomId = await UserRoom.findOne({
@@ -37,7 +44,7 @@ class messageController {
                         message: "User does not join this room",
                     })
                 } else {
-                    //console.log(userRoomId);
+                    //find all messages_id 
                     const allMessagesID = await MessageRecipients.findAll({
                         attributes: [
                             "message_id",
@@ -54,6 +61,15 @@ class messageController {
                             }
                         })
                         if (message) {
+                            message.message_attachments = null;
+                            if (message.message_type == MessageTypes.IMAGE) {
+                                const messageAttachmentResult = await MessageAttachments.findOne({
+                                    where: {
+                                        message_id: messageID.message_id,
+                                    }
+                                })
+                                message.message_attachments = url.parse(backendHostname + '/' + messageAttachmentResult?.attachment_content).href
+                            }
                             allMessages.push(message);
                         }
                     }
@@ -75,41 +91,52 @@ class messageController {
 
     //[POST] /api/message/save
     async saveNewMessage(req, res, next) {
-        const {
-            sender_id, room_id, content, message_type, parent_message_id,
-        } = req.body;
-
         //TODO:
         // + check if sender_id, room_id exist or not.
         // + check if sender_id is in room or not.
         // + check if parent_message_id exists or not. (if not null)
         // + check if message_type is valid or not.
 
-        try {
-            //Save to database:
-            //Save `messages`
-            //Find all user_room -> save `message_recipient` (including sender);
+        const {
+            sender_id, room_id, content, parent_message_id,
+        } = JSON.parse(req.body.document);
 
-            const recipientsList = await UserRoom.findAll({
-                where: {
-                    room_id: room_id,
-                }
-            })
+        const message_type = (req.file) ? MessageTypes.IMAGE : MessageTypes.TEXT;
+        const file_path = (req.file) ? path.join('upload', 'msg', req.file.filename) : null;
+        console.log(file_path);
+
+        try {
+
+            //Check recipients existence.
+            const recipientsList = await UserRoom.findAll({ where: { room_id: room_id } })
 
             if (!recipientsList || recipientsList.length === 0) {
                 throw new Error("DB error: No recipient found");
             } else {
+                //Save new message
                 const messagesSaving = await Messages.create({
                     sender_id: sender_id,
                     content: content,
                     message_type: message_type,
                     parent_message_id: parent_message_id,
                 })
-
                 if (messagesSaving.affectedRows === 0) {
                     throw new Error("DB error: No row affected");
                 }
-                
+
+                //Save message attachment if message types != TEXT
+                if (req.file && message_type === MessageTypes.IMAGE) {
+                    const attachmentSaving = await MessageAttachments.create({
+                        message_id: messagesSaving.insertId,
+                        attachment_content: file_path,
+                    })
+                    if (attachmentSaving.affectedRows === 0) {
+                        throw new Error("DB error: No row affected");
+                    }
+                }
+
+                //Insert records to all recipients (include sender) 
+                //is_read = true (if be sender), false (otherwise)
                 for (const recipient of recipientsList) {
                     const is_read = (recipient.user_id === sender_id) ? true : false;
                     const messageRecipientsSaving = await MessageRecipients.create({
@@ -122,7 +149,7 @@ class messageController {
                         throw new Error("DB error: No row affected")
                     }
                 }
-    
+
                 return res.status(200).json({
                     message: "Save new message successfully",
                 })

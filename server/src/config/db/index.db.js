@@ -8,6 +8,7 @@ async function query(sql, params) {
         user: "root",
         password: "",
         database: "discode",
+        dateStrings: true,
     });
 
     // const connection = await mysql.createConnection({

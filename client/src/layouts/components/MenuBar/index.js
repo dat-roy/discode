@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 
 //import { useTheme } from "@mui/material"
 import { Box, Stack } from '@mui/material';
@@ -20,7 +20,8 @@ const logoLink = process.env.PUBLIC_URL + "assets/img/github_logo.svg";
 
 export default function MenuBar() {
     //const theme = useTheme();
-    const [selected, setSelected] = useState(0);
+    const location = useLocation();
+    const [selected, setSelected] = useState('/' + location.pathname.split('/')[1]);
 
     const NavButtons = [
         {
@@ -93,7 +94,7 @@ export default function MenuBar() {
                     NavButtons.map((obj, index) => {
                         let boxSx = {};
                         let iconSx = {}
-                        if (index === selected) {
+                        if (obj.path === selected) {
                             boxSx = {
                                 bgcolor: "#3f51b5", 
                                 borderRadius: 3.5,
@@ -110,7 +111,7 @@ export default function MenuBar() {
                                 size="large" color="inherit"
                                 component={Link} to={obj.path}
                                 sx={iconSx}
-                                onClick={() => {setSelected(index)}}
+                                onClick={() => {setSelected(obj.path)}}
                             >
                                 {obj.badge
                                     ? <Badge badgeContent={obj.badge} color="error">

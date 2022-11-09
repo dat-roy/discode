@@ -23,7 +23,8 @@ const ChatElement = ({ selected, setSelected, room_data }) => {
         room_id, last_message, unread_messages, partner_data
     } = room_data;
 
-    const last_message_time = last_message.created_at.split('T')[1].substr(0, 5);
+    const last_message_time = last_message.created_at.split(' ')[1].substr(0, 5);
+    //console.log(last_message);
 
     let mycolor = "#263238"
     if (selected === room_id) {
@@ -48,6 +49,7 @@ const ChatElement = ({ selected, setSelected, room_data }) => {
                 navigate(`/chat/${partner_data.id}`, {
                     state: {
                         selected_room_id: room_id,
+                        partner_data: partner_data, 
                     }
                 })
             }}
@@ -122,6 +124,7 @@ export default function ChatList() {
                 const lastMsgRes = await handleGetLastMessageAPI(state.user.id, room.room_id);
                 const unreadMsgRes = await handleGetUnreadMessagesAPI(state.user.id, room.room_id);
                 room.last_message = lastMsgRes.data.last_message || null;
+                //console.log(lastMsgRes.data.last_message || null);
                 room.unread_messages = unreadMsgRes.data.unread_messages || [];
             }
 
