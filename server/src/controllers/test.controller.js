@@ -9,7 +9,11 @@ class testController {
     //[POST] /api/test/post
     //Used for testing purpose only.
     async testPost(req, res, next) {
-
+        const {html} = req.body;
+        //console.log(html);
+        return res.json({
+            html: html
+        })
     }
 }
 

@@ -51,6 +51,7 @@ class Model {
     async checkExistence(options) {
         let whereClause = await this.getWhereClause(options);
         let sql = `SELECT EXISTS(SELECT * FROM ${this.tableName} ${whereClause}) AS existence`;
+        console.log(sql);
         return (await dbConnection.query(sql))[0].existence;
     }
 }

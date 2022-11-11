@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Link, useLocation } from "react-router-dom"
 
 //import { useTheme } from "@mui/material"
@@ -22,6 +22,10 @@ export default function MenuBar() {
     //const theme = useTheme();
     const location = useLocation();
     const [selected, setSelected] = useState('/' + location.pathname.split('/')[1]);
+
+    useEffect(() => {
+        setSelected('/' + location.pathname.split('/')[1]);
+    }, [location])
 
     const NavButtons = [
         {

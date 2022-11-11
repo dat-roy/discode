@@ -3,6 +3,31 @@ const Users = require('../models/users.model');
 const UserChannel = require('../models/user_channel.model');
 
 class channelController {
+    //[GET] /api/channel/:id 
+    async getChannelById(req, res, next) {
+        const channel_id = parseInt(req.params.id);
+        try {
+            const channelData = await Channel.findOne({
+                where: {
+                    id: channel_id, 
+                }
+            })
+            if (!channelData) {
+                throw new Error("DB server error");
+            } 
+            return res.status(200).json({
+                message: "Get channel successfully", 
+                channel: channelData, 
+            })
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({
+                message: "Internal Server Error", 
+                error: err.message, 
+            })
+        }
+    }
+
     //[POST] /api/channel/create
     async createChannel(req, res, next) {
         let { user_id, title, description, avatar_url } = req.body;
@@ -146,10 +171,10 @@ class channelController {
             } else {
                 //Add member to channel
                 const result = await UserChannel.create({
-                    user_id: req_id, 
-                    channel_id: channel_id, 
+                    user_id: req_id,
+                    channel_id: channel_id,
                 });
-                
+
                 if (result.affectedRows === 0) {
                     throw new Error("Database server error")
                 }
@@ -162,7 +187,7 @@ class channelController {
             console.log(error.message);
             return res.status(500).json({
                 message: "An internal error from server",
-                error: error.message, 
+                error: error.message,
             })
         }
     }
@@ -237,6 +262,28 @@ class channelController {
             console.log(error.message);
             return res.status(500).json({
                 message: "An internal error from server",
+            })
+        }
+    }
+
+    //[POST] /api/channel/get/joined-channels
+    async getJoinedChannels(req, res, next) {
+        const user_id = parseInt(req.body.user_id);
+        try {
+            const result = await UserChannel.findAll({
+                where: {
+                    user_id: user_id,
+                }
+            })
+            return res.status(200).json({
+                message: "Get all joined channels successfully", 
+                joined_channels: result, 
+            })
+        } catch(err) {
+            console.log(err);
+            return res.status(500).json({
+                message: "Internal Server Error", 
+                error: err.message, 
             })
         }
     }

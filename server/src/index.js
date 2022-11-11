@@ -31,9 +31,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 //[cookie-parser] Parse cookie header
 app.use(cookieParser());
 //[body-parser] Parse request object as a JSON object: application/json
-app.use(bodyParser.json());
+app.use(bodyParser.json({
+    extended: true,
+    limit: '50mb'
+}));
 //[body-parser] Parse urlencoded bodies: application/xwww-
 app.use(bodyParser.urlencoded({ extended: true }));
+
 
 initRoutes(app);
 io.on('connection', (socket) => {

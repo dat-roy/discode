@@ -5,6 +5,7 @@ import { useStore } from "../../store/hooks";
 import Box from '@mui/material/Box';
 import { Button, TextField, Typography } from "@mui/material";
 import { userActions } from "../../store/actions/userActions";
+import PageNotFound from "../PageNotFound";
 
 export default function Register() {
     const navigate = useNavigate();
@@ -13,7 +14,7 @@ export default function Register() {
     const [state, dispatch] = useStore();
     
     if (! location.state) {
-        return <Navigate replace to="/err/invalid-email"/>
+        return <PageNotFound />
     }
     const { email } = location.state || null;
     const { credential } = location.state || null;
