@@ -102,7 +102,9 @@ const ChatMsg = withStyles(defaultChatMsgStyles, { name: 'ChatMsg' })(props => {
                                                     TypographyProps.className
                                                 )}
                                             >
-                                                {content}
+                                                <pre style={{ fontFamily: 'inherit', margin: 0 }}>
+                                                    {content}
+                                                </pre>
                                             </Typography>
                                         </CardContent>
                                         <CardMedia
@@ -127,7 +129,9 @@ const ChatMsg = withStyles(defaultChatMsgStyles, { name: 'ChatMsg' })(props => {
                                     TypographyProps.className
                                 )}
                             >
-                                {content}
+                                <pre style={{ fontFamily: 'inherit', margin: 0 }}>
+                                    {content}
+                                </pre>
                             </Typography>
                         </div>
                     );

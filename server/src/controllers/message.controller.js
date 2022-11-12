@@ -1,5 +1,5 @@
 const url = require('node:url');
-
+const path = require('path')
 const Room = require('../models/room.model')
 const Users = require('../models/users.model')
 const UserRoom = require('../models/user_room.model')
@@ -103,7 +103,7 @@ class messageController {
 
         const message_type = (req.file) ? MessageTypes.IMAGE : MessageTypes.TEXT;
         const file_path = (req.file) ? path.join('upload', 'msg', req.file.filename) : null;
-        console.log(file_path);
+        //console.log(file_path);
 
         try {
 

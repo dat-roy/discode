@@ -85,7 +85,10 @@ const ChatElement = ({ selected, setSelected, room_data }) => {
                                 (state.user.id === last_message.sender_id)
                                 && "You: "
                             }
-                            {last_message.content}
+                            {
+                                (last_message.content) 
+                                ? last_message.content : "[Image]"
+                            }
                         </Typography>
                     </Stack>
                 </Stack>

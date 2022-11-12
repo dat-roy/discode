@@ -14,9 +14,8 @@ export default ({ palette, spacing }) => {
             textAlign: 'right',
         },
         msg: {
-            padding: spacing(1, 2),
+            padding: spacing(0.8, 2.1),
             borderRadius: 4,
-            marginBottom: 4,
             display: 'inline-block',
             wordBreak: 'break-word',
             fontFamily:

@@ -15,6 +15,9 @@ import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import SentimentSatisfiedRoundedIcon from '@mui/icons-material/SentimentSatisfiedRounded';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
+import data from '@emoji-mart/data'
+import Picker from '@emoji-mart/react'
+
 import BadgeAvatar from "../../BadgeAvatar"
 
 import { handleGetOldMessages, handleSaveNewMessage } from "../../../services/message";
@@ -34,6 +37,7 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
     const [allMessages, setAllMessages] = useState([]);
     const [imageFile, setImageFile] = useState(null);
     const [imageBase64, setImageBase64] = useState(null);
+    const [emojiMartDisplay, setEmojiMartDisplay] = useState(false);
 
     const scrollToBottom = () => {
         latestMessage.current.scrollIntoView({ behavior: "smooth" });
@@ -48,7 +52,7 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
         if (commonRoom) {
             handleGetOldMessages(myID, commonRoom.room_id)
                 .then(response => {
-                    console.log(response.data.messages);
+                    //console.log(response.data.messages);
                     setAllMessages(response.data.messages);
                     scrollToBottom()
                 })
@@ -58,19 +62,23 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
     useEffect(() => {
         if (commonRoom) {
             socketRef.current = io.connect(serverHost, { reconnection: false });
-            socketRef.current.emit('joinRoom', commonRoom.room_id);
+            socketRef.current.emit('joinChatRoom', commonRoom.room_id);
+
+            return () => {
+                socketRef.current.disconnect();
+            };
         }
     }, [commonRoom])
 
     useEffect(() => {
         if (commonRoom) {
             //Add a new message to oldMsg
-            socketRef.current.on('sendDataServer', newMsg => {
+            socketRef.current.on('receiveChatMessage', newMsg => {
                 setAllMessages(oldMsgs => [...oldMsgs, newMsg]);
                 scrollToBottom()
             })
         }
-    }, [allMessages, commonRoom]);
+    }, [commonRoom]);
 
     const renderAllMessages = allMessages.map((obj, index) => {
         const side = (!obj.sender_id)
@@ -117,11 +125,14 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
             }
 
             if (commonRoom) {
-                setAllMessages(oldMsgs => [...oldMsgs, msg]);
-                //socketRef.current.emit('sendDataClient', msg, commonRoom.room_id);
+                setAllMessages(oldMsgs => [...oldMsgs, { ...msg, message_attachments: imageBase64 }]);
+                socketRef.current.emit('sendChatMessage',
+                    { ...msg, message_attachments: imageBase64 }, commonRoom.room_id);
                 handleSaveNewMessage(formData)
                     .then(response => {
                         //console.log(response);
+                        message.current.value = '';
+                        setImageBase64(null);
                     })
             }
         }
@@ -351,10 +362,29 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                                     <IconButton
                                         sx={{
                                             color: "white",
+                                            position: "relative"
                                         }}
+                                        onClick={() => { setEmojiMartDisplay(!emojiMartDisplay) }}
                                     >
                                         <SentimentSatisfiedRoundedIcon />
                                     </IconButton>
+                                    <Box
+                                        sx={{
+                                            zIndex: 1000,
+                                            position: "absolute",
+                                            marginRight: 5,
+                                            bottom: 65,
+                                            display: (emojiMartDisplay) ? "block" : "none",
+                                        }}
+                                    >
+                                        <Picker
+                                            data={data}
+                                            onEmojiSelect={console.log}
+                                            emojiButtonSize={30}
+                                            emojiSize={20}
+                                            onClickOutside={() => { setEmojiMartDisplay(!emojiMartDisplay) }}
+                                        />
+                                    </Box>
                                 </InputAdornment>,
                         }}
                     />
