@@ -23,7 +23,7 @@ const ChatElement = ({ selected, setSelected, room_data }) => {
         room_id, last_message, unread_messages, partner_data
     } = room_data;
 
-    const last_message_time = last_message.created_at.split(' ')[1].substr(0, 5);
+    const last_message_time = last_message?.created_at.split(' ')[1].substr(0, 5);
     //console.log(last_message);
 
     let mycolor = "#263238"
@@ -82,11 +82,11 @@ const ChatElement = ({ selected, setSelected, room_data }) => {
                         </Typography>
                         <Typography variant="caption" noWrap>
                             {
-                                (state.user.id === last_message.sender_id)
+                                (state.user.id === last_message?.sender_id)
                                 && "You: "
                             }
                             {
-                                (last_message.content) 
+                                (last_message?.content) 
                                 ? last_message.content : "[Image]"
                             }
                         </Typography>

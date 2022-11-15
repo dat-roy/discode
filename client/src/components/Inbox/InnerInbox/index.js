@@ -93,9 +93,6 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
         //         fontStyle: "italic", 
         //     }
         // }
-        if (obj.message_type === MessageTypes.IMAGE) {
-
-        }
         return (
             <ChatMsg
                 key={index}
@@ -143,15 +140,18 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
 
         if (response.status === 200) {
             const newRoom = response.data.room_data[0]
-            const message_type = MessageTypes.TEXT
-
-            handleSaveNewMessage({
+            const msg = {
+                message_type: MessageTypes.TEXT,
                 sender_id: myID,
                 room_id: newRoom.room_id,
                 content: "HELLO HELLO",
-                message_type: message_type,
                 parent_message_id: null,
-            })
+            }
+
+            let formData = new FormData();
+            formData.append("document", JSON.stringify(msg))
+
+            handleSaveNewMessage(formData)
                 .then(response => {
                     //console.log(response);
                     setCommonRoom(newRoom);
@@ -379,10 +379,17 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                                     >
                                         <Picker
                                             data={data}
-                                            onEmojiSelect={console.log}
+                                            onEmojiSelect={(e) => {
+                                                console.log(e);
+                                                message.current.value += e.native;
+                                            }}
                                             emojiButtonSize={30}
                                             emojiSize={20}
-                                            onClickOutside={() => { setEmojiMartDisplay(!emojiMartDisplay) }}
+                                            onClickOutside={() => { 
+                                                if (emojiMartDisplay) {
+                                                    setEmojiMartDisplay(!emojiMartDisplay) 
+                                                }
+                                            }}
                                         />
                                     </Box>
                                 </InputAdornment>,

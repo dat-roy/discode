@@ -86,10 +86,10 @@ export default function Feed() {
             <Grid item xs sx={{ border: "1px solid red" }}>
                 <Stack direction="column" height="100vh">
                     <Box height="50%" sx={{border: "1px solid red"}}>
-                        <Typography>Featured Author</Typography>
+                        <Typography>Featured Authors</Typography>
                     </Box>
                     <Box height="50%" sx={{border: "1px solid red"}}>
-                        <Typography>Featured Post</Typography>
+                        <Typography>Featured Posts</Typography>
                     </Box>
                 </Stack>
             </Grid>

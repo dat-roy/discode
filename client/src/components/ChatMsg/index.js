@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import cx from 'clsx';
 import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
+import Dialog from '@mui/material/Dialog';
 import Typography from '@material-ui/core/Typography';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -35,6 +36,8 @@ const ChatMsg = withStyles(defaultChatMsgStyles, { name: 'ChatMsg' })(props => {
         //created_at, 
         message_attachments,
     } = messageObj;
+
+    const [openLargerImage, setOpenLargerImage] = useState(false);
 
     return (
         <Grid
@@ -72,8 +75,21 @@ const ChatMsg = withStyles(defaultChatMsgStyles, { name: 'ChatMsg' })(props => {
                                             component="img"
                                             src={message_attachments}
                                             alt="green iguana"
+                                            onClick={() => setOpenLargerImage(true)}
                                         />
                                     </CardActionArea>
+                                    <Dialog
+                                        open={openLargerImage}
+                                        onClose={() => setOpenLargerImage(false)}
+                                        hasCloseButton
+                                        style={{ maxWidth: "100%", maxHeight: "100%" }}
+                                    >
+                                        <img
+                                            style={{ width: 'auto', height: '80%' }}
+                                            src={message_attachments}
+                                            alt="dialog"
+                                        />
+                                    </Dialog>
                                 </Card>
                             </div>
                         }
@@ -111,8 +127,21 @@ const ChatMsg = withStyles(defaultChatMsgStyles, { name: 'ChatMsg' })(props => {
                                             component="img"
                                             src={message_attachments}
                                             alt="green iguana"
+                                            onClick={() => setOpenLargerImage(true)}
                                         />
                                     </CardActionArea>
+                                    <Dialog
+                                        open={openLargerImage}
+                                        onClose={() => setOpenLargerImage(false)}
+                                        hasCloseButton
+                                        style={{ maxWidth: "100%", maxHeight: "100%" }}
+                                    >
+                                        <img
+                                            style={{ width: 'auto', height: '80%' }}
+                                            src={message_attachments}
+                                            alt="dialog"
+                                        />
+                                    </Dialog>
                                 </Card>
                             </div>
                         )
