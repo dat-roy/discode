@@ -1,9 +1,14 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-import { handleGetJoinedSingleRoomsAPI, handleGetLastMessageAPI, handleGetUnreadMessagesAPI } from "../../../services";
+import {
+    handleGetJoinedSingleRoomsAPI,
+    handleGetLastMessageAPI,
+    handleGetUnreadMessagesAPI
+} from "../../../services";
 import { useStore } from "../../../store/hooks"
+import { useSocket } from "../../../store/hooks"
 
 import { Box, Stack } from "@mui/system";
 import { Typography } from "@mui/material";
@@ -15,8 +20,8 @@ import CreateIcon from '@mui/icons-material/Create';
 import SearchBar from "../../../components/SearchBar";
 import BadgeAvatar from "../../../components/BadgeAvatar";
 
-const ChatElement = ({ selected, setSelected, room_data }) => {
-    const [state, dispatch] = useStore();
+const ChatElement = ({ selected, online, room_data }) => {
+    const [state,] = useStore();
     const navigate = useNavigate();
 
     const {
@@ -49,7 +54,7 @@ const ChatElement = ({ selected, setSelected, room_data }) => {
                 navigate(`/chat/${partner_data.id}`, {
                     state: {
                         selected_room_id: room_id,
-                        partner_data: partner_data, 
+                        partner_data: partner_data,
                     }
                 })
             }}
@@ -64,9 +69,11 @@ const ChatElement = ({ selected, setSelected, room_data }) => {
                 <Stack
                     direction="row"
                     spacing={2}
+                    alignItems="center"
+                    justifyContent="center"
                 >
                     <BadgeAvatar
-                        online={true}
+                        online={online}
                         alt={partner_data.username}
                         src={partner_data.avatar_url}
                     />
@@ -77,17 +84,17 @@ const ChatElement = ({ selected, setSelected, room_data }) => {
                             width: '11rem'
                         }}
                     >
-                        <Typography variant="subtitle2">
+                        <Typography variant="subtitle1" color="#dce775">
                             @{partner_data.username}
                         </Typography>
-                        <Typography variant="caption" noWrap>
+                        <Typography variant="caption" noWrap marginTop={0}>
                             {
                                 (state.user.id === last_message?.sender_id)
                                 && "You: "
                             }
                             {
-                                (last_message?.content) 
-                                ? last_message.content : "[Image]"
+                                (last_message?.content)
+                                    ? last_message.content : "[Image]"
                             }
                         </Typography>
                     </Stack>
@@ -110,9 +117,11 @@ const ChatElement = ({ selected, setSelected, room_data }) => {
 
 export default function ChatList() {
     const location = useLocation();
-    const [state, dispatch] = useStore();
+    const [state,] = useStore();
+    const socket = useSocket();
     const [selected, setSelected] = useState(location.state?.selected_room_id || null);
     const [singleRooms, setSingleRooms] = useState([])
+    const [onlineUsers, setOnlineUsers] = useState([])
 
     useEffect(() => {
         setSelected(location.state?.selected_room_id || null);
@@ -141,6 +150,30 @@ export default function ChatList() {
         }
         fetchData();
     }, [state.user.id])
+
+    useEffect(() => {
+        socket.emit("requestOnlineUsers", singleRooms.map(room => room.partner_data.id))
+    }, [socket, singleRooms])
+
+    useEffect(() => {
+        socket.on("receiveOnlineUsers", online => {
+            console.log(online);
+            setOnlineUsers(online);
+        })
+    }, [socket])
+
+    useEffect(() => {
+        socket.on("notifyOnline", user_id => {
+            console.log(user_id);
+            if (!singleRooms.includes(room => room.partner_data.id === user_id)) {
+                setOnlineUsers(old => [...old, user_id]);
+            }
+        })
+
+        socket.on("notifyOffline", user_id => {
+            setOnlineUsers(old => old.filter(id => id !== user_id))
+        })
+    }, [socket, singleRooms])
 
     return (
         <Box>
@@ -190,7 +223,7 @@ export default function ChatList() {
                 spacing={2}
                 flexGrow={1}
                 sx={{
-                    height: "100vh",
+                    height: "70vh",
                     overflowY: "scroll"
                 }}
             >
@@ -200,7 +233,7 @@ export default function ChatList() {
                             <ChatElement
                                 key={index}
                                 selected={selected}
-                                setSelected={setSelected}
+                                online={(onlineUsers.includes(obj.partner_data.id)) ? true : false}
                                 room_data={obj}
                             />
                         )

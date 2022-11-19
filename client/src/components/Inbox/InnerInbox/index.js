@@ -1,8 +1,8 @@
 import React, { Fragment } from "react";
 import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
-import io from "socket.io-client";
-//import { useStore } from "../../../store/hooks";
+import { useStore } from "../../../store/hooks";
+import { useSocket } from "../../../store/hooks";
 
 import {
     Box, Stack, TextField,
@@ -24,16 +24,14 @@ import { handleGetOldMessages, handleSaveNewMessage } from "../../../services/me
 import { MessageTypes } from "../../../types/db.type"
 import { handleCreateNewSingleRoomAPI } from "../../../services";
 
-const serverHost = "http://localhost:3030";
-
 export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom }) {
     const params = useParams();
 
-    const socketRef = useRef();
+    const [state, ] = useStore();
+    const socket = useSocket();
     const latestMessage = useRef();
     let message = useRef();
 
-    //const [state, dispatch] = useStore();
     const [allMessages, setAllMessages] = useState([]);
     const [imageFile, setImageFile] = useState(null);
     const [imageBase64, setImageBase64] = useState(null);
@@ -61,24 +59,20 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
 
     useEffect(() => {
         if (commonRoom) {
-            socketRef.current = io.connect(serverHost, { reconnection: false });
-            socketRef.current.emit('joinChatRoom', commonRoom.room_id);
-
-            return () => {
-                socketRef.current.disconnect();
-            };
+            socket.emit('addUser', state.user.id);
+            socket.emit('joinChatRoom', commonRoom.room_id);
         }
-    }, [commonRoom])
+    }, [socket, commonRoom, state.user.id])
 
     useEffect(() => {
         if (commonRoom) {
             //Add a new message to oldMsg
-            socketRef.current.on('receiveChatMessage', newMsg => {
+            socket.on('receiveChatMessage', newMsg => {
                 setAllMessages(oldMsgs => [...oldMsgs, newMsg]);
                 scrollToBottom()
             })
         }
-    }, [commonRoom]);
+    }, [socket, commonRoom]);
 
     const renderAllMessages = allMessages.map((obj, index) => {
         const side = (!obj.sender_id)
@@ -123,7 +117,7 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
 
             if (commonRoom) {
                 setAllMessages(oldMsgs => [...oldMsgs, { ...msg, message_attachments: imageBase64 }]);
-                socketRef.current.emit('sendChatMessage',
+                socket.emit('sendChatMessage',
                     { ...msg, message_attachments: imageBase64 }, commonRoom.room_id);
                 handleSaveNewMessage(formData)
                     .then(response => {
@@ -162,16 +156,13 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
     const handleUploadClick = (event) => {
         let file = event.target.files[0];
         setImageFile(file);
-        // console.log(file);
         const reader = new FileReader();
-        //let url = 
         reader.readAsDataURL(file);
 
         reader.onloadend = (e) => {
             setImageBase64(reader.result)
             //console.log(reader.result);
         }
-        //console.log(url);
     }
 
     return (
@@ -290,7 +281,6 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                         onKeyDown={(e) => {
                             if (e.key === 'Enter' && e.shiftKey === false) {
                                 sendMessage()
-                                //console.log(message.current?.value)
                                 message.current.value = ''
                             }
                         }}

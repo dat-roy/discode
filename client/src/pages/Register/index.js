@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "../../store/hooks";
 
 import Box from '@mui/material/Box';

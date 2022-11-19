@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react"
 import { Link, useLocation } from "react-router-dom"
 
+import { useStore } from "../../../store/hooks";
+import { useSocket } from "../../../store/hooks";
+
 //import { useTheme } from "@mui/material"
 import { Box, Stack } from '@mui/material';
 import { FormControlLabel } from '@mui/material';
@@ -20,8 +23,14 @@ const logoLink = process.env.PUBLIC_URL + "assets/img/github_logo.svg";
 
 export default function MenuBar() {
     //const theme = useTheme();
+    const [state, ] = useStore();
+    const socket = useSocket();
     const location = useLocation();
     const [selected, setSelected] = useState('/' + location.pathname.split('/')[1]);
+
+    useEffect(() => {
+        socket.emit("subscribe", state.user.id);
+    }, [socket, state.user.id])
 
     useEffect(() => {
         setSelected('/' + location.pathname.split('/')[1]);
@@ -100,14 +109,14 @@ export default function MenuBar() {
                         let iconSx = {}
                         if (obj.path === selected) {
                             boxSx = {
-                                bgcolor: "#3f51b5", 
+                                bgcolor: "#3f51b5",
                                 borderRadius: 3.5,
                             }
                             iconSx = {
                                 //color: "red", 
                             }
                         }
-                        return <Box 
+                        return <Box
                             key={index}
                             sx={boxSx}
                         >
@@ -116,7 +125,7 @@ export default function MenuBar() {
                                 size="large" color="inherit"
                                 component={Link} to={obj.path}
                                 sx={iconSx}
-                                onClick={() => {setSelected(obj.path)}}
+                                onClick={() => { setSelected(obj.path) }}
                             >
                                 {obj.badge
                                     ? <Badge badgeContent={obj.badge} color="error">

@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
+import { useSocket } from '../../../store/hooks';
+
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
@@ -20,6 +22,7 @@ import AlertDialog from '../../../components/AlertDialog'
 export default function AccountMenu() {
     const [openDialog, setOpenDialog] = useState(false);
     const [state, dispatch] = useStore();
+    const socket = useSocket();
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -126,6 +129,7 @@ export default function AccountMenu() {
                 dialogText="Are you sure you want to log out?"
                 handleAgree={() => {
                     dispatch(userActions.userLogout())
+                    socket.disconnect();
                 }}  
             />
         </React.Fragment>

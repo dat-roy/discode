@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Nov 15, 2022 at 04:32 AM
+-- Generation Time: Nov 19, 2022 at 04:27 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -66,7 +66,16 @@ CREATE TABLE `messages` (
 INSERT INTO `messages` (`id`, `sender_id`, `content`, `message_type`, `parent_message_id`, `created_at`, `deleted_at`) VALUES
 (164, 5, 'Xin chào👋', 'text', NULL, '2022-11-14 23:50:37', NULL),
 (165, 5, '💪🫠🎈', 'image', NULL, '2022-11-15 09:54:51', NULL),
-(166, 5, '', 'image', NULL, '2022-11-15 10:28:29', NULL);
+(166, 5, '', 'image', NULL, '2022-11-15 10:28:29', NULL),
+(167, 2, '😍 Hello', 'text', NULL, '2022-11-16 16:53:52', NULL),
+(168, 2, 'HELLO HELLO', 'text', NULL, '2022-11-18 22:34:12', NULL),
+(169, 2, 'HELLO HELLO', 'text', NULL, '2022-11-19 09:57:55', NULL),
+(170, 2, '🐱', 'text', NULL, '2022-11-19 09:58:16', NULL),
+(171, 2, 'HELLO HELLO', 'text', NULL, '2022-11-19 10:02:19', NULL),
+(172, 2, 'HELLO HELLO', 'text', NULL, '2022-11-19 10:04:42', NULL),
+(173, 2, 'HELLO HELLO', 'text', NULL, '2022-11-19 10:07:27', NULL),
+(174, 2, 'HELLO HELLO', 'text', NULL, '2022-11-19 10:09:50', NULL),
+(175, 2, '🏸🏸🏸', 'text', NULL, '2022-11-19 10:14:52', NULL);
 
 -- --------------------------------------------------------
 
@@ -112,7 +121,25 @@ INSERT INTO `message_recipients` (`id`, `recipient_id`, `recipient_room_id`, `me
 (315, 5, 28, 165, 1),
 (316, 2, 29, 165, 0),
 (317, 5, 28, 166, 1),
-(318, 2, 29, 166, 0);
+(318, 2, 29, 166, 0),
+(319, 5, 28, 167, 0),
+(320, 2, 29, 167, 1),
+(321, 2, 30, 168, 1),
+(322, 4, 31, 168, 0),
+(323, 2, 32, 169, 1),
+(324, 8, 33, 169, 0),
+(325, 2, 32, 170, 1),
+(326, 8, 33, 170, 0),
+(327, 2, 34, 171, 1),
+(328, 7, 35, 171, 0),
+(329, 2, 36, 172, 1),
+(330, 10, 37, 172, 0),
+(331, 2, 38, 173, 1),
+(332, 11, 39, 173, 0),
+(333, 2, 40, 174, 1),
+(334, 12, 41, 174, 0),
+(335, 2, 34, 175, 1),
+(336, 7, 35, 175, 0);
 
 -- --------------------------------------------------------
 
@@ -200,7 +227,13 @@ CREATE TABLE `room` (
 --
 
 INSERT INTO `room` (`id`, `channel_id`, `type`, `title`, `created_at`, `removable`) VALUES
-(15, NULL, 'single', NULL, '2022-11-14 21:35:52', 0);
+(15, NULL, 'single', NULL, '2022-11-14 21:35:52', 0),
+(16, NULL, 'single', NULL, '2022-11-18 22:34:12', 0),
+(17, NULL, 'single', NULL, '2022-11-19 09:57:55', 0),
+(18, NULL, 'single', NULL, '2022-11-19 10:02:19', 0),
+(19, NULL, 'single', NULL, '2022-11-19 10:04:42', 0),
+(20, NULL, 'single', NULL, '2022-11-19 10:07:27', 0),
+(21, NULL, 'single', NULL, '2022-11-19 10:09:50', 0);
 
 -- --------------------------------------------------------
 
@@ -240,7 +273,11 @@ INSERT INTO `users` (`id`, `email`, `username`, `birthday`, `password`, `gender`
 (2, 'lvdat.roy@gmail.com', 'lvdat', NULL, '$2b$10$C3HqjsVkxY3D5hq6Gqh6TeO8yhkeMd/yOi4wo7Z68s/fBg6oywiG2', 'other', 'https://lh3.googleusercontent.com/a/ALm5wu0Xth15183xVSO5P4a5sFKF613ZG088jW2KL2hE=s96-c', '0000-00-00 00:00:00', NULL),
 (4, 'dat.roy.2003@gmail.com', 'roy', NULL, '$2b$10$fNK.tEsPwzfNHl44OEXSF.Vsu5at3mRZmb0fVL5RspjCtSSCezzSG', 'other', 'https://lh3.googleusercontent.com/a/ALm5wu3cKEstY_5YSSQTHEfunU7ojzrWGV9uI7_ceZsn=s96-c', '2022-11-05 17:51:30', NULL),
 (5, 'a4k29.hh4@gmail.com', 'a4', NULL, '$2b$10$Gb8Eb6nH7sX8eVxtX8IeVOc1yBkl2KO3gKsr4k90BO1ZmlQGoMgzS', 'other', 'https://lh3.googleusercontent.com/a/ALm5wu26jPBJf1GAYUU3k2X1caWzx1qBIQRS0Ukmr3xm=s96-c', '2022-11-05 18:19:58', NULL),
-(6, '21020298@vnu.edu.vn', 'nguoibian', NULL, '$2b$10$Xve5U54rqow01MMuL.c4vepj1pMeaGsNiVSXtgI/5iDN8yp1fkc7O', 'other', 'https://lh3.googleusercontent.com/a/ALm5wu0t53xEwwqHFQvOBWZVxUk9XaMPCEeUNYe7ZR7a=s96-c', '2022-11-07 17:20:10', NULL);
+(7, '21020298@vnu.edu.vn', 'UETốt', NULL, '$2b$10$IG.KASH3/c9erpe.DayLoe0Qd8MZLyBmKWkNMbnzMa4OFhD/qWZ9C', 'other', 'https://scontent.fhan2-5.fna.fbcdn.net/v/t1.15752-9/296048571_5375031022616469_2440968245869429416_n.png?_nc_cat=110&ccb=1-7&_nc_sid=ae9488&_nc_ohc=-rQCk3GsFeMAX9oF1ya&_nc_ht=scontent.fhan2-5.fna&oh=03_AdSTHwHA-sc-brMhGvFtDN4LFStf2c6mrqmrV22cNHITGg&oe=639FD3B6', '2022-11-19 09:54:25', NULL),
+(8, 'meow@gmail.com', 'meow', NULL, '$2b$10$IG.KASH3/c9erpe.DayLoe0Qd8MZLyBmKWkNMbnzMa4OFhD/qWZ9C', NULL, 'https://scontent.fhan2-5.fna.fbcdn.net/v/t1.15752-9/275977893_727683845078674_6093481772108505383_n.webp?stp=dst-webp&_nc_cat=107&ccb=1-7&_nc_sid=ae9488&_nc_ohc=l9uPbnQbux8AX_2cLf5&_nc_ht=scontent.fhan2-5.fna&oh=03_AdTT0yzpwwYrpJH2ZAuD90mYKxk--wF5619a8_SxQoQn_A&oe=639FD39F', '2022-11-19 03:55:10', NULL),
+(10, 'bin@gmail.com', 'bin', NULL, '$2b$10$IG.KASH3/c9erpe.DayLoe0Qd8MZLyBmKWkNMbnzMa4OFhD/qWZ9C', NULL, 'https://scontent.fhan2-5.fna.fbcdn.net/v/t1.15752-9/284916187_399746062119657_6474159232839858156_n.png?_nc_cat=104&ccb=1-7&_nc_sid=ae9488&_nc_ohc=M4_b7H2QeHUAX_9Yg2M&_nc_ht=scontent.fhan2-5.fna&oh=03_AdQL9n4l00sn1DT6zz3HaLSZszD-QiaPrDt8A9bY-WMPjg&oe=639FC8F6', '2022-11-19 04:03:39', NULL),
+(11, 'pate@gmail.com', 'pate', NULL, '$2b$10$IG.KASH3/c9erpe.DayLoe0Qd8MZLyBmKWkNMbnzMa4OFhD/qWZ9C', NULL, 'https://scontent.fhan2-5.fna.fbcdn.net/v/t1.15752-9/300496546_1360520704473232_4132157348638922110_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=ae9488&_nc_ohc=WvjdVsTqLn8AX-0x6fx&tn=Jsb-ydERwOFU8E_N&_nc_ht=scontent.fhan2-5.fna&oh=03_AdSazLAjj3ugPb3Knn3TLXbAsEp7b1-k4C7XP7jqT5v1Ww&oe=639FB761', '2022-11-19 04:05:20', NULL),
+(12, 'shin@gmail.com', 'shin', NULL, '$2b$10$IG.KASH3/c9erpe.DayLoe0Qd8MZLyBmKWkNMbnzMa4OFhD/qWZ9C', NULL, 'https://scontent.fhan2-5.fna.fbcdn.net/v/t1.15752-9/291092349_469802784483235_2319594929695058300_n.png?_nc_cat=104&ccb=1-7&_nc_sid=ae9488&_nc_ohc=vtObZ3-nO7AAX90WoiF&tn=Jsb-ydERwOFU8E_N&_nc_ht=scontent.fhan2-5.fna&oh=03_AdSsVGRAhkoPVLAG3jOwL0xEI_FaPtaKULhYHtpSCe2sbw&oe=639FD028', '2022-11-19 04:08:14', NULL);
 
 -- --------------------------------------------------------
 
@@ -272,7 +309,19 @@ CREATE TABLE `user_room` (
 
 INSERT INTO `user_room` (`id`, `user_id`, `room_id`) VALUES
 (28, 5, 15),
-(29, 2, 15);
+(29, 2, 15),
+(30, 2, 16),
+(31, 4, 16),
+(32, 2, 17),
+(33, 8, 17),
+(34, 2, 18),
+(35, 7, 18),
+(36, 2, 19),
+(37, 10, 19),
+(38, 2, 20),
+(39, 11, 20),
+(40, 2, 21),
+(41, 12, 21);
 
 --
 -- Indexes for dumped tables
@@ -385,7 +434,7 @@ ALTER TABLE `channels`
 -- AUTO_INCREMENT for table `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=167;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=176;
 
 --
 -- AUTO_INCREMENT for table `message_attachments`
@@ -397,7 +446,7 @@ ALTER TABLE `message_attachments`
 -- AUTO_INCREMENT for table `message_recipients`
 --
 ALTER TABLE `message_recipients`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=319;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=337;
 
 --
 -- AUTO_INCREMENT for table `posts`
@@ -421,7 +470,7 @@ ALTER TABLE `post_likes`
 -- AUTO_INCREMENT for table `room`
 --
 ALTER TABLE `room`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `tags`
@@ -433,13 +482,13 @@ ALTER TABLE `tags`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `user_room`
 --
 ALTER TABLE `user_room`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- Constraints for dumped tables
