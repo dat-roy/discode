@@ -62,8 +62,8 @@ const socketHandler = (io, socket) => {
     })
 
     socket.on("sendChatMessage", (message, roomId) => {
-        //io.in(room_id).emit("sendDataServer", message);
-        socket.broadcast.to(roomId).emit("receiveChatMessage", message);
+        io.to(roomId).emit("receiveChatMessage", message);
+        //socket.broadcast.to(roomId).emit("receiveChatMessage", message);
         //console.log(message);
         //console.log("Room_id: " + room_id);
         //console.log("Members: " + io.sockets.adapter.rooms.get(room_id).size)

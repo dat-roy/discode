@@ -27,7 +27,7 @@ import { handleCreateNewSingleRoomAPI } from "../../../services";
 export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom }) {
     const params = useParams();
 
-    const [state, ] = useStore();
+    const [state,] = useStore();
     const socket = useSocket();
     const latestMessage = useRef();
     let message = useRef();
@@ -47,7 +47,7 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
     }, [params])
 
     useEffect(() => {
-        if (commonRoom) {
+        if (commonRoom?.room_id) {
             handleGetOldMessages(myID, commonRoom.room_id)
                 .then(response => {
                     //console.log(response.data.messages);
@@ -55,24 +55,27 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                     scrollToBottom()
                 })
         }
-    }, [myID, commonRoom])
+    }, [myID, commonRoom?.room_id])
 
     useEffect(() => {
-        if (commonRoom) {
+        if (commonRoom?.room_id) {
             socket.emit('addUser', state.user.id);
             socket.emit('joinChatRoom', commonRoom.room_id);
         }
-    }, [socket, commonRoom, state.user.id])
+    }, [socket, commonRoom?.room_id, state.user.id])
 
     useEffect(() => {
-        if (commonRoom) {
+        //Note: fix duplicate new message
+        if (commonRoom?.room_id) {
             //Add a new message to oldMsg
             socket.on('receiveChatMessage', newMsg => {
-                setAllMessages(oldMsgs => [...oldMsgs, newMsg]);
+                if (newMsg.sender_id !== state.user.id) {
+                    setAllMessages(oldMsgs => [...oldMsgs, newMsg]);
+                }
                 scrollToBottom()
             })
         }
-    }, [socket, commonRoom]);
+    }, [socket, commonRoom?.room_id, state.user.id]);
 
     const renderAllMessages = allMessages.map((obj, index) => {
         const side = (!obj.sender_id)
@@ -375,9 +378,9 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                                             }}
                                             emojiButtonSize={30}
                                             emojiSize={20}
-                                            onClickOutside={() => { 
+                                            onClickOutside={() => {
                                                 if (emojiMartDisplay) {
-                                                    setEmojiMartDisplay(!emojiMartDisplay) 
+                                                    setEmojiMartDisplay(!emojiMartDisplay)
                                                 }
                                             }}
                                         />

@@ -10,6 +10,8 @@ import {
 import { useStore } from "../../../store/hooks"
 import { useSocket } from "../../../store/hooks"
 
+import moment from "moment"
+
 import { Box, Stack } from "@mui/system";
 import { Typography } from "@mui/material";
 import { Badge } from "@mui/material";
@@ -28,8 +30,11 @@ const ChatElement = ({ selected, online, room_data }) => {
         room_id, last_message, unread_messages, partner_data
     } = room_data;
 
-    const last_message_time = last_message?.created_at.split(' ')[1].substr(0, 5);
-    //console.log(last_message);
+    //last_message.created_at = "2002-10-20 10:00:10"
+    //last_message.content = "asassssssssssssssssssssssssssssssssssssssssssssssssssss"
+    const last_message_time = (moment(last_message?.created_at).isSame(moment(), 'day'))
+        ? last_message?.created_at?.split(' ')[1]?.substr(0, 5)
+        : moment(last_message?.created_at).fromNow();
 
     let mycolor = "#263238"
     if (selected === room_id) {
@@ -81,7 +86,7 @@ const ChatElement = ({ selected, online, room_data }) => {
                         style={{
                             overflow: "hidden",
                             textOverflow: "ellipsis",
-                            width: '11rem'
+                            width: '8rem'
                         }}
                     >
                         <Typography variant="subtitle1" color="#dce775">
@@ -107,7 +112,7 @@ const ChatElement = ({ selected, online, room_data }) => {
                         {last_message_time}
                     </Typography>
 
-                    <Badge color="primary" badgeContent={unread_messages.length} />
+                    {/* <Badge color="primary" badgeContent={unread_messages.length} /> */}
                 </Stack>
             </Stack>
         </Box>
@@ -142,7 +147,7 @@ export default function ChatList() {
 
             //Sort roomList:
             roomList.sort((a, b) => {
-                return new Date(a.last_message.created_at) - new Date(b.last_message.created_at);
+                return new Date(b.last_message.created_at) - new Date(a.last_message.created_at);
             })
 
             //console.log(roomList);
@@ -164,7 +169,7 @@ export default function ChatList() {
 
     useEffect(() => {
         socket.on("notifyOnline", user_id => {
-            console.log(user_id);
+            //console.log(user_id);
             if (!singleRooms.includes(room => room.partner_data.id === user_id)) {
                 setOnlineUsers(old => [...old, user_id]);
             }
@@ -172,6 +177,23 @@ export default function ChatList() {
 
         socket.on("notifyOffline", user_id => {
             setOnlineUsers(old => old.filter(id => id !== user_id))
+        })
+    }, [socket, singleRooms])
+
+    useEffect(() => {
+        socket.on("receiveChatMessage", newMsg => {
+            newMsg.created_at = moment().format().slice(0, 19).replace('T', ' ');
+            const roomList = singleRooms.map(room => {
+                if (room.room_id === newMsg.room_id) {
+                    room.last_message = newMsg
+                }
+                return room
+            })
+            //Sort roomList:
+            roomList.sort((a, b) => {
+                return new Date(b.last_message.created_at) - new Date(a.last_message.created_at);
+            })
+            setSingleRooms(roomList)
         })
     }, [socket, singleRooms])
 

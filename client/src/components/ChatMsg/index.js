@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import moment from "moment";
+
 import PropTypes from 'prop-types';
 import cx from 'clsx';
 import Grid from '@material-ui/core/Grid';
@@ -9,6 +11,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import { CardActionArea } from '@mui/material';
+import Tooltip from '@mui/material/Tooltip';
 
 import withStyles from '@material-ui/core/styles/withStyles';
 import defaultChatMsgStyles from './defaultChatMsgStyles';
@@ -33,10 +36,12 @@ const ChatMsg = withStyles(defaultChatMsgStyles, { name: 'ChatMsg' })(props => {
         content,
         message_type,
         //parent_message_id, 
-        //created_at, 
+        created_at,
         message_attachments,
     } = messageObj;
 
+    moment.locale("vi")
+    const convertedTime = moment(created_at).calendar();
     const [openLargerImage, setOpenLargerImage] = useState(false);
 
     return (
@@ -61,6 +66,7 @@ const ChatMsg = withStyles(defaultChatMsgStyles, { name: 'ChatMsg' })(props => {
                     if (message_type === MessageTypes.IMAGE) {
                         if (content === '') {
                             return <div key={id} className={classes[`${side}Row`]}>
+
                                 <Card
                                     style={{
                                         borderRadius: 20,
@@ -70,14 +76,17 @@ const ChatMsg = withStyles(defaultChatMsgStyles, { name: 'ChatMsg' })(props => {
                                         classes[`${side}Card`]
                                     )}
                                 >
-                                    <CardActionArea>
-                                        <CardMedia
-                                            component="img"
-                                            src={message_attachments}
-                                            alt="green iguana"
-                                            onClick={() => setOpenLargerImage(true)}
-                                        />
-                                    </CardActionArea>
+                                    <Tooltip placement="left" title={convertedTime}>
+                                        <CardActionArea>
+                                            <CardMedia
+                                                component="img"
+                                                src={message_attachments}
+                                                alt="green iguana"
+                                                onClick={() => setOpenLargerImage(true)}
+                                            />
+                                        </CardActionArea>
+                                    </Tooltip>
+
                                     <Dialog
                                         open={openLargerImage}
                                         onClose={() => setOpenLargerImage(false)}
@@ -104,32 +113,32 @@ const ChatMsg = withStyles(defaultChatMsgStyles, { name: 'ChatMsg' })(props => {
                                         classes[`${side}Card`]
                                     )}
                                 >
-                                    <CardActionArea>
-                                        <CardContent
-                                            className={cx(
-                                                classes[side],
-                                                classes[`${side}Caption`]
-                                            )}
-                                        >
-                                            <Typography
-                                                variant="body2"
+                                    <Tooltip placement="left" title={convertedTime}>
+                                        <CardActionArea>
+                                            <CardContent
                                                 className={cx(
-                                                    classes.msg,
-                                                    TypographyProps.className
+                                                    classes[side],
+                                                    classes[`${side}Caption`]
                                                 )}
                                             >
-                                                <pre style={{ fontFamily: 'inherit', margin: 0 }}>
+                                                <Typography
+                                                    variant="body2"
+                                                    className={cx(
+                                                        classes.msg,
+                                                        TypographyProps.className
+                                                    )}
+                                                >
                                                     {content}
-                                                </pre>
-                                            </Typography>
-                                        </CardContent>
-                                        <CardMedia
-                                            component="img"
-                                            src={message_attachments}
-                                            alt="green iguana"
-                                            onClick={() => setOpenLargerImage(true)}
-                                        />
-                                    </CardActionArea>
+                                                </Typography>
+                                            </CardContent>
+                                            <CardMedia
+                                                component="img"
+                                                src={message_attachments}
+                                                alt="green iguana"
+                                                onClick={() => setOpenLargerImage(true)}
+                                            />
+                                        </CardActionArea>
+                                    </Tooltip>
                                     <Dialog
                                         open={openLargerImage}
                                         onClose={() => setOpenLargerImage(false)}
@@ -149,19 +158,19 @@ const ChatMsg = withStyles(defaultChatMsgStyles, { name: 'ChatMsg' })(props => {
                     return (
                         // eslint-disable-next-line react/no-array-index-key
                         <div key={id} className={classes[`${side}Row`]}>
-                            <Typography
-                                align={'left'}
-                                {...TypographyProps}
-                                className={cx(
-                                    classes.msg,
-                                    classes[side],
-                                    TypographyProps.className
-                                )}
-                            >
-                                <pre style={{ fontFamily: 'inherit', margin: 0 }}>
+                            <Tooltip placement="left" title={convertedTime}>
+                                <Typography
+                                    align={'left'}
+                                    {...TypographyProps}
+                                    className={cx(
+                                        classes.msg,
+                                        classes[side],
+                                        TypographyProps.className
+                                    )}
+                                >
                                     {content}
-                                </pre>
-                            </Typography>
+                                </Typography>
+                            </Tooltip>
                         </div>
                     );
                 })()}
