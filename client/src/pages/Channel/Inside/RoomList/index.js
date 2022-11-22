@@ -138,7 +138,6 @@ export default function RoomList() {
         return <></>
     }
 
-    console.log("Selected: " + selected)
     return (
         <Box>
             <ToastContainer

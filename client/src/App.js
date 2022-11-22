@@ -2,8 +2,9 @@ import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 import PrivateRoute from './routes/PrivateRoute'
 
-import { publicRoutes, privateRoutes } from './routes'
+import { publicRoutes, privateRoutes, privateChannelRoutes } from './routes'
 import { DefaultLayout } from './layouts'
+import { ChannelLayout } from './layouts'
 import "./App.css"
 
 import LayoutWrapper from './layouts/LayoutWrapper'
@@ -11,10 +12,12 @@ import LayoutWrapper from './layouts/LayoutWrapper'
 function App() {
     return (
         <Routes>
-            <Route path='/' key={"public-routes"}>  
-                {publicRoutes.map((route, index) => {
-                    return getRouteComponents(route, index, false);
-                })}
+            <Route path='/' key={"public-routes"}>
+                {
+                    publicRoutes.map((route) => {
+                        return getRouteComponents(route, false);
+                    })
+                }
             </Route>
 
             <Route path='/' key={"private-routes"} element={
@@ -22,29 +25,35 @@ function App() {
                     <DefaultLayout />
                 </PrivateRoute>
             }>
-                {privateRoutes.map((route, index) => {
-                    return getRouteComponents(route, index, true);
-                })}
+                {
+                    privateRoutes.map((route) => {
+                        return getRouteComponents(route, true);
+                    })
+                }
+
+                {/* Special case: Need refactoring. */}
+                <Route path='/channels' key={"private-routes-of-channels"} element={
+                    <ChannelLayout />
+                }>
+                    {
+                        privateChannelRoutes.map((route) => {
+                            return getRouteComponents(route, true);
+                        })
+                    }
+                </Route>
             </Route>
         </Routes>
     )
 }
 
-function getRouteComponents(route, index, isPrivate) {
-    // let Layout = DefaultLayout
-    // if (route.layout) {
-    //     Layout = route.layout
-    // } else if (route.layout === null) {
-    //     Layout = Fragment
-    // }
-
+function getRouteComponents(route, isPrivate) {
     //Special case: Landing page
     if (route.path === '/' && !isPrivate) {
-        return <Route index key={"index-route"} element={ route.mainElement } />
+        return <Route index key={"index-route"} element={route.mainElement} />
     }
 
     return (
-        <Route 
+        <Route
             key={route.key}
             path={route.path}
             element={

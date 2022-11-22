@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Nov 21, 2022 at 02:31 PM
+-- Generation Time: Nov 22, 2022 at 11:17 AM
 -- Server version: 8.0.31
 -- PHP Version: 8.1.6
 
@@ -84,7 +84,8 @@ INSERT INTO `messages` (`id`, `sender_id`, `content`, `message_type`, `parent_me
 (181, 2, 'it\'s working now', 'text', NULL, '2022-11-21 08:30:44', NULL),
 (182, 4, 'nope', 'text', NULL, '2022-11-21 08:30:51', NULL),
 (183, 2, 'working already', 'text', NULL, '2022-11-21 08:31:21', NULL),
-(184, 4, 'great', 'text', NULL, '2022-11-21 08:42:40', NULL);
+(184, 4, 'great', 'text', NULL, '2022-11-21 08:42:40', NULL),
+(185, 2, 'Welcome to my channel :v', 'text', NULL, '2022-11-22 09:15:35', NULL);
 
 -- --------------------------------------------------------
 
@@ -166,7 +167,9 @@ INSERT INTO `message_recipients` (`id`, `recipient_id`, `recipient_room_id`, `me
 (351, 2, 30, 183, 1),
 (352, 4, 31, 183, 0),
 (353, 2, 30, 184, 0),
-(354, 4, 31, 184, 1);
+(354, 4, 31, 184, 1),
+(355, 2, 43, 185, 1),
+(356, 4, 48, 185, 0);
 
 -- --------------------------------------------------------
 
@@ -262,7 +265,7 @@ INSERT INTO `rooms` (`id`, `channel_id`, `type`, `title`, `created_at`, `removab
 (20, NULL, 'single', NULL, '2022-11-19 10:07:27', 0),
 (21, NULL, 'single', NULL, '2022-11-19 10:09:50', 0),
 (22, 5, 'group', 'Announcements', '2022-11-21 14:18:01', 0),
-(23, 5, 'group', 'Nodejs', '2022-11-21 14:19:02', 1),
+(23, 5, 'group', 'NodeJs', '2022-11-21 14:19:02', 1),
 (24, 5, 'group', 'ReactJs', '2022-11-21 14:19:39', 1),
 (25, 5, 'group', 'DevOps', '2022-11-21 14:20:05', 1),
 (26, 5, 'group', 'Database', '2022-11-21 14:20:54', 1);
@@ -328,7 +331,8 @@ CREATE TABLE `user_channel` (
 --
 
 INSERT INTO `user_channel` (`id`, `user_id`, `channel_id`) VALUES
-(1, 2, 5);
+(1, 2, 5),
+(2, 4, 5);
 
 -- --------------------------------------------------------
 
@@ -365,7 +369,12 @@ INSERT INTO `user_room` (`id`, `user_id`, `room_id`) VALUES
 (43, 2, 23),
 (44, 2, 24),
 (45, 2, 25),
-(46, 2, 26);
+(46, 2, 26),
+(47, 4, 22),
+(48, 4, 23),
+(49, 4, 24),
+(50, 4, 25),
+(51, 4, 26);
 
 --
 -- Indexes for dumped tables
@@ -478,7 +487,7 @@ ALTER TABLE `channels`
 -- AUTO_INCREMENT for table `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=185;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=186;
 
 --
 -- AUTO_INCREMENT for table `message_attachments`
@@ -490,7 +499,7 @@ ALTER TABLE `message_attachments`
 -- AUTO_INCREMENT for table `message_recipients`
 --
 ALTER TABLE `message_recipients`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=355;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=357;
 
 --
 -- AUTO_INCREMENT for table `posts`
@@ -532,13 +541,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `user_channel`
 --
 ALTER TABLE `user_channel`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `user_room`
 --
 ALTER TABLE `user_room`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- Constraints for dumped tables

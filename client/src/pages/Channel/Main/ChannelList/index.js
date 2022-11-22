@@ -58,7 +58,7 @@ export default function ChannelList() {
     const renderChannelList = (channels, title, icon) => {
         return <Fragment>
             <ListSubheader
-                key={{title}}
+                key={title}
                 sx={{
                     bgcolor: "#1a237e",
                     color: "white",
@@ -82,7 +82,7 @@ export default function ChannelList() {
                         <Typography fontStyle="italic">No channels found</Typography>
                     </Box>
                     : channels.map((channel, index) => (
-                        <Fragment>
+                        <Fragment key={index}>
                             <ListItem
                                 key={index}
                                 disablePadding
@@ -103,6 +103,7 @@ export default function ChannelList() {
                             <Box
                                 paddingLeft={0}
                                 paddingRight={0}
+                                key={index + "divider"}
                             >
                                 <Divider
                                     variant="middle"

@@ -1,5 +1,5 @@
 import React from "react";
-import { DefaultLayout } from '../layouts'
+import { DefaultLayout, ChannelLayout } from '../layouts'
 
 import Home from '../pages/Home'
 import Landing from '../pages/Landing'
@@ -85,30 +85,11 @@ const privateRoutes = [
         layout: DefaultLayout,
     },
     {
-
         key: 'create-channel',
         path: '/channels/create',
         leftElement: <ChannelList />,
         mainElement: <ChannelCreator />,
         rightElement: null,
-        layout: DefaultLayout,
-    },
-    {
-
-        key: 'channels-with-id',
-        path: '/channels/:id',
-        leftElement: <RoomList />,
-        mainElement: null,
-        rightElement: null,
-        layout: DefaultLayout,
-    },
-    {
-
-        key: 'channels-with-id-and-room-id',
-        path: '/channels/:id/:room_id',
-        leftElement: <RoomList />,
-        mainElement: <ChannelInbox />,
-        rightElement: <ChannelDetail />,
         layout: DefaultLayout,
     },
     {
@@ -145,7 +126,31 @@ const privateRoutes = [
     }
 ]
 
+const privateChannelRoutes = [
+    {
+
+        key: 'channels-with-id',
+        path: '/channels/:id',
+        mainElement: null, 
+        layout: {
+            DefaultLayout,
+            ChannelLayout, 
+        },
+    },
+    {
+
+        key: 'channels-with-id-and-room-id',
+        path: '/channels/:id/:room_id',
+        mainElement: <ChannelInbox />,
+        layout: {
+            DefaultLayout,
+            ChannelLayout, 
+        }
+    },
+]
+
 export {
     publicRoutes,
     privateRoutes,
+    privateChannelRoutes, 
 }

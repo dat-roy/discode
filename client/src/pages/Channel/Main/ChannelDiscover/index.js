@@ -32,7 +32,7 @@ export default function Discover() {
                             bottom: 0,
                             width: "100%",
                             height: "100%",
-                            backgroundImage: `url(${process.env.PUBLIC_URL + "assets/img/bg2.png"})`,
+                            backgroundImage: `url(${process.env.PUBLIC_URL + "assets/img/discover.png"})`,
                             backgroundRepeat: "no-repeat",
                             backgroundSize: "cover",
                             //backgroundPositionX: "-12px",

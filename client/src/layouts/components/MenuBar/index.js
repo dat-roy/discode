@@ -19,7 +19,7 @@ import IconButton from '@mui/material/IconButton';
 
 import AccountMenu from "../AccountMenu";
 
-const logoLink = process.env.PUBLIC_URL + "assets/img/github_logo.svg";
+const logoLink = process.env.PUBLIC_URL + "assets/img/logo.png";
 
 export default function MenuBar() {
     //const theme = useTheme();
@@ -97,7 +97,9 @@ export default function MenuBar() {
                     <img
                         alt="Logo"
                         style={{
-                            width: 50,
+                            width: 100,
+                            marginTop: -12,
+                            marginBottom: -30,
                         }}
                         src={logoLink}
                     />
