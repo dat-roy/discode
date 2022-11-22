@@ -3,7 +3,8 @@ const dbConnection = require("../config/db/index.db");
 const { RoomTypes } = require('../types/db.type');
 const { Model } = require('./Model');
 const Users = require('./users.model')
-const Room = require('./room.model')
+const Rooms = require('./rooms.model')
+const Channels = require('./channels.model')
 
 class UserRoom extends Model {
     constructor(tableName) {
@@ -33,8 +34,8 @@ class UserRoom extends Model {
     async getSingleRoomsByUserID(params) {
         let user_id = mysql.escape(params.user_id);
         let sql = `SELECT * FROM ${this.tableName}\
-                INNER JOIN ${Room.tableName} ON ${this.tableName}.room_id = ${Room.tableName}.id\
-                WHERE ${this.tableName}.user_id = ${user_id} AND ${Room.tableName}.type = '${RoomTypes.SINGLE}'`;
+                INNER JOIN ${Rooms.tableName} ON ${this.tableName}.room_id = ${Rooms.tableName}.id\
+                WHERE ${this.tableName}.user_id = ${user_id} AND ${Rooms.tableName}.type = '${RoomTypes.SINGLE}'`;
         //console.log(sql);
         return await dbConnection.query(sql);
     }
@@ -47,6 +48,31 @@ class UserRoom extends Model {
                 WHERE ${this.tableName}.user_id != ${user_id} AND ${this.tableName}.room_id = ${room_id}`;
         //console.log(sql);
         return (await dbConnection.query(sql))[0];
+    }
+
+    async getGroupRooms(params) {
+        let user_id = mysql.escape(params.user_id);
+        let channel_id = mysql.escape(params.channel_id);
+        
+        const ur = this.tableName;
+        const r = Rooms.tableName;
+        const c = Channels.tableName;
+
+        let sql = `SELECT\
+                    ${ur}.user_id,\
+                    ${ur}.room_id,\
+                    ${r}.channel_id,\
+                    ${c}.admin_id,\
+                    ${r}.type,\
+                    ${r}.title,\
+                    ${r}.created_at,\
+                    ${r}.removable\
+                FROM ${ur}\
+                INNER JOIN ${r} ON ${ur}.room_id = ${r}.id\
+                INNER JOIN ${c} on ${r}.channel_id = ${c}.id\
+                WHERE ${ur}.user_id = ${user_id} AND ${r}.channel_id = ${channel_id}`;
+        //console.log(sql);
+        return await dbConnection.query(sql);
     }
 }
 

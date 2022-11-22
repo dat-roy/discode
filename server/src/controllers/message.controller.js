@@ -1,6 +1,6 @@
 const url = require('node:url');
 const path = require('path')
-const Room = require('../models/room.model')
+const Rooms = require('../models/rooms.model')
 const Users = require('../models/users.model')
 const UserRoom = require('../models/user_room.model')
 const Messages = require('../models/messages.model')
@@ -18,7 +18,7 @@ class messageController {
 
         try {
             //check if room_id exists or not.
-            const checkRoomIdExists = await Room.checkExistence({ where: { id: room_id } });
+            const checkRoomIdExists = await Rooms.checkExistence({ where: { id: room_id } });
             //check if user_id exists or not.    
             const checkUserIdExists = await Users.checkExistence({ where: { id: user_id } });
 

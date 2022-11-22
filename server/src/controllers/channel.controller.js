@@ -1,29 +1,37 @@
 const Channel = require('../models/channels.model')
 const Users = require('../models/users.model');
 const UserChannel = require('../models/user_channel.model');
+const UserRoom = require('../models/user_room.model')
 
 class channelController {
-    //[GET] /api/channel/:id 
+    //[GET] /api/channel/:id?user_id=
     async getChannelById(req, res, next) {
         const channel_id = parseInt(req.params.id);
+        const user_id = parseInt(req.query.user_id);
         try {
             const channelData = await Channel.findOne({
                 where: {
-                    id: channel_id, 
+                    id: channel_id,
                 }
             })
-            if (!channelData) {
-                throw new Error("DB server error");
-            } 
+            const joined = isNaN(user_id) 
+                ? false 
+                : await UserChannel.checkExistence({
+                    where:
+                        `user_id=${user_id} AND channel_id=${channel_id}`, 
+                })
+            
             return res.status(200).json({
-                message: "Get channel successfully", 
-                channel: channelData, 
+                message: "Get channel successfully",
+                channel: channelData,
+                joined: joined, 
+                user_id: user_id, 
             })
         } catch (err) {
             console.log(err);
             return res.status(500).json({
-                message: "Internal Server Error", 
-                error: err.message, 
+                message: "Internal Server Error",
+                error: err.message,
             })
         }
     }
@@ -268,22 +276,41 @@ class channelController {
 
     //[POST] /api/channel/get/joined-channels
     async getJoinedChannels(req, res, next) {
-        const user_id = parseInt(req.body.user_id);
+        const member_id = parseInt(req.body.user_id);
         try {
-            const result = await UserChannel.findAll({
-                where: {
-                    user_id: user_id,
-                }
-            })
+            const result = await UserChannel.getChannelByMemberId({ member_id });
             return res.status(200).json({
-                message: "Get all joined channels successfully", 
-                joined_channels: result, 
+                message: "Get all joined channels successfully",
+                joined_channels: result,
             })
-        } catch(err) {
+        } catch (err) {
             console.log(err);
             return res.status(500).json({
-                message: "Internal Server Error", 
-                error: err.message, 
+                message: "Internal Server Error",
+                error: err.message,
+            })
+        }
+    }
+
+    //[POST] /api/channel/get/rooms
+    async getGroupRooms(req, res, next) {
+        const user_id = parseInt(req.body.user_id)
+        const channel_id = parseInt(req.body.channel_id)
+
+        //TODO: 
+        // + Check if user joined channel or not. 
+        try {
+            const rooms = await UserRoom.getGroupRooms({
+                user_id, channel_id,
+            })
+            return res.status(200).json({
+                rooms,
+            })
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({
+                message: "Internal Server Error",
+                error: err.message,
             })
         }
     }

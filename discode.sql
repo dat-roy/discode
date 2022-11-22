@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Nov 19, 2022 at 04:27 AM
--- Server version: 10.4.24-MariaDB
+-- Generation Time: Nov 21, 2022 at 02:31 PM
+-- Server version: 8.0.31
 -- PHP Version: 8.1.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -28,11 +28,11 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `channels` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `admin_id` int(8) UNSIGNED NOT NULL,
-  `title` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` varchar(2000) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `avatar_url` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id` int UNSIGNED NOT NULL,
+  `admin_id` int UNSIGNED NOT NULL,
+  `title` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `avatar_url` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -41,7 +41,7 @@ CREATE TABLE `channels` (
 --
 
 INSERT INTO `channels` (`id`, `admin_id`, `title`, `description`, `avatar_url`, `created_at`) VALUES
-(5, 5, 'Fullstack-overflow', 'A gathering place for codeholic.', NULL, '2022-11-11 17:59:52');
+(5, 2, 'Fullstack-overflow', 'A gathering place for codeholic.', NULL, '2022-11-11 17:59:52');
 
 -- --------------------------------------------------------
 
@@ -50,11 +50,11 @@ INSERT INTO `channels` (`id`, `admin_id`, `title`, `description`, `avatar_url`, 
 --
 
 CREATE TABLE `messages` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `sender_id` int(10) UNSIGNED NOT NULL,
-  `content` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `message_type` enum('text','image','video','audio') COLLATE utf8mb4_unicode_ci NOT NULL,
-  `parent_message_id` int(10) UNSIGNED DEFAULT NULL,
+  `id` int UNSIGNED NOT NULL,
+  `sender_id` int UNSIGNED NOT NULL,
+  `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `message_type` enum('text','image','video','audio') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `parent_message_id` int UNSIGNED DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -75,7 +75,16 @@ INSERT INTO `messages` (`id`, `sender_id`, `content`, `message_type`, `parent_me
 (172, 2, 'HELLO HELLO', 'text', NULL, '2022-11-19 10:04:42', NULL),
 (173, 2, 'HELLO HELLO', 'text', NULL, '2022-11-19 10:07:27', NULL),
 (174, 2, 'HELLO HELLO', 'text', NULL, '2022-11-19 10:09:50', NULL),
-(175, 2, '🏸🏸🏸', 'text', NULL, '2022-11-19 10:14:52', NULL);
+(175, 2, '🏸🏸🏸', 'text', NULL, '2022-11-19 10:14:52', NULL),
+(176, 2, 'Hihi', 'text', NULL, '2022-11-20 23:16:27', NULL),
+(177, 4, 'hi', 'text', NULL, '2022-11-21 08:21:21', NULL),
+(178, 4, 'huhu', 'text', NULL, '2022-11-21 08:23:43', NULL),
+(179, 4, 'huhu', 'text', NULL, '2022-11-21 08:24:03', NULL),
+(180, 4, ':(', 'text', NULL, '2022-11-21 08:25:23', NULL),
+(181, 2, 'it\'s working now', 'text', NULL, '2022-11-21 08:30:44', NULL),
+(182, 4, 'nope', 'text', NULL, '2022-11-21 08:30:51', NULL),
+(183, 2, 'working already', 'text', NULL, '2022-11-21 08:31:21', NULL),
+(184, 4, 'great', 'text', NULL, '2022-11-21 08:42:40', NULL);
 
 -- --------------------------------------------------------
 
@@ -84,9 +93,9 @@ INSERT INTO `messages` (`id`, `sender_id`, `content`, `message_type`, `parent_me
 --
 
 CREATE TABLE `message_attachments` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `message_id` int(10) UNSIGNED NOT NULL,
-  `attachment_content` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL
+  `id` int UNSIGNED NOT NULL,
+  `message_id` int UNSIGNED NOT NULL,
+  `attachment_content` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -104,11 +113,11 @@ INSERT INTO `message_attachments` (`id`, `message_id`, `attachment_content`) VAL
 --
 
 CREATE TABLE `message_recipients` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `recipient_id` int(10) UNSIGNED NOT NULL,
-  `recipient_room_id` int(10) UNSIGNED DEFAULT NULL,
-  `message_id` int(10) UNSIGNED NOT NULL,
-  `is_read` tinyint(1) NOT NULL DEFAULT 0
+  `id` int UNSIGNED NOT NULL,
+  `recipient_id` int UNSIGNED NOT NULL,
+  `recipient_room_id` int UNSIGNED DEFAULT NULL,
+  `message_id` int UNSIGNED NOT NULL,
+  `is_read` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -139,7 +148,25 @@ INSERT INTO `message_recipients` (`id`, `recipient_id`, `recipient_room_id`, `me
 (333, 2, 40, 174, 1),
 (334, 12, 41, 174, 0),
 (335, 2, 34, 175, 1),
-(336, 7, 35, 175, 0);
+(336, 7, 35, 175, 0),
+(337, 2, 40, 176, 1),
+(338, 12, 41, 176, 0),
+(339, 2, 30, 177, 0),
+(340, 4, 31, 177, 1),
+(341, 2, 30, 178, 0),
+(342, 4, 31, 178, 1),
+(343, 2, 30, 179, 0),
+(344, 4, 31, 179, 1),
+(345, 2, 30, 180, 0),
+(346, 4, 31, 180, 1),
+(347, 2, 30, 181, 1),
+(348, 4, 31, 181, 0),
+(349, 2, 30, 182, 0),
+(350, 4, 31, 182, 1),
+(351, 2, 30, 183, 1),
+(352, 4, 31, 183, 0),
+(353, 2, 30, 184, 0),
+(354, 4, 31, 184, 1);
 
 -- --------------------------------------------------------
 
@@ -148,10 +175,10 @@ INSERT INTO `message_recipients` (`id`, `recipient_id`, `recipient_room_id`, `me
 --
 
 CREATE TABLE `posts` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `author_id` int(10) UNSIGNED NOT NULL,
-  `title` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `content` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` int UNSIGNED NOT NULL,
+  `author_id` int UNSIGNED NOT NULL,
+  `title` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` datetime NOT NULL,
   `last_updated_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -170,11 +197,11 @@ INSERT INTO `posts` (`id`, `author_id`, `title`, `content`, `created_at`, `last_
 --
 
 CREATE TABLE `post_comments` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `post_id` int(10) UNSIGNED NOT NULL,
-  `sender_id` int(10) UNSIGNED NOT NULL,
-  `content` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `parent_comment_id` int(10) UNSIGNED DEFAULT NULL
+  `id` int UNSIGNED NOT NULL,
+  `post_id` int UNSIGNED NOT NULL,
+  `sender_id` int UNSIGNED NOT NULL,
+  `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `parent_comment_id` int UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -193,10 +220,10 @@ INSERT INTO `post_comments` (`id`, `post_id`, `sender_id`, `content`, `parent_co
 --
 
 CREATE TABLE `post_likes` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `user_id` int(10) UNSIGNED NOT NULL,
-  `post_id` int(10) UNSIGNED NOT NULL,
-  `liked` tinyint(1) NOT NULL DEFAULT 0
+  `id` int UNSIGNED NOT NULL,
+  `user_id` int UNSIGNED NOT NULL,
+  `post_id` int UNSIGNED NOT NULL,
+  `liked` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -210,30 +237,35 @@ INSERT INTO `post_likes` (`id`, `user_id`, `post_id`, `liked`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `room`
+-- Table structure for table `rooms`
 --
 
-CREATE TABLE `room` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `channel_id` int(10) UNSIGNED DEFAULT NULL,
-  `type` enum('single','group') COLLATE utf8mb4_unicode_ci NOT NULL,
-  `title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+CREATE TABLE `rooms` (
+  `id` int UNSIGNED NOT NULL,
+  `channel_id` int UNSIGNED DEFAULT NULL,
+  `type` enum('single','group') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` datetime NOT NULL,
-  `removable` tinyint(1) NOT NULL DEFAULT 1
+  `removable` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `room`
+-- Dumping data for table `rooms`
 --
 
-INSERT INTO `room` (`id`, `channel_id`, `type`, `title`, `created_at`, `removable`) VALUES
+INSERT INTO `rooms` (`id`, `channel_id`, `type`, `title`, `created_at`, `removable`) VALUES
 (15, NULL, 'single', NULL, '2022-11-14 21:35:52', 0),
 (16, NULL, 'single', NULL, '2022-11-18 22:34:12', 0),
 (17, NULL, 'single', NULL, '2022-11-19 09:57:55', 0),
 (18, NULL, 'single', NULL, '2022-11-19 10:02:19', 0),
 (19, NULL, 'single', NULL, '2022-11-19 10:04:42', 0),
 (20, NULL, 'single', NULL, '2022-11-19 10:07:27', 0),
-(21, NULL, 'single', NULL, '2022-11-19 10:09:50', 0);
+(21, NULL, 'single', NULL, '2022-11-19 10:09:50', 0),
+(22, 5, 'group', 'Announcements', '2022-11-21 14:18:01', 0),
+(23, 5, 'group', 'Nodejs', '2022-11-21 14:19:02', 1),
+(24, 5, 'group', 'ReactJs', '2022-11-21 14:19:39', 1),
+(25, 5, 'group', 'DevOps', '2022-11-21 14:20:05', 1),
+(26, 5, 'group', 'Database', '2022-11-21 14:20:54', 1);
 
 -- --------------------------------------------------------
 
@@ -242,9 +274,9 @@ INSERT INTO `room` (`id`, `channel_id`, `type`, `title`, `created_at`, `removabl
 --
 
 CREATE TABLE `tags` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `post_id` int(10) UNSIGNED NOT NULL,
-  `tag_name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL
+  `id` int UNSIGNED NOT NULL,
+  `post_id` int UNSIGNED NOT NULL,
+  `tag_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -254,15 +286,15 @@ CREATE TABLE `tags` (
 --
 
 CREATE TABLE `users` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `email` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `username` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` int UNSIGNED NOT NULL,
+  `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `birthday` date DEFAULT NULL,
-  `password` char(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `gender` enum('male','female','other') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `avatar_url` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `password` char(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `gender` enum('male','female','other') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `avatar_url` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `joined_date` datetime NOT NULL,
-  `nation` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `nation` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -286,10 +318,17 @@ INSERT INTO `users` (`id`, `email`, `username`, `birthday`, `password`, `gender`
 --
 
 CREATE TABLE `user_channel` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `user_id` int(8) UNSIGNED NOT NULL,
-  `channel_id` int(10) UNSIGNED NOT NULL
+  `id` int UNSIGNED NOT NULL,
+  `user_id` int UNSIGNED NOT NULL,
+  `channel_id` int UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `user_channel`
+--
+
+INSERT INTO `user_channel` (`id`, `user_id`, `channel_id`) VALUES
+(1, 2, 5);
 
 -- --------------------------------------------------------
 
@@ -298,9 +337,9 @@ CREATE TABLE `user_channel` (
 --
 
 CREATE TABLE `user_room` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `user_id` int(10) UNSIGNED NOT NULL,
-  `room_id` int(10) UNSIGNED NOT NULL
+  `id` int UNSIGNED NOT NULL,
+  `user_id` int UNSIGNED NOT NULL,
+  `room_id` int UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -321,7 +360,12 @@ INSERT INTO `user_room` (`id`, `user_id`, `room_id`) VALUES
 (38, 2, 20),
 (39, 11, 20),
 (40, 2, 21),
-(41, 12, 21);
+(41, 12, 21),
+(42, 2, 22),
+(43, 2, 23),
+(44, 2, 24),
+(45, 2, 25),
+(46, 2, 26);
 
 --
 -- Indexes for dumped tables
@@ -383,9 +427,9 @@ ALTER TABLE `post_likes`
   ADD KEY `post_likes_ibfk_2` (`post_id`);
 
 --
--- Indexes for table `room`
+-- Indexes for table `rooms`
 --
-ALTER TABLE `room`
+ALTER TABLE `rooms`
   ADD PRIMARY KEY (`id`),
   ADD KEY `room_channel_id_foreign` (`channel_id`);
 
@@ -428,67 +472,73 @@ ALTER TABLE `user_room`
 -- AUTO_INCREMENT for table `channels`
 --
 ALTER TABLE `channels`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=176;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=185;
 
 --
 -- AUTO_INCREMENT for table `message_attachments`
 --
 ALTER TABLE `message_attachments`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `message_recipients`
 --
 ALTER TABLE `message_recipients`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=337;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=355;
 
 --
 -- AUTO_INCREMENT for table `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `post_comments`
 --
 ALTER TABLE `post_comments`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `post_likes`
 --
 ALTER TABLE `post_likes`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 
 --
--- AUTO_INCREMENT for table `room`
+-- AUTO_INCREMENT for table `rooms`
 --
-ALTER TABLE `room`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+ALTER TABLE `rooms`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `tags`
 --
 ALTER TABLE `tags`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT for table `user_channel`
+--
+ALTER TABLE `user_channel`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `user_room`
 --
 ALTER TABLE `user_room`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- Constraints for dumped tables
@@ -543,9 +593,9 @@ ALTER TABLE `post_likes`
   ADD CONSTRAINT `post_likes_ibfk_2` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`);
 
 --
--- Constraints for table `room`
+-- Constraints for table `rooms`
 --
-ALTER TABLE `room`
+ALTER TABLE `rooms`
   ADD CONSTRAINT `room_channel_id_foreign` FOREIGN KEY (`channel_id`) REFERENCES `channels` (`id`) ON UPDATE CASCADE;
 
 --
@@ -565,7 +615,7 @@ ALTER TABLE `user_channel`
 -- Constraints for table `user_room`
 --
 ALTER TABLE `user_room`
-  ADD CONSTRAINT `user_room_conversation_id_foreign` FOREIGN KEY (`room_id`) REFERENCES `room` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `user_room_conversation_id_foreign` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `user_room_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE;
 COMMIT;
 

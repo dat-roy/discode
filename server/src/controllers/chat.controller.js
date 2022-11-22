@@ -1,5 +1,5 @@
 const UserRoom = require('../models/user_room.model')
-const Room = require('../models/room.model')
+const Room = require('../models/rooms.model')
 const Messages = require('../models/messages.model')
 
 const { pick } = require('../utils/object-handler');

@@ -2,22 +2,39 @@ import axios from "../config/axios";
 
 const handleGetLastMessageAPI = (user_id, room_id) => {
     return axios.post(`/api/chat/get/last-message`,  {
-        user_id: user_id, 
-        room_id: room_id, 
+        user_id, 
+        room_id, 
     })
 }
 
 const handleGetUnreadMessagesAPI = (user_id, room_id) => {
     return axios.post(`/api/chat/get/unread-messages`, {
-        user_id: user_id, 
-        room_id: room_id, 
+        user_id, 
+        room_id,
     }) 
 }
 
 const handleGetJoinedSingleRoomsAPI = (user_id, fetch_partner_data) => {
     return axios.post(`/api/chat/get/joined/single-rooms`, {
-        user_id: user_id, 
-        fetch_partner_data: fetch_partner_data, //boolean
+        user_id, 
+        fetch_partner_data, //boolean
+    })
+}
+
+const handleGetChannelByIdAPI = (user_id, channel_id) => {
+    return axios.get(`/api/channel/${channel_id}?user_id=${user_id}`)
+}
+
+const handleGetJoinedChannelsAPI = (user_id) => {
+    return axios.post(`/api/channel/get/joined-channels`, {
+        user_id,
+    })
+}
+
+const handleGetGroupRoomsAPI = (user_id, channel_id) => {
+    return axios.post(`/api/channel/get/rooms`, {
+        user_id, 
+        channel_id, 
     })
 }
 
@@ -38,7 +55,10 @@ const handleCreateNewSingleRoomAPI = (myID, otherID) => {
 export {
     handleGetLastMessageAPI, 
     handleGetUnreadMessagesAPI, 
+    handleGetChannelByIdAPI, 
     handleGetJoinedSingleRoomsAPI, 
+    handleGetJoinedChannelsAPI, 
+    handleGetGroupRoomsAPI, 
     handleGetCommonSingleRoomsAPI,
     handleCreateNewSingleRoomAPI,
 }

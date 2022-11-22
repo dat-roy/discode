@@ -12,7 +12,8 @@ import { ChatList, Inbox, ChatDetails } from '../pages/Chat'
 import Publish from "../pages/Posts/Publish";
 import PostView from "../pages/Posts/PostView";
 import Feed from "../pages/Posts/Feed";
-import { ChannelList, ChannelDiscover, RoomList, ChannelCreator } from "../pages/Channel";
+import { ChannelList, ChannelDiscover, RoomList, ChannelCreator, ChannelDetail } from "../pages/Channel";
+import ChannelInbox from "../pages/Channel/Inside/ChannelInbox";
 
 const publicRoutes = [
     {
@@ -75,7 +76,7 @@ const privateRoutes = [
         layout: DefaultLayout,
     },
     {
-        
+
         key: 'channels',
         path: '/channels',
         leftElement: <ChannelList />,
@@ -84,7 +85,7 @@ const privateRoutes = [
         layout: DefaultLayout,
     },
     {
-        
+
         key: 'create-channel',
         path: '/channels/create',
         leftElement: <ChannelList />,
@@ -93,12 +94,21 @@ const privateRoutes = [
         layout: DefaultLayout,
     },
     {
-        
+
         key: 'channels-with-id',
         path: '/channels/:id',
         leftElement: <RoomList />,
         mainElement: null,
         rightElement: null,
+        layout: DefaultLayout,
+    },
+    {
+
+        key: 'channels-with-id-and-room-id',
+        path: '/channels/:id/:room_id',
+        leftElement: <RoomList />,
+        mainElement: <ChannelInbox />,
+        rightElement: <ChannelDetail />,
         layout: DefaultLayout,
     },
     {
