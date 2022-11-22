@@ -12,7 +12,7 @@ import { ChatList, Inbox, ChatDetails } from '../pages/Chat'
 import Publish from "../pages/Posts/Publish";
 import PostView from "../pages/Posts/PostView";
 import Feed from "../pages/Posts/Feed";
-import { ChannelList, ChannelDiscover, RoomList, ChannelCreator, ChannelDetail } from "../pages/Channel";
+import { ChannelList, ChannelDiscover, ChannelCreator } from "../pages/Channel";
 import ChannelInbox from "../pages/Channel/Inside/ChannelInbox";
 
 const publicRoutes = [
