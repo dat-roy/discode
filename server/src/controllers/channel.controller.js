@@ -1,7 +1,8 @@
-const Channel = require('../models/channels.model')
+const Channels = require('../models/channels.model')
 const Users = require('../models/users.model');
 const UserChannel = require('../models/user_channel.model');
 const UserRoom = require('../models/user_room.model')
+const Rooms = require('../models/rooms.model')
 
 class channelController {
     //[GET] /api/channel/:id?user_id=
@@ -9,23 +10,23 @@ class channelController {
         const channel_id = parseInt(req.params.id);
         const user_id = parseInt(req.query.user_id);
         try {
-            const channelData = await Channel.findOne({
+            const channelData = await Channels.findOne({
                 where: {
                     id: channel_id,
                 }
             })
-            const joined = isNaN(user_id) 
-                ? false 
+            const joined = isNaN(user_id)
+                ? false
                 : await UserChannel.checkExistence({
                     where:
-                        `user_id=${user_id} AND channel_id=${channel_id}`, 
+                        `user_id=${user_id} AND channel_id=${channel_id}`,
                 })
-            
+
             return res.status(200).json({
                 message: "Get channel successfully",
                 channel: channelData,
-                joined: joined, 
-                user_id: user_id, 
+                joined: joined,
+                user_id: user_id,
             })
         } catch (err) {
             console.log(err);
@@ -53,7 +54,7 @@ class channelController {
                     message: "Can not find user ID",
                 })
             } else {
-                const result = await Channel.create({
+                const result = await Channels.create({
                     admin_id: user_id,
                     title: title,
                     description: description,
@@ -80,7 +81,7 @@ class channelController {
 
         try {
             const checkUserIdExists = await Users.checkExistence({ where: { id: user_id } });
-            const checkChannelExists = await Channel.checkExistence({ where: { id: channel_id } });
+            const checkChannelExists = await Channels.checkExistence({ where: { id: channel_id } });
             if (!checkUserIdExists) {
                 return res.status(404).json({
                     message: "Can not detect User Id",
@@ -92,7 +93,7 @@ class channelController {
                 })
             }
 
-            const result = await Channel.delete({
+            const result = await Channels.delete({
                 admin_id: user_id,
                 channel_id: channel_id,
             });
@@ -135,7 +136,7 @@ class channelController {
         try {
             const checkAdminIdExists = await Users.checkExistence({ where: { id: admin_id } });
             const checkReqIdExists = await Users.checkExistence({ where: { id: req_id } });
-            const checkChannelIdExists = await Channel.checkExistence({ where: { id: channel_id } });
+            const checkChannelIdExists = await Channels.checkExistence({ where: { id: channel_id } });
 
             // check valid
             if (!checkAdminIdExists) {
@@ -155,7 +156,7 @@ class channelController {
             }
 
             //check authenticate
-            const authenAdminId = await Channel.findOne({
+            const authenAdminId = await Channels.findOne({
                 where:
                     `id = ${channel_id} AND admin_id = ${admin_id}`
             })
@@ -214,7 +215,7 @@ class channelController {
         try {
             const checkAdminIdExists = await Users.checkExistence({ where: { id: admin_id } });
             const checkDeletedIdIdExists = await Users.checkExistence({ where: { id: deleted_id } });
-            const checkChannelIdExists = await Channel.checkExistence({ where: { id: channel_id } });
+            const checkChannelIdExists = await Channels.checkExistence({ where: { id: channel_id } });
 
             if (!checkAdminIdExists) {
                 return res.status(404).json({
@@ -229,7 +230,7 @@ class channelController {
                     message: "Can not detect ChannelID"
                 })
             } else {
-                const adminIdAuth = await Channel.checkExistence({
+                const adminIdAuth = await Channels.checkExistence({
                     where:
                         `id=${channel_id} AND admin_id=${admin_id}`,
                 })
@@ -311,6 +312,28 @@ class channelController {
             return res.status(500).json({
                 message: "Internal Server Error",
                 error: err.message,
+            })
+        }
+    }
+
+    //[GET] /api/channel/get/room/:id 
+    async getRoomById(req, res, next) {
+        const room_id = parseInt(req.params.id);
+        try {
+            const room = await Rooms.findOne({
+                where: {
+                    id: room_id,
+                }
+            })
+            return res.status(200).json({
+                message: "Success",
+                room,
+            })
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({
+                message: "Internal Server Error",
+                err: err.message,
             })
         }
     }

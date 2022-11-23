@@ -38,6 +38,10 @@ const handleGetGroupRoomsAPI = (user_id, channel_id) => {
     })
 }
 
+const handleGetGroupRoomByIdAPI = (room_id) => {
+    return axios.get(`/api/channel/get/room/${room_id}`);
+}
+
 const handleGetCommonSingleRoomsAPI = (myID, otherID) => {
     return axios.post(`/api/chat/get/common/single-rooms`, {
         my_id: myID, 
@@ -59,6 +63,7 @@ export {
     handleGetJoinedSingleRoomsAPI, 
     handleGetJoinedChannelsAPI, 
     handleGetGroupRoomsAPI, 
+    handleGetGroupRoomByIdAPI,
     handleGetCommonSingleRoomsAPI,
     handleCreateNewSingleRoomAPI,
 }

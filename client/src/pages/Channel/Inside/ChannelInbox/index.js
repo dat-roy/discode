@@ -11,7 +11,13 @@ import {
 import ChatMsg from '../../../../components/ChatMsg';
 import SendIcon from '@mui/icons-material/Send';
 
-import { handleGetOldMessages, handleSaveNewMessage } from "../../../../services/message";
+import {
+    handleGetGroupRoomByIdAPI,
+} from "../../../../services/chat";
+import {
+    handleGetOldMessages,
+    handleSaveNewMessage,
+} from "../../../../services/message";
 import { MessageTypes } from "../../../../types/db.type"
 
 import VideocamIcon from '@mui/icons-material/Videocam';
@@ -22,10 +28,13 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 export default function ChannelInbox() {
     const params = useParams();
     const [state,] = useStore();
-    const [socketState, ] = useSocket();
+    const [socketState,] = useSocket();
     const socket = socketState.instance;
 
     const room_id = parseInt(params.room_id);
@@ -33,6 +42,7 @@ export default function ChannelInbox() {
     const latestMessage = useRef();
     let message = useRef();
 
+    const [roomInfo, setRoomInfo] = useState(null);
     const [allMessages, setAllMessages] = useState([]);
     const [imageFile, setImageFile] = useState(null);
     const [imageBase64, setImageBase64] = useState(null);
@@ -42,6 +52,14 @@ export default function ChannelInbox() {
         latestMessage.current.scrollIntoView({ behavior: "smooth" });
     }
 
+    useEffect(() => {
+        handleGetGroupRoomByIdAPI(room_id)
+            .then(res => {
+                setRoomInfo(res.data?.room)
+            })
+    }, [room_id])
+
+    //Auto scroll to bottom when having a new message.
     useEffect(() => {
         scrollToBottom();
     }, [allMessages])
@@ -54,7 +72,6 @@ export default function ChannelInbox() {
     useEffect(() => {
         handleGetOldMessages(state.user.id, room_id)
             .then(res => {
-                console.log(res.data.messages);
                 setAllMessages(res.data.messages);
             })
     }, [state.user.id, room_id])
@@ -65,7 +82,6 @@ export default function ChannelInbox() {
     }, [socket, state.user.id, room_id])
 
     useEffect(() => {
-        //Note: fix duplicate new message
         //Add a new message to oldMsg
         socket.on('receiveChatMessage', newMsg => {
             if (newMsg.sender_id !== state.user.id) {
@@ -112,18 +128,22 @@ export default function ChannelInbox() {
             formData.append("document", JSON.stringify(msg))
             if (imageBase64) {
                 formData.append("file", imageFile);
-                // console.log(formData);
             }
 
-            setAllMessages(oldMsgs => [...oldMsgs, { ...msg, message_attachments: imageBase64 }]);
-            socket.emit('sendChatMessage',
-                { ...msg, message_attachments: imageBase64 }, room_id);
             handleSaveNewMessage(formData)
-                .then(response => {
-                    //console.log(response);
+                .then(res => {
+                    if (res.status !== 200) {
+                        throw new Error("Failed to connect to server");
+                    }
+                    const { msg_data } = res.data;
+                    socket.emit('sendChatMessage', msg_data, room_id);
                     message.current.value = '';
+                    setAllMessages(oldMsgs => [...oldMsgs, msg_data]);
                     setImageBase64(null);
                     scrollToBottom();
+                })
+                .catch(err => {
+                    return toast.error(err.message);
                 })
         }
     }
@@ -134,9 +154,8 @@ export default function ChannelInbox() {
         const reader = new FileReader();
         reader.readAsDataURL(file);
 
-        reader.onloadend = (e) => {
+        reader.onloadend = () => {
             setImageBase64(reader.result)
-            //console.log(reader.result);
         }
     }
 
@@ -150,12 +169,24 @@ export default function ChannelInbox() {
                 margin: "0 auto",
             }}
         >
+            <ToastContainer
+                position="top-center"
+                autoClose={2500}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+            />
             <Box
                 key="boxChatHeader"
                 sx={{
                     height: 70,
                     width: "100%",
-                    bgcolor: "gray",
+                    bgcolor: "#121858",
                 }}
             >
                 <Stack
@@ -179,11 +210,11 @@ export default function ChannelInbox() {
                             }}
                         >
                             <Typography variant="h6">
-                                NodeJs
+                                # {roomInfo?.title}
                             </Typography>
-                            <Typography variant="caption">
-                                140 members
-                            </Typography>
+                            {/* <Typography variant="caption">
+                                Created at: {roomInfo?.created_at}
+                            </Typography> */}
                         </Stack>
                     </Stack>
                     <Stack
@@ -239,6 +270,7 @@ export default function ChannelInbox() {
                     marginRight={2}
                 >
                     <TextField
+                        disabled={!roomInfo?.removable ? true : false}
                         fullWidth
                         multiline
                         placeholder="Write a message..."
@@ -279,6 +311,7 @@ export default function ChannelInbox() {
                                             >
                                                 <img alt="uploaded" src={imageBase64} style={{ width: "100%" }} />
                                                 <IconButton
+                                                    disabled={!roomInfo?.removable ? true : false}
                                                     sx={{
                                                         position: "absolute",
                                                         color: "yellow",
@@ -299,6 +332,7 @@ export default function ChannelInbox() {
                                             >
 
                                                 <IconButton
+                                                    disabled={!roomInfo?.removable ? true : false}
                                                     sx={{
                                                         color: "white",
                                                     }}
@@ -316,6 +350,7 @@ export default function ChannelInbox() {
                             endAdornment:
                                 <InputAdornment position="end">
                                     <IconButton
+                                        disabled={!roomInfo?.removable ? true : false}
                                         sx={{
                                             color: "white",
                                             position: "relative"
@@ -352,6 +387,7 @@ export default function ChannelInbox() {
                         }}
                     />
                     <Button
+                        disabled={!roomInfo?.removable ? true : false}
                         variant="contained"
                         endIcon={<SendIcon />}
                         onClick={sendMessage}

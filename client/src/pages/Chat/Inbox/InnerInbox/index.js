@@ -24,11 +24,14 @@ import { handleGetOldMessages, handleSaveNewMessage } from "../../../../services
 import { MessageTypes } from "../../../../types/db.type"
 import { handleCreateNewSingleRoomAPI } from "../../../../services";
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom }) {
     const params = useParams();
 
     const [state,] = useStore();
-    const [socketState, ] = useSocket();
+    const [socketState,] = useSocket();
     const socket = socketState.instance;
     const latestMessage = useRef();
     let message = useRef();
@@ -42,6 +45,7 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
         latestMessage.current.scrollIntoView({ behavior: "smooth" });
     }
 
+    //Auto scroll to bottom when having a new message.
     useEffect(() => {
         scrollToBottom();
     }, [allMessages])
@@ -122,15 +126,20 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
             }
 
             if (commonRoom) {
-                setAllMessages(oldMsgs => [...oldMsgs, { ...msg, message_attachments: imageBase64 }]);
-                socket.emit('sendChatMessage',
-                    { ...msg, message_attachments: imageBase64 }, commonRoom.room_id);
                 handleSaveNewMessage(formData)
-                    .then(response => {
-                        //console.log(response);
+                    .then(res => {
+                        if (res.status !== 200) {
+                            throw new Error("Failed to connect to server");
+                        }
+                        const { msg_data } = res.data;
+                        socket.emit('sendChatMessage', msg_data, commonRoom.room_id);
                         message.current.value = '';
+                        setAllMessages(oldMsgs => [...oldMsgs, msg_data]);
                         setImageBase64(null);
                         scrollToBottom();
+                    })
+                    .catch(err => {
+                        return toast.error(err.message);
                     })
             }
         }
@@ -166,7 +175,7 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
         const reader = new FileReader();
         reader.readAsDataURL(file);
 
-        reader.onloadend = (e) => {
+        reader.onloadend = () => {
             setImageBase64(reader.result)
             //console.log(reader.result);
         }
@@ -182,6 +191,18 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                 margin: "0 auto",
             }}
         >
+            <ToastContainer
+                position="top-center"
+                autoClose={2500}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+            />
             <Box
                 key="boxChatHeader"
                 sx={{

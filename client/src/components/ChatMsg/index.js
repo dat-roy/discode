@@ -30,6 +30,7 @@ const inputGlobalStyles = <GlobalStyles
             ".avatar": {
                 width: size,
                 height: size,
+                cursor: "pointer",
             },
             ".leftRow": {
                 textAlign: 'left',
@@ -46,7 +47,7 @@ const inputGlobalStyles = <GlobalStyles
             ".left": {
                 borderRadius: radius,
                 //backgroundColor: palette.info.light,
-                backgroundColor: "#004940", 
+                backgroundColor: "#004940",
                 color: palette.info.contrastText,
             },
             ".right": {
@@ -96,6 +97,7 @@ const ChatMsg = (props) => {
 
     moment.locale("vi")
     const convertedTime = moment(created_at).calendar();
+    const [openProfile, setOpenProfile] = useState(false);
     const [openLargerImage, setOpenLargerImage] = useState(false);
 
     return (
@@ -113,8 +115,17 @@ const ChatMsg = (props) => {
                             src={avatar_url}
                             className={"avatar"}
                             {...AvatarProps}
-                        //onClick={()=>console.log("Hello")}
+                            {...(canClickAvatar && { onClick: () => setOpenProfile(true) })}
                         />
+
+                        <Dialog 
+                            open={openProfile}
+                            onClose={() => setOpenProfile(false)}
+                            style={{ maxWidth: "100%", maxHeight: "100%" }}
+                        >
+                            {/*TODO: Add profile preview */}
+                            <img src={avatar_url} alt="profile-dialog"/>
+                        </Dialog>
                     </Grid>
                 )}
                 <Grid item xs={8}>
@@ -144,7 +155,6 @@ const ChatMsg = (props) => {
                                         <Dialog
                                             open={openLargerImage}
                                             onClose={() => setOpenLargerImage(false)}
-                                            //hasCloseButton
                                             style={{ maxWidth: "100%", maxHeight: "100%" }}
                                         >
                                             <img
@@ -201,7 +211,7 @@ const ChatMsg = (props) => {
                                             style={{ maxWidth: "100%", maxHeight: "100%" }}
                                         >
                                             <img
-                                                style={{ width: 'auto', height: '80%' }}
+                                                style={{ width: 'auto', height: '80%', background: "transparent" }}
                                                 src={message_attachments}
                                                 alt="dialog"
                                             />

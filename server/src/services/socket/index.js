@@ -25,7 +25,7 @@ const findUser = (userId) => {
 
 const socketHandler = (io, socket) => {
     console.log("New client connected: " + socket.id);
-    console.log(io.sockets.sockets.size)
+    console.log("Client total: " + io.sockets.sockets.size);
 
     socket.on("subscribe", (userId) => {
         findUser(userId) && removeUserById(userId);

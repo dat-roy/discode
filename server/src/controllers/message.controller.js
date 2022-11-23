@@ -56,7 +56,7 @@ class messageController {
                     const allMessages = []
                     for (const messageID of allMessagesID) {
                         const message = await Messages.findOneWithSenderData({
-                            msg_id: messageID.message_id, 
+                            msg_id: messageID.message_id,
                         })
                         if (message) {
                             message.message_attachments = null;
@@ -148,8 +148,25 @@ class messageController {
                     }
                 }
 
+                //Fetch new message data
+                const message = await Messages.findOneWithSenderData({
+                    msg_id: messagesSaving.insertId,
+                })
+                if (message) {
+                    message.message_attachments = null;
+                    if (message.message_type == MessageTypes.IMAGE) {
+                        const messageAttachmentResult = await MessageAttachments.findOne({
+                            where: {
+                                message_id: messagesSaving.insertId,
+                            }
+                        })
+                        message.message_attachments = url.parse(backendHostname + '/' + messageAttachmentResult?.attachment_content).href
+                    }
+                }
+
                 return res.status(200).json({
                     message: "Save new message successfully",
+                    msg_data: message,
                 })
             }
         } catch (err) {
