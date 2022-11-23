@@ -1,6 +1,5 @@
-import io from "socket.io-client";
 import { createContext } from "react";
 
-export const socket = io.connect(process.env.REACT_APP_SERVER_HOST, { reconnection: false });
+// export const SERVER_HOST = process.env.REACT_APP_SERVER_HOST;
 const SocketContext = createContext({});
 export default SocketContext;

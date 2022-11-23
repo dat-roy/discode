@@ -55,10 +55,8 @@ class messageController {
 
                     const allMessages = []
                     for (const messageID of allMessagesID) {
-                        const message = await Messages.findOne({
-                            where: {
-                                id: messageID.message_id,
-                            }
+                        const message = await Messages.findOneWithSenderData({
+                            msg_id: messageID.message_id, 
                         })
                         if (message) {
                             message.message_attachments = null;

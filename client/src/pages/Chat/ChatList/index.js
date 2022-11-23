@@ -123,7 +123,8 @@ const ChatElement = ({ selected, online, room_data }) => {
 export default function ChatList() {
     const location = useLocation();
     const [state,] = useStore();
-    const socket = useSocket();
+    const [socketState, ] = useSocket();
+    const socket = socketState.instance;
     const [selected, setSelected] = useState(location.state?.selected_room_id || null);
     const [singleRooms, setSingleRooms] = useState([])
     const [onlineUsers, setOnlineUsers] = useState([])

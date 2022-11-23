@@ -1,6 +1,7 @@
 const mysql = require('mysql2/promise');
 const dbConnection = require("../config/db/index.db");
 const { Model } = require('./Model');
+const Users = require('./users.model')
 const MessageRecipients = require('./message_recipients.model')
 const UserRoom = require('./user_room.model')
 
@@ -30,6 +31,19 @@ class Messages extends Model {
                 WHERE id=${message_id} AND sender_id=${sender_id}`;
         //console.log(sql);
         return await dbConnection.query(sql);
+    }
+
+    async findOneWithSenderData(params) {
+        let msg_id = mysql.escape(params.msg_id);
+        const m = this.tableName;
+        const u = Users.tableName;
+        let sql = `SELECT ${m}.id, ${m}.content, ${m}.message_type,\
+                        ${m}.parent_message_id, ${m}.created_at, ${m}.deleted_at,\
+                        ${m}.sender_id, ${u}.avatar_url, ${u}.username, ${u}.gender,\ 
+                        ${u}.nation, ${u}.email\
+                    FROM ${m} INNER JOIN ${u} ON ${m}.sender_id = ${u}.id\
+                    WHERE ${m}.id = ${msg_id}`;
+        return (await dbConnection.query(sql))[0];
     }
 
     async fetchLastMessage(params) {

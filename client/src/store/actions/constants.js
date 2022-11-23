@@ -6,4 +6,12 @@ const ActionTypes = Object.freeze({
     REGISTER_SUCCESS: "REGISTER_SUCCESS",
 })
 
-export default ActionTypes;
+const SocketActionTypes = Object.freeze({
+    CONNECT: "CONNECT", 
+    DISCONNECT: "DISCONNECT", 
+})
+
+export {
+    ActionTypes,
+    SocketActionTypes, 
+}

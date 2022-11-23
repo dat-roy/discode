@@ -25,17 +25,26 @@ import Picker from '@emoji-mart/react'
 export default function ChannelInbox() {
     const params = useParams();
     const [state,] = useStore();
-    const socket = useSocket();
+    const [socketState, ] = useSocket();
+    const socket = socketState.instance;
 
     const room_id = parseInt(params.room_id);
 
-    //const latestMessage = useRef();
+    const latestMessage = useRef();
     let message = useRef();
 
     const [allMessages, setAllMessages] = useState([]);
     const [imageFile, setImageFile] = useState(null);
     const [imageBase64, setImageBase64] = useState(null);
     const [emojiMartDisplay, setEmojiMartDisplay] = useState(false);
+
+    const scrollToBottom = () => {
+        latestMessage.current.scrollIntoView({ behavior: "smooth" });
+    }
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [allMessages])
 
     useEffect(() => {
         message.current.value = '';
@@ -47,7 +56,6 @@ export default function ChannelInbox() {
             .then(res => {
                 console.log(res.data.messages);
                 setAllMessages(res.data.messages);
-                //scrollToBottom()
             })
     }, [state.user.id, room_id])
 
@@ -63,7 +71,6 @@ export default function ChannelInbox() {
             if (newMsg.sender_id !== state.user.id) {
                 setAllMessages(oldMsgs => [...oldMsgs, newMsg]);
             }
-            //scrollToBottom()
         })
     }, [socket, state.user.id, room_id]);
 
@@ -83,7 +90,7 @@ export default function ChannelInbox() {
         return (
             <ChatMsg
                 key={index}
-                avatar={""}
+                canClickAvatar={true}
                 side={side}
                 messageObj={obj}
             />
@@ -108,7 +115,6 @@ export default function ChannelInbox() {
                 // console.log(formData);
             }
 
-            //if (commonRoom) {
             setAllMessages(oldMsgs => [...oldMsgs, { ...msg, message_attachments: imageBase64 }]);
             socket.emit('sendChatMessage',
                 { ...msg, message_attachments: imageBase64 }, room_id);
@@ -117,8 +123,8 @@ export default function ChannelInbox() {
                     //console.log(response);
                     message.current.value = '';
                     setImageBase64(null);
+                    scrollToBottom();
                 })
-            //}
         }
     }
 
@@ -147,7 +153,7 @@ export default function ChannelInbox() {
             <Box
                 key="boxChatHeader"
                 sx={{
-                    height: 100,
+                    height: 70,
                     width: "100%",
                     bgcolor: "gray",
                 }}
@@ -168,8 +174,11 @@ export default function ChannelInbox() {
                     >
                         <Stack
                             spacing={0.2}
+                            sx={{
+                                paddingLeft: 1,
+                            }}
                         >
-                            <Typography variant="subtitle2">
+                            <Typography variant="h6">
                                 NodeJs
                             </Typography>
                             <Typography variant="caption">
@@ -203,6 +212,14 @@ export default function ChannelInbox() {
                 }}
             >
                 {renderAllMessages}
+                <Box
+                    style={{
+                        float: "left",
+                        clear: "both",
+                        marginBottom: 10,
+                    }}
+                    ref={latestMessage}
+                />
             </Box>
 
             <Box

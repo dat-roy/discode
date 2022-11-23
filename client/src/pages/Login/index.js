@@ -2,46 +2,47 @@ import React from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { useStore } from "../../store/hooks";
-//import { useSocket } from "../../store/hooks";
+import { useSocket, useStore } from "../../store/hooks";
 import { userActions } from "../../store/actions/userActions";
+import { SocketActionTypes } from "../../store/actions/constants";
 //import jwt_decode from "jwt-decode";
 
 export default function Login() {
     const navigate = useNavigate();
-    const [ state, dispatch ] = useStore();
-    //const socket = useSocket();
-
+    const [state, dispatch] = useStore();
+    const [socketState, socketDispatch] = useSocket();
     useEffect(() => {
         const google = window.google;
         google.accounts.id.initialize({
             client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
             callback: async (oauth_response) => {
-                    const [
-                        status_code, 
-                        existingAccount,
-                        email,
-                        action,
-                    ] = await userActions.userGoogleLogin({
-                            credential: oauth_response.credential,
-                        })();
+                const [
+                    status_code,
+                    existingAccount,
+                    email,
+                    action,
+                ] = await userActions.userGoogleLogin({
+                    credential: oauth_response.credential,
+                })();
 
-                    //console.log(jwt_decode(oauth_response.credential));
-                    
-                    if (status_code === 200) {
-                        if (existingAccount) {
-                            dispatch(action);
-                            navigate("/home");
-                        } else {
-                            //New account, require completing a registration form:
-                            navigate("/register", {
-                                state: {
-                                    email: email,
-                                    credential: oauth_response.credential,
-                                }
-                            });
-                        }
+                //console.log(jwt_decode(oauth_response.credential));
+
+                if (status_code === 200) {
+                    if (existingAccount) {
+                        socketDispatch({ type: SocketActionTypes.DiSCONNECT });
+                        socketDispatch({ type: SocketActionTypes.CONNECT });
+                        dispatch(action);
+                        navigate("/home");
+                    } else {
+                        //New account, require completing a registration form:
+                        navigate("/register", {
+                            state: {
+                                email: email,
+                                credential: oauth_response.credential,
+                            }
+                        });
                     }
+                }
             },
         });
 
@@ -51,12 +52,12 @@ export default function Login() {
                 size: "medium",
             }
         );
-    }, [state.user, dispatch, navigate]);
-    
+    }, [state.user, dispatch, navigate, socketState, socketDispatch]);
+
     if (state.isLogged) {
         return (
             <>
-                You're already logged in. <br/>
+                You're already logged in. <br />
                 Just go to <Link to='/home'>Home</Link>
             </>
         )

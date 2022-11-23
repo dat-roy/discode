@@ -18,11 +18,12 @@ import { userActions } from '../../../store/actions/userActions'
 import { useNavigate } from 'react-router-dom';
 
 import AlertDialog from '../../../components/AlertDialog'
+import { SocketActionTypes } from '../../../store/actions/constants';
 
 export default function AccountMenu() {
     const [openDialog, setOpenDialog] = useState(false);
     const [state, dispatch] = useStore();
-    const socket = useSocket();
+    const [, socketDispatch] = useSocket();
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -111,7 +112,7 @@ export default function AccountMenu() {
                     </ListItemIcon>
                     Settings
                 </MenuItem>
-                <MenuItem 
+                <MenuItem
                     onClick={() => {
                         setOpenDialog(true);
                     }}
@@ -122,15 +123,15 @@ export default function AccountMenu() {
                     Logout
                 </MenuItem>
             </Menu>
-            <AlertDialog 
+            <AlertDialog
                 openDialog={openDialog}
                 setOpenDialog={setOpenDialog}
                 dialogTitle="Confirm your action:"
                 dialogText="Are you sure you want to log out?"
                 handleAgree={() => {
-                    dispatch(userActions.userLogout())
-                    socket.disconnect();
-                }}  
+                    socketDispatch({ type: SocketActionTypes.DISCONNECT });
+                    dispatch(userActions.userLogout());
+                }}
             />
         </React.Fragment>
     );

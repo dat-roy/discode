@@ -24,7 +24,8 @@ const logoLink = process.env.PUBLIC_URL + "assets/img/logo.png";
 export default function MenuBar() {
     //const theme = useTheme();
     const [state, ] = useStore();
-    const socket = useSocket();
+    const [socketState, ] = useSocket();
+    const socket = socketState.instance;
     const location = useLocation();
     const [selected, setSelected] = useState('/' + location.pathname.split('/')[1]);
 

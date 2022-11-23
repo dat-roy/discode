@@ -25,6 +25,7 @@ const findUser = (userId) => {
 
 const socketHandler = (io, socket) => {
     console.log("New client connected: " + socket.id);
+    console.log(io.sockets.sockets.size)
 
     socket.on("subscribe", (userId) => {
         findUser(userId) && removeUserById(userId);
@@ -73,7 +74,9 @@ const socketHandler = (io, socket) => {
         console.log("Client disconnected");
         //Get user_id by socket.id
         const userData = onlineUsers.find((user) => user.socketId === socket.id);
-        const userId = userData.id;
+        const userId = userData?.id;
+
+        if (! userId) return;
 
         //Find all room_id
         UserRoom.findAll({

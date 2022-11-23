@@ -8,6 +8,10 @@ export const useStore = () => {
 }
 
 export const useSocket = () => {
-    const socket = useContext(SocketContext);
-    return socket;
+    const [socketState, socketDispatch] = useContext(SocketContext);
+    // console.log("Socket state")
+    // console.log(socketState)
+    // console.log("Socket dispatch")
+    // console.log(socketDispatch)
+    return [socketState, socketDispatch];
 }

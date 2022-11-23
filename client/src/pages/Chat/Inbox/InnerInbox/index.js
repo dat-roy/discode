@@ -28,7 +28,8 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
     const params = useParams();
 
     const [state,] = useStore();
-    const socket = useSocket();
+    const [socketState, ] = useSocket();
+    const socket = socketState.instance;
     const latestMessage = useRef();
     let message = useRef();
 
@@ -42,6 +43,10 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
     }
 
     useEffect(() => {
+        scrollToBottom();
+    }, [allMessages])
+
+    useEffect(() => {
         message.current.value = '';
         setImageBase64(null);
     }, [params])
@@ -52,7 +57,6 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                 .then(res => {
                     //console.log(res.data.messages);
                     setAllMessages(res.data.messages);
-                    scrollToBottom()
                 })
         }
     }, [myID, commonRoom?.room_id])
@@ -72,7 +76,6 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                 if (newMsg.sender_id !== state.user.id) {
                     setAllMessages(oldMsgs => [...oldMsgs, newMsg]);
                 }
-                scrollToBottom()
             })
         }
     }, [socket, commonRoom?.room_id, state.user.id]);
@@ -93,7 +96,7 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
         return (
             <ChatMsg
                 key={index}
-                avatar={otherUser.avatar_url}
+                canClickAvatar={false}
                 side={side}
                 messageObj={obj}
             />
@@ -127,6 +130,7 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                         //console.log(response);
                         message.current.value = '';
                         setImageBase64(null);
+                        scrollToBottom();
                     })
             }
         }
@@ -253,6 +257,7 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                     style={{
                         float: "left",
                         clear: "both",
+                        marginBottom: 10,
                     }}
                     ref={latestMessage}
                 />

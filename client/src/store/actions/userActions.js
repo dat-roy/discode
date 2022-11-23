@@ -1,4 +1,4 @@
-import ActionTypes from "./constants";
+import { ActionTypes } from "./constants";
 import {
     handleGoogleLoginAPI, handleRegisterAPI,
 } from "../../services/auth";
@@ -15,7 +15,7 @@ class UserActions {
 
     userRegisterSuccess = (payload) => ({
         type: ActionTypes.REGISTER_SUCCESS,
-        payload: payload,   
+        payload: payload,
     })
 
     userLogout = () => ({
@@ -36,7 +36,7 @@ class UserActions {
                 //console.log(response.data);
                 return [
                     response.status,
-                    response.data.exist, 
+                    response.data.exist,
                     response.data.user_data.email,
                     action,
                 ];
@@ -55,7 +55,7 @@ class UserActions {
                 if (response.status === 200) {
                     action = this.userLoginSuccess(response.data);
                 } else {
-                    
+
                 }
 
                 return [
@@ -68,7 +68,7 @@ class UserActions {
     }
 
     userLoginByToken = () => {
-        
+
     }
 }
 
