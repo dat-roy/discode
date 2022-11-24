@@ -25,6 +25,12 @@ const handleGetChannelByIdAPI = (user_id, channel_id) => {
     return axios.get(`/api/channel/${channel_id}?user_id=${user_id}`)
 }
 
+const handleGetChannelMembers = (channel_id) => {
+    return axios.post(`/api/channel/get/members/`, {
+        channel_id, 
+    })
+}
+
 const handleGetJoinedChannelsAPI = (user_id) => {
     return axios.post(`/api/channel/get/joined-channels`, {
         user_id,
@@ -60,6 +66,7 @@ export {
     handleGetLastMessageAPI, 
     handleGetUnreadMessagesAPI, 
     handleGetChannelByIdAPI, 
+    handleGetChannelMembers, 
     handleGetJoinedSingleRoomsAPI, 
     handleGetJoinedChannelsAPI, 
     handleGetGroupRoomsAPI, 

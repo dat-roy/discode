@@ -275,6 +275,24 @@ class channelController {
         }
     }
 
+    //[POST] /api/channel/get/members
+    async getMembers(req, res, next) {
+        const channel_id = parseInt(req.body.channel_id);
+        try {
+            const members = await UserChannel.getMembers({ channel_id })
+            return res.status(200).json({
+                message: "Success", 
+                members, 
+            })
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({
+                message: "Internal Server Error",
+                error: err.message,
+            })
+        }
+    }
+
     //[POST] /api/channel/get/joined-channels
     async getJoinedChannels(req, res, next) {
         const member_id = parseInt(req.body.user_id);

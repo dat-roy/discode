@@ -1,4 +1,5 @@
 const { Model } = require('./Model');
+const Users = require('./users.model');
 const Channels = require('./channels.model');
 const mysql = require('mysql2/promise');
 const dbConnection = require("../config/db/index.db");
@@ -25,6 +26,20 @@ class UserChannel extends Model {
         let sql = `DELETE FROM ${this.tableName}\
                 WHERE user_id=${deleted_id} AND channel_id=${channel_id}`;
         //console.log(sql);
+        return await dbConnection.query(sql);
+    }
+
+    async getMembers(params) {
+        let channel_id = mysql.escape(params.channel_id)
+        
+        const uc = this.tableName;
+        const u = Users.tableName;
+
+        let sql = `SELECT\
+                    ${uc}.user_id, ${uc}.channel_id,\
+                    ${u}.username, ${u}.avatar_url\
+                FROM ${uc} INNER JOIN ${u} ON ${uc}.user_id = ${u}.id\
+                WHERE ${uc}.channel_id = ${channel_id}`;
         return await dbConnection.query(sql);
     }
 

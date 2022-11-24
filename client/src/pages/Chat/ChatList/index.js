@@ -163,7 +163,7 @@ export default function ChatList() {
 
     useEffect(() => {
         socket.on("receiveOnlineUsers", online => {
-            console.log(online);
+            //console.log(online);
             setOnlineUsers(online);
         })
     }, [socket])
