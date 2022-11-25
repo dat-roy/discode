@@ -1,10 +1,13 @@
 import * as React from 'react';
+import { useNavigate } from "react-router-dom"
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { Grid, Stack } from "@mui/material";
+import Fab from '@mui/material/Fab';
+import AddIcon from '@mui/icons-material/Add';
 
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -36,11 +39,8 @@ TabPanel.propTypes = {
 
 
 export default function Feed() {
+    const navigate = useNavigate();
     const [value, setValue] = React.useState(0);
-
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
 
     return (
         <Grid container spacing={0}
@@ -64,9 +64,16 @@ export default function Feed() {
                 theme="light"
             />
             <Grid item xs={8} sx={{ border: "1px solid red" }}>
-                <Box sx={{ padding: 6 }}>
+                <Fab color="primary" aria-label="add"
+                    onClick={() => navigate('/posts/publish')}
+                >
+                    <AddIcon />
+                </Fab>
+                <Box sx={{ padding: 6, border: "1px solid red" }}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                        <Tabs value={value} onChange={handleChange}>
+                        <Tabs value={value} onChange={(event, newValue) => {
+                            setValue(newValue);
+                        }}>
                             <Tab label="Hot" />
                             <Tab label="Following" />
                             <Tab label="For you" />
@@ -85,10 +92,10 @@ export default function Feed() {
             </Grid>
             <Grid item xs sx={{ border: "1px solid red" }}>
                 <Stack direction="column" height="100vh">
-                    <Box height="50%" sx={{border: "1px solid red"}}>
+                    <Box height="50%" sx={{ border: "1px solid red" }}>
                         <Typography>Featured Authors</Typography>
                     </Box>
-                    <Box height="50%" sx={{border: "1px solid red"}}>
+                    <Box height="50%" sx={{ border: "1px solid red" }}>
                         <Typography>Featured Posts</Typography>
                     </Box>
                 </Stack>

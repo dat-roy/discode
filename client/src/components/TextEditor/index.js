@@ -1,26 +1,10 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core";
-
 import ReactQuill, { Quill } from "react-quill";
 import ImageResize from 'quill-image-resize-module-react';
 import 'react-quill/dist/quill.snow.css';
+import "highlight.js/styles/atom-one-light.css";
 
 Quill.register('modules/imageResize', ImageResize);
-
-const useStyles = makeStyles({
-    'ql-snow': {
-        bgcolor: "#23241f",
-        color: "#f8f8f2",
-    },
-    'editor': {
-        bgcolor: "#23241f",
-        color: "black",
-    },
-    'pre.ql-syntax': {
-        bgcolor: "#23241f",
-        color: "#f8f8f2",
-    }
-})
 
 export default function TextEditor(props) {
     /* 
@@ -28,11 +12,22 @@ export default function TextEditor(props) {
     * See https://quilljs.com/docs/modules/ for complete options
     */
     const modules = {
+        syntax: true,
         toolbar: [
-            [{ 'font': [] }],
             [{ size: [] }],
-            [{ 'header': [1, 2, false] }, 'bold', 'italic', 'underline', 'strike', 'blockquote'],
+            [{ 'header': [1, 2, 3, 4, 5, false] }, 'bold', 'italic', 'underline', 'strike', 'blockquote'],
             [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
+            [{
+                'color': ['#111111', '#FF0000', '#001F3F', '#0074D9', '#7FDBFF',
+                    '#39CCCC', '#3D9970', '#2ECC40', '#01FF70',
+                    '#FFDC00', '#FF851B', '#FF4136', '#85144B',
+                    '#F012BE', '#B10DC9', '#AAAAAA'
+                ]
+            }, {
+                'background': [
+                    'yellow', 'orange',
+                ]
+            }],
             ['link', 'image', 'code-block'],
             ['clean']
         ],
@@ -44,38 +39,35 @@ export default function TextEditor(props) {
             displaySize: true,
             parchment: Quill.import('parchment'),
             modules: ['Resize', 'DisplaySize', 'Toolbar']
-        }
+        },
     }
 
     /* 
      * Quill editor formats
      */
     const formats = [
-        'header', 'font', 'size',
+        'header', 'size',
         'bold', 'italic', 'underline', 'strike', 'blockquote',
-        'list', 'bullet', 'indent',
+        'list', 'bullet', 'indent', 'color', 'background',
         'link', 'image', 'code-block'
     ]
-    const classes = useStyles();
+    
     return (
-        <div>
-            <ReactQuill
-                theme={"snow"}
-                onChange={(html) => {
-                    console.log(html);
-                    // const compressed = LZString.compress(html);
-                    // console.log(compressed);
-                    // console.log(html === LZString.decompress(compressed))
-                    //console.log(html);
-                    //console.log(Base64String.compress(html))
-                    props.setEditorHtml(html)
-                }}
-                value={props.editorHtml}
-                modules={modules}
-                formats={formats}
-                placeholder={props.placeholder}
-                className={classes["editor"]}
-            />
-        </div>
+        <ReactQuill
+            theme={"snow"}
+            style={{
+                height: "60vh",
+                marginBottom: 20,
+                color: "black",
+                paddingBottom: 40,
+            }}
+            onChange={(html) => {
+                props.setEditorHtml(html)
+            }}
+            value={props.editorHtml}
+            modules={modules}
+            formats={formats}
+            placeholder={props.placeholder}
+        />
     )
 }

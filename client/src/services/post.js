@@ -2,10 +2,7 @@ import axios from "../config/axios";
 
 const handlePublishNewPostAPI = ({author_id, title, content, tag_list}) => {
     return axios.post(`/api/post/save`, {
-        author_id: author_id, 
-        title: title,
-        content: content, 
-        tag_list: tag_list
+        author_id, title, content, tag_list
     })
 }
 
@@ -23,16 +20,13 @@ const handleGetLikesNumberAPI = (post_id) => {
 
 const handleCheckLikedAPI = (post_id, user_id) => {
     return axios.post(`/api/post/check-liked`, {
-        post_id: post_id, 
-        user_id: user_id, 
+        post_id, user_id, 
     })
 }
 
 const handleToggleLikeButtonAPI = (post_id, user_id, liked) => {
     return axios.post(`/api/post/toggle/like`, {
-        post_id: post_id, 
-        user_id: user_id, 
-        liked: liked, 
+        post_id, user_id, liked, 
     })
 }
 

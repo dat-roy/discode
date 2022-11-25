@@ -12,7 +12,7 @@ class postController {
             //TODO: validate author_id 
 
             if (!content) {
-                return res.status(200).json({
+                return res.status(404).json({
                     message: "Content can not be empty",
                 })
             }

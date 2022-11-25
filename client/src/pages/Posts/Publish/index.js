@@ -1,11 +1,10 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useState } from "react";
-//import LZString from 'lz-string';
 import { useNavigate } from "react-router-dom"
 
 import { useStore } from "../../../store/hooks"
 
-import { Box } from "@mui/system";
+import { Box, Stack } from "@mui/system";
 import { Button } from "@mui/material";
 import TextField from '@mui/material/TextField';
 import { ToastContainer, toast } from 'react-toastify';
@@ -18,21 +17,27 @@ import { handlePublishNewPostAPI } from "../../../services/post";
 export default function Publish() {
     const navigate = useNavigate();
     const [state,] = useStore();
-    //const [tagData, setTagData] = useState();
+    const [tags, setTags] = useState([]);
     const [editorHtml, setEditorHtml] = useState('');
-    const [title, setTitle] = useState('');
+    const title = useRef();
 
     const handlePublishNewPost = () => {
-        if (title === '') {
+        if (title.current.value === '') {
             return toast.error("Title can not be empty")
+        }
+        if (tags.length === 0) {
+            return toast.error("Choose at least one tag please")
         }
         if (editorHtml === '' || editorHtml === '<p><br></p>') {
             return toast.error("Content can not be empty")
         }
+        //console.log(tags);
+        return console.log(editorHtml);
         handlePublishNewPostAPI({
             author_id: state.user.id,
-            title: title, 
+            title: title.current.value,
             content: editorHtml,
+            tag_list: tags,
         })
             .then((res) => {
                 toast.success("Publish new post successfully")
@@ -55,10 +60,12 @@ export default function Publish() {
             noValidate
             autoComplete="off"
         >
-            <Box
-                sx={{
-                    width: "70%",
-                    margin: "auto"
+            <Stack
+                spacing={3}
+                style={{
+                    width: "50%",
+                    margin: "auto",
+                    paddingTop: 5,
                 }}
             >
                 <ToastContainer
@@ -74,25 +81,54 @@ export default function Publish() {
                     theme="light"
                 />
                 <TextField
-                    id="standard-basic" label="Title" variant="standard"
-                    value={title}
-                    onChange={(input) => setTitle(input.target.value)}
+                    id="title"
+                    variant="standard"
+                    multiline
+                    placeholder="New post title here..."
+                    style={{
+                        width: "100%",
+                    }}
+                    inputProps={{
+                        style: {
+                            fontSize: 36,
+                            paddingTop: 10,
+                            paddingRight: 10,
+                            fontWeight: 500,
+                            letterSpacing: 0.5,
+                            lineHeight: 1,
+                        }
+                    }}
+                    inputRef={title}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' ||
+                            (e.key === 'Enter' && e.shiftKey)) {
+                            e.preventDefault();
+                        }
+                    }}
                 />
-                <Tags />
+                <Tags
+                    tags={tags}
+                    setTags={setTags}
+                    maxSelections={4}
+                    placeholder={"Add up to 4 tags..."}
+                />
                 <TextEditor
                     placeholder={"Write something..."}
                     editorHtml={editorHtml}
                     setEditorHtml={setEditorHtml}
                 />
+
                 <Button
                     onClick={handlePublishNewPost}
-                    sx={{
-                        marginBottom: 2
+                    variant={"contained"}
+                    style={{
+                        width: "50%",
+                        margin: "auto",
                     }}
                 >
                     Publish
                 </Button>
-            </Box>
+            </Stack>
         </Box>
     )
 }
