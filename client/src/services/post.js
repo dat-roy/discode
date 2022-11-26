@@ -31,7 +31,13 @@ const handleToggleLikeButtonAPI = (post_id, user_id, liked) => {
 }
 
 const handleGetCommentsAPI = (post_id) => {
-    return axios.get(`/api/post/get/comment/${post_id}`)
+    return axios.get(`/api/post/comment/get/${post_id}`)
+}
+
+const handleSaveCommentsAPI = (post_id, sender_id, content, parent_comment_id) => {
+    return axios.post(`/api/post/comment/save`, {
+        post_id, sender_id, content, parent_comment_id, 
+    })
 }
 
 export {
@@ -42,4 +48,5 @@ export {
     handleCheckLikedAPI, 
     handleToggleLikeButtonAPI, 
     handleGetCommentsAPI, 
+    handleSaveCommentsAPI, 
 }

@@ -42,7 +42,9 @@ const inputGlobalStyles = <GlobalStyles
                 padding: spacing(0.8, 2.1),
                 borderRadius: 4,
                 display: 'inline-block',
-                wordBreak: 'break-word',
+                maxWidth: "250px",
+                wordWrap: "break-word",
+                whiteSpace: 'pre-line',
             },
             ".left": {
                 borderRadius: radius,
@@ -118,13 +120,13 @@ const ChatMsg = (props) => {
                             {...(canClickAvatar && { onClick: () => setOpenProfile(true) })}
                         />
 
-                        <Dialog 
+                        <Dialog
                             open={openProfile}
                             onClose={() => setOpenProfile(false)}
                             style={{ maxWidth: "100%", maxHeight: "100%" }}
                         >
                             {/*TODO: Add profile preview */}
-                            <img src={avatar_url} alt="profile-dialog"/>
+                            <img src={avatar_url} alt="profile-dialog" />
                         </Dialog>
                     </Grid>
                 )}
@@ -190,7 +192,7 @@ const ChatMsg = (props) => {
                                                             TypographyProps.className
                                                         )}
                                                         style={{
-                                                            fontFamily: "cursive",
+                                                            // fontFamily: "cursive",
                                                         }}
                                                     >
                                                         {content}
@@ -231,7 +233,7 @@ const ChatMsg = (props) => {
                                             TypographyProps.className
                                         )}
                                         style={{
-                                            fontFamily: "cursive",
+                                            // fontFamily: "cursive",
                                         }}
                                     >
                                         {content}

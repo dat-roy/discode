@@ -3,17 +3,17 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom"
 import { useStore } from "../../../store/hooks";
 
-import { Box } from "@mui/system";
 import { Grid } from "@mui/material";
 import { ToastContainer, toast } from 'react-toastify';
 
-import PostSides from "./PostSides";
+import PostLeft from "./PostLeft";
 import PostContent from "./PostContent";
+import PostRight from "./PostRight";
 import PageNotFound from '../../PageNotFound'
 
 import {
     handleGetPostByIdAPI,
-} from "../../../services/post"
+} from "../../../services"
 import 'react-quill/dist/quill.snow.css';
 import 'react-quill/dist/quill.bubble.css'
 import "highlight.js/styles/atom-one-light.css";
@@ -62,9 +62,8 @@ export default function PostView() {
                 pauseOnHover
                 theme="light"
             />
-            <Grid item xs sx={{ border: "1px solid red" }}>
-                <PostSides 
-                    post_id={post_id}
+            <Grid item xs>
+                <PostLeft
                     postData={postData}
                     toast={toast}
                 />
@@ -79,8 +78,10 @@ export default function PostView() {
                     postData={postData}
                 />
             </Grid>
-            <Grid item xs sx={{ border: "1px solid red" }}>
-                <Box></Box>
+            <Grid item xs>
+                <PostRight
+                    postData={postData}
+                />
             </Grid>
         </Grid>
     )

@@ -32,7 +32,7 @@ export default function Publish() {
             return toast.error("Content can not be empty")
         }
         //console.log(tags);
-        return console.log(editorHtml);
+        //console.log(editorHtml);
         handlePublishNewPostAPI({
             author_id: state.user.id,
             title: title.current.value,

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -27,11 +27,9 @@ const ChatElement = ({ selected, online, room_data }) => {
     const navigate = useNavigate();
 
     const {
-        room_id, last_message, unread_messages, partner_data
+        room_id, last_message, partner_data, //unread_messages,
     } = room_data;
 
-    //last_message.created_at = "2002-10-20 10:00:10"
-    //last_message.content = "asassssssssssssssssssssssssssssssssssssssssssssssssssss"
     const last_message_time = (moment(last_message?.created_at).isSame(moment(), 'day'))
         ? last_message?.created_at?.split(' ')[1]?.substr(0, 5)
         : moment(last_message?.created_at).fromNow();
@@ -128,6 +126,11 @@ export default function ChatList() {
     const [selected, setSelected] = useState(location.state?.selected_room_id || null);
     const [singleRooms, setSingleRooms] = useState([])
     const [onlineUsers, setOnlineUsers] = useState([])
+    const latestRoom = useRef();
+
+    const scrollToTop = () => {
+        latestRoom.current.scrollIntoView({ behavior: "smooth" });
+    }
 
     useEffect(() => {
         setSelected(location.state?.selected_room_id || null);
@@ -150,6 +153,7 @@ export default function ChatList() {
             roomList.sort((a, b) => {
                 return new Date(b.last_message.created_at) - new Date(a.last_message.created_at);
             })
+            scrollToTop();
 
             //console.log(roomList);
             setSingleRooms(roomList);
@@ -195,6 +199,7 @@ export default function ChatList() {
                 return new Date(b.last_message.created_at) - new Date(a.last_message.created_at);
             })
             setSingleRooms(roomList)
+            scrollToTop();
         })
     }, [socket, singleRooms])
 
@@ -234,7 +239,7 @@ export default function ChatList() {
                     padding={1}
                 >
                     <Divider
-                        variant="middle" flexItem
+                        variant="middle"
                         color={"gray"}
                     />
                 </Box>
@@ -250,6 +255,14 @@ export default function ChatList() {
                     overflowY: "scroll"
                 }}
             >
+                <Box
+                    style={{
+                        float: "left",
+                        clear: "both",
+                        marginBottom: -12,
+                    }}
+                    ref={latestRoom}
+                />
                 {
                     singleRooms.map((obj, index) => {
                         return (

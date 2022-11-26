@@ -105,13 +105,13 @@ class postController {
     async countLikesNumber(req, res, next) {
         const post_id = parseInt(req.params.id);
         try {
-            const result = await PostLikes.fetchLikesNumber({ post_id: post_id})
+            const result = await PostLikes.fetchLikesNumber({ post_id: post_id })
             return res.status(200).json(result)
         } catch (err) {
             console.log(err);
             return res.status(500).json({
-                message: "Internal Server Error", 
-                error: err.message, 
+                message: "Internal Server Error",
+                error: err.message,
             })
         }
     }
@@ -149,50 +149,76 @@ class postController {
     async toggleLiked(req, res, next) {
         const user_id = parseInt(req.body.user_id);
         const post_id = parseInt(req.body.post_id);
-        const {liked} = req.body;
+        const { liked } = req.body;
         try {
             const result = await PostLikes.create({
-                user_id: user_id, 
-                post_id: post_id, 
-                liked: liked, 
+                user_id: user_id,
+                post_id: post_id,
+                liked: liked,
             })
 
             if (result.affectedRows === 0) {
                 return res.status(200).json({
-                    success: false, 
-                }) 
+                    success: false,
+                })
             } else {
                 return res.status(200).json({
-                    success: true, 
-                }) 
+                    success: true,
+                })
             }
         } catch (err) {
             console.log(err)
             return res.status(500).json({
                 message: "Internal Server Error",
-                error: err.message, 
+                error: err.message,
             })
         }
     }
 
-    //[GET] /api/post/get/comment/:id
+    //[GET] /api/post/comment/get/:id
     async getComments(req, res, next) {
         const post_id = parseInt(req.params.id)
         try {
-            const comments = await PostComments.findAll({
-                where: {
-                    post_id: post_id, 
-                }
+            const comments = await PostComments.fetchCommentWithSender({
+                post_id, 
             })
             return res.status(200).json({
-                message: "Get all comments successfully", 
-                comments: comments, 
+                message: "Get all comments successfully",
+                comments: comments,
+            })
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({
+                message: "Internal Server Error",
+                error: err.message,
+            })
+        }
+    }
+
+    //[POST] /api/post/comment/save
+    async saveNewComment(req, res, next) {
+        const { post_id, sender_id, content, parent_comment_id } = req.body;
+
+        try {
+            const commentSaving = await PostComments.create({
+                post_id, sender_id, content, parent_comment_id, 
+            })
+            if (commentSaving.affectedRows === 0) {
+                throw new Error("DB error")
+            }
+            return res.status(200).json({
+                message: "Success", 
+                comment: {
+                    id: commentSaving.insertId, 
+                    post_id, sender_id, 
+                    content, parent_comment_id, 
+                }
             })
         } catch (err) {
             console.log(err);
             return res.status(500).json({
                 message: "Internal Server Error", 
-                error: err.message, 
+                err: err.message, 
             })
         }
     }

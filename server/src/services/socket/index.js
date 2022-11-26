@@ -28,7 +28,8 @@ const socketHandler = (io, socket) => {
     console.log("Client total: " + io.sockets.sockets.size);
 
     socket.on("subscribe", (userId) => {
-        findUser(userId) && removeUserById(userId);
+        const exist = findUser(userId);
+        exist && removeUserById(userId);
         addUser(userId, socket.id);
 
         console.log("Online Users: " + onlineUsers.length)
@@ -43,6 +44,7 @@ const socketHandler = (io, socket) => {
             .then((res) => {
                 //console.log(res);
                 for (const userRoom of res) {
+                    socket.join(userRoom.room_id);
                     socket.broadcast.to(userRoom.room_id).emit("notifyOnline", userId)
                     //console.log(userId, " ", userRoom.room_id)
                 }
@@ -63,6 +65,7 @@ const socketHandler = (io, socket) => {
     })
 
     socket.on("sendChatMessage", (message, roomId) => {
+        message.room_id = roomId;
         io.to(roomId).emit("receiveChatMessage", message);
         //socket.broadcast.to(roomId).emit("receiveChatMessage", message);
         //console.log(message);

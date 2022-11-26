@@ -69,7 +69,7 @@ export default function Feed() {
                 >
                     <AddIcon />
                 </Fab>
-                <Box sx={{ padding: 6, border: "1px solid red" }}>
+                <Box sx={{ padding: 6, border: "1px solid red", height: "100vh" }}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                         <Tabs value={value} onChange={(event, newValue) => {
                             setValue(newValue);
