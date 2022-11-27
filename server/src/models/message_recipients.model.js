@@ -15,7 +15,6 @@ class MessageRecipients extends Model {
 
         let sql = `INSERT INTO ${this.tableName}(recipient_id, recipient_room_id, message_id, is_read)\
                 VALUES(${recipient_id}, ${recipient_room_id}, ${message_id}, ${is_read})`;
-        //console.log(sql);
         return await dbConnection.query(sql);
     }
 }

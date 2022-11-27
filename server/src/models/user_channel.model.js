@@ -15,7 +15,6 @@ class UserChannel extends Model {
 
         let sql = `INSERT INTO ${this.tableName}(user_id, channel_id)\
                     VALUES(${user_id}, ${channel_id})`;
-        //console.log(sql);
         return await dbConnection.query(sql);
     }
 
@@ -25,7 +24,6 @@ class UserChannel extends Model {
 
         let sql = `DELETE FROM ${this.tableName}\
                 WHERE user_id=${deleted_id} AND channel_id=${channel_id}`;
-        //console.log(sql);
         return await dbConnection.query(sql);
     }
 
@@ -52,7 +50,6 @@ class UserChannel extends Model {
         let sql = `SELECT * FROM ${uc}\
                 INNER JOIN ${c}\
                 WHERE (${uc}.user_id = ${member_id}) AND (${uc}.channel_id = ${c}.id)`;
-        //console.log(sql);
         return await dbConnection.query(sql);
     }
 }

@@ -111,6 +111,7 @@ export default function RoomList() {
                 if (res.status !== 200) {
                     throw new Error("Failed to connect to server");
                 }
+                console.log(res.data?.channel)
                 setChannel(res.data?.channel)
                 setJoined(res.data?.joined)
             })
@@ -131,6 +132,8 @@ export default function RoomList() {
                 .catch(err => {
                     return toast.error(err.message);
                 })
+        } else {
+            //Channel preview.
         }
     }, [state?.user?.id, channel_id, joined])
 
@@ -169,7 +172,7 @@ export default function RoomList() {
                         <CardMedia
                             component="img"
                             height="160"
-                            image="https://kinhnghiemlaptrinh.com/wp-content/uploads/2019/09/image1-2-768x432.jpg"
+                            image={channel?.background_url}
                             alt="backdrop"
                         />
                         <Box
@@ -178,7 +181,7 @@ export default function RoomList() {
                             position={"relative"}
                         >
                             <Avatar
-                                src="https://fullstack.edu.vn/static/media/f8-icon.18cd71cfcfa33566a22b.png"
+                                src={channel?.avatar_url}
                                 key={"Channel-logo"}
                                 style={{
                                     position: "absolute",
@@ -208,7 +211,7 @@ export default function RoomList() {
                                     paddingTop: 4,
                                 }}
                             >
-                                Fullstack-overflow
+                                {channel?.title}
                             </Typography>
                         </CardContent>
                     </Card>

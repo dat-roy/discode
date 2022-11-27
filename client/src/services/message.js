@@ -19,7 +19,7 @@ const handleSaveNewMessage = (formData) => {
 
     return axios({
         method: "post", 
-        url: "http://localhost:3030/api/message/save", 
+        url: `${process.env.REACT_APP_SERVER_HOST}/api/message/save`, 
         data: formData, 
         headers: {
             "Content-Type" : "multipart/form-data", 

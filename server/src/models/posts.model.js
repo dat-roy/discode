@@ -13,12 +13,10 @@ class Posts extends Model {
         const author_id = mysql.escape(params.author_id);
         const title = mysql.escape(params.title);
         const content = mysql.escape(params.content);
-        //const content = params.content;
 
         let sql = `INSERT INTO\
                 ${this.tableName}(author_id, title, content, created_at)\
                 VALUES(${author_id}, ${title}, ${content}, NOW())`;
-        //console.log(sql);
         return await dbConnection.query(sql);
     }
 
@@ -31,7 +29,6 @@ class Posts extends Model {
                     SET title = IF(${title} IS NULL, title, ${title}),\
                         content = IF(${content} IS NULL, content, ${content})\
                     WHERE (id = ${post_id})`;
-        //console.log(sql);
         return await dbConnection.query(sql);
     }
 
@@ -39,7 +36,6 @@ class Posts extends Model {
         const post_id = mysql.escape(params.post_id);
         const author_id = mysql.escape(params.author_id);
         let sql = `DELETE FROM ${this.tableName} WHERE id=${post_id} AND author_id=${author_id}`;
-        //console.log(sql);
         return await dbConnection.query(sql);
     }
 
@@ -53,7 +49,6 @@ class Posts extends Model {
                         ${u}.email, ${u}.username, ${u}.avatar_url\
                     FROM ${p} INNER JOIN ${u} ON ${p}.author_id = ${u}.id\
                     WHERE ${p}.id = ${post_id}`;
-        //console.log(sql);
         return await dbConnection.query(sql);
     }
 }

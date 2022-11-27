@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Nov 26, 2022 at 08:49 AM
+-- Generation Time: Nov 27, 2022 at 04:50 PM
 -- Server version: 8.0.31
 -- PHP Version: 8.1.6
 
@@ -32,7 +32,8 @@ CREATE TABLE `channels` (
   `admin_id` int UNSIGNED NOT NULL,
   `title` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `avatar_url` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `avatar_url` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `background_url` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -40,8 +41,9 @@ CREATE TABLE `channels` (
 -- Dumping data for table `channels`
 --
 
-INSERT INTO `channels` (`id`, `admin_id`, `title`, `description`, `avatar_url`, `created_at`) VALUES
-(5, 2, 'Fullstack-overflow', 'A gathering place for codeholic.', NULL, '2022-11-11 17:59:52');
+INSERT INTO `channels` (`id`, `admin_id`, `title`, `description`, `avatar_url`, `background_url`, `created_at`) VALUES
+(5, 2, 'Fullstack-overflow', 'A gathering place for codeholic.', 'https://fullstack.edu.vn/static/media/f8-icon.18cd71cfcfa33566a22b.png', 'https://kinhnghiemlaptrinh.com/wp-content/uploads/2019/09/image1-2-768x432.jpg', '2022-11-11 17:59:52'),
+(11, 2, 'Deno', 'A modern runtime for JS and TS.', 'upload\\channel\\1669563463396.jpg', 'upload\\channel\\1669563463397.png', '2022-11-27 22:37:43');
 
 -- --------------------------------------------------------
 
@@ -130,7 +132,13 @@ INSERT INTO `messages` (`id`, `sender_id`, `content`, `message_type`, `parent_me
 (229, 2, '🥹', 'text', NULL, '2022-11-25 17:23:40', NULL),
 (230, 2, 'abc\ndef', 'text', NULL, '2022-11-25 23:54:32', NULL),
 (231, 2, 'this is a super super super super super super super super super super super super super super super super super super super super super super super super super super super super super super super super super long text 😘', 'text', NULL, '2022-11-25 23:57:42', NULL),
-(232, 2, 'aaa\nbbb\nccc', 'text', NULL, '2022-11-25 23:59:12', NULL);
+(232, 2, 'aaa\nbbb\nccc', 'text', NULL, '2022-11-25 23:59:12', NULL),
+(233, 2, 'hi', 'text', NULL, '2022-11-26 14:59:52', NULL),
+(234, 2, 'hola', 'text', NULL, '2022-11-26 15:00:23', NULL),
+(235, 2, 'meow', 'text', NULL, '2022-11-26 15:02:07', NULL),
+(236, 2, ':v', 'text', NULL, '2022-11-26 15:10:35', NULL),
+(237, 2, '😆', 'text', NULL, '2022-11-26 15:10:49', NULL),
+(238, 2, '♾️', 'text', NULL, '2022-11-26 15:11:11', NULL);
 
 -- --------------------------------------------------------
 
@@ -318,7 +326,19 @@ INSERT INTO `message_recipients` (`id`, `recipient_id`, `recipient_room_id`, `me
 (460, 2, 36, 231, 1),
 (461, 10, 37, 231, 0),
 (462, 2, 36, 232, 1),
-(463, 10, 37, 232, 0);
+(463, 10, 37, 232, 0),
+(464, 2, 32, 233, 1),
+(465, 8, 33, 233, 0),
+(466, 2, 38, 234, 1),
+(467, 11, 39, 234, 0),
+(468, 2, 32, 235, 1),
+(469, 8, 33, 235, 0),
+(470, 2, 36, 236, 1),
+(471, 10, 37, 236, 0),
+(472, 5, 28, 237, 0),
+(473, 2, 29, 237, 1),
+(474, 2, 40, 238, 1),
+(475, 12, 41, 238, 0);
 
 -- --------------------------------------------------------
 
@@ -496,7 +516,8 @@ CREATE TABLE `user_channel` (
 INSERT INTO `user_channel` (`id`, `user_id`, `channel_id`) VALUES
 (1, 2, 5),
 (2, 4, 5),
-(3, 7, 5);
+(3, 7, 5),
+(4, 2, 11);
 
 -- --------------------------------------------------------
 
@@ -556,6 +577,7 @@ INSERT INTO `user_room` (`id`, `user_id`, `room_id`) VALUES
 --
 ALTER TABLE `channels`
   ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `title` (`title`),
   ADD KEY `channels_users_foreign_key` (`admin_id`);
 
 --
@@ -652,13 +674,13 @@ ALTER TABLE `user_room`
 -- AUTO_INCREMENT for table `channels`
 --
 ALTER TABLE `channels`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=233;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=239;
 
 --
 -- AUTO_INCREMENT for table `message_attachments`
@@ -670,7 +692,7 @@ ALTER TABLE `message_attachments`
 -- AUTO_INCREMENT for table `message_recipients`
 --
 ALTER TABLE `message_recipients`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=464;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=476;
 
 --
 -- AUTO_INCREMENT for table `posts`
@@ -712,7 +734,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `user_channel`
 --
 ALTER TABLE `user_channel`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `user_room`

@@ -15,14 +15,12 @@ class PostLikes extends Model {
         let sql = `INSERT INTO ${this.tableName}(post_id, user_id, liked)\
             VALUES(${post_id}, ${user_id}, TRUE)\
             ON DUPLICATE KEY UPDATE liked = ${liked}`;
-        //console.log(sql);
         return await dbConnection.query(sql);
     }
 
     async fetchLikesNumber(params) {
         const post_id = mysql.escape(params.post_id);
         let sql = `SELECT COUNT(*) AS number FROM ${this.tableName} WHERE post_id = ${post_id} AND liked=TRUE`;
-        //console.log(sql);
         return (await dbConnection.query(sql))[0];
     }
 }

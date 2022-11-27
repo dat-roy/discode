@@ -1,8 +1,8 @@
 const express = require('express');
-const router = express.Router();
-
 const messageController = require('../controllers/message.controller')
+const router = express.Router();
 const upload = require('../middlewares/upload-image');
+
 const saved_image_folder = "msg"
 const upload_image_field = "file"
 

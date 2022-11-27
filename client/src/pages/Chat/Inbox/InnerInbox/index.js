@@ -59,8 +59,13 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
         if (commonRoom?.room_id) {
             handleGetOldMessages(myID, commonRoom.room_id)
                 .then(res => {
-                    //console.log(res.data.messages);
+                    if (res.status !== 200) {
+                        throw new Error(res.message)
+                    }
                     setAllMessages(res.data.messages);
+                })
+                .catch(err => {
+                    return toast.error(err.message)
                 })
         }
     }, [myID, commonRoom?.room_id])
@@ -90,13 +95,6 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
             : (obj.sender_id === myID)
                 ? "right" : "left";
 
-        // let notificationStyle = null;
-        // if (side === "center") {
-        //     notificationStyle = {
-        //         textAlign: "center", 
-        //         fontStyle: "italic", 
-        //     }
-        // }
         return (
             <ChatMsg
                 key={index}
@@ -122,14 +120,13 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
             formData.append("document", JSON.stringify(msg))
             if (imageBase64) {
                 formData.append("file", imageFile);
-                // console.log(formData);
             }
 
             if (commonRoom) {
                 handleSaveNewMessage(formData)
                     .then(res => {
                         if (res.status !== 200) {
-                            throw new Error("Failed to connect to server");
+                            throw new Error(res.message);
                         }
                         const { msg_data } = res.data;
                         socket.emit('sendChatMessage', msg_data, commonRoom.room_id);
@@ -150,6 +147,7 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
 
         if (response.status === 200) {
             const newRoom = response.data.room_data[0]
+            //TODO: Replace by a gif or sticker.
             const msg = {
                 message_type: MessageTypes.TEXT,
                 sender_id: myID,
@@ -162,9 +160,15 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
             formData.append("document", JSON.stringify(msg))
 
             handleSaveNewMessage(formData)
-                .then(response => {
-                    //console.log(response);
+                .then(res => {
+                    //console.log(res);
+                    if (res.status !== 200) {
+                        return new Error(res.message)
+                    }
                     setCommonRoom(newRoom);
+                })
+                .catch(err => {
+                    return toast.error(err.message);
                 })
         }
     }
@@ -172,12 +176,11 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
     const handleUploadClick = (event) => {
         let file = event.target.files[0];
         setImageFile(file);
+        
         const reader = new FileReader();
         reader.readAsDataURL(file);
-
         reader.onloadend = () => {
             setImageBase64(reader.result)
-            //console.log(reader.result);
         }
     }
 
@@ -206,7 +209,7 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
             <Box
                 key="boxChatHeader"
                 sx={{
-                    height: 100,
+                    height: 60,
                     width: "100%",
                     bgcolor: "inherit",
                 }}
@@ -288,7 +291,6 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                 key="sendBox"
                 sx={{
                     width: "100%",
-                    //bgcolor: "#000",
                 }}
             >
                 <Stack

@@ -17,7 +17,6 @@ class UserRoom extends Model {
 
         let sql = `INSERT INTO ${this.tableName}(user_id, room_id)\
                     VALUES(${user_id}, ${room_id})`;
-        //console.log(sql);
         return await dbConnection.query(sql);
     }
 
@@ -27,7 +26,6 @@ class UserRoom extends Model {
 
         let sql = `DELETE FROM ${this.tableName}\
                 WHERE user_id=${deleted_id} AND room_id=${room_id}`;
-        //console.log(sql);
         return await dbConnection.query(sql);
     }
 
@@ -36,7 +34,6 @@ class UserRoom extends Model {
         let sql = `SELECT * FROM ${this.tableName}\
                 INNER JOIN ${Rooms.tableName} ON ${this.tableName}.room_id = ${Rooms.tableName}.id\
                 WHERE ${this.tableName}.user_id = ${user_id} AND ${Rooms.tableName}.type = '${RoomTypes.SINGLE}'`;
-        //console.log(sql);
         return await dbConnection.query(sql);
     }
 
@@ -46,7 +43,6 @@ class UserRoom extends Model {
         let sql = `SELECT * FROM ${this.tableName}\
                 INNER JOIN ${Users.tableName} ON ${this.tableName}.user_id = ${Users.tableName}.id\
                 WHERE ${this.tableName}.user_id != ${user_id} AND ${this.tableName}.room_id = ${room_id}`;
-        //console.log(sql);
         return (await dbConnection.query(sql))[0];
     }
 
@@ -71,7 +67,6 @@ class UserRoom extends Model {
                 INNER JOIN ${r} ON ${ur}.room_id = ${r}.id\
                 INNER JOIN ${c} on ${r}.channel_id = ${c}.id\
                 WHERE ${ur}.user_id = ${user_id} AND ${r}.channel_id = ${channel_id}`;
-        //console.log(sql);
         return await dbConnection.query(sql);
     }
 }

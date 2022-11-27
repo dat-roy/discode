@@ -19,7 +19,6 @@ class Messages extends Model {
         let sql = `INSERT INTO ${this.tableName}(sender_id, content, message_type,\ 
                     parent_message_id, created_at)\
                 VALUES(${sender_id}, ${content}, ${message_type}, ${parent_message_id}, NOW())`;
-        //console.log(sql);
         return await dbConnection.query(sql);
     }
 
@@ -29,7 +28,6 @@ class Messages extends Model {
 
         let sql = `DELETE FROM ${this.tableName}\
                 WHERE id=${message_id} AND sender_id=${sender_id}`;
-        //console.log(sql);
         return await dbConnection.query(sql);
     }
 
@@ -61,7 +59,6 @@ class Messages extends Model {
                     ON ${ur}.id = ${mr}.recipient_room_id\
                 WHERE ${ur}.user_id = ${user_id} AND ${ur}.room_id = ${room_id}\
                 ORDER BY ${m}.created_at DESC LIMIT 1`;
-        //console.log(sql);
         return await dbConnection.query(sql);
     }
 
@@ -81,8 +78,6 @@ class Messages extends Model {
                 WHERE ${m}.sender_id != ${user_id} AND ${ur}.user_id = ${user_id} 
                     AND ${ur}.room_id = ${room_id} AND ${mr}.is_read = false\
                 ORDER BY ${m}.created_at DESC`;
-
-        //console.log(sql);
         return await dbConnection.query(sql);
     }
 }

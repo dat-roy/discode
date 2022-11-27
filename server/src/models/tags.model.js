@@ -14,7 +14,6 @@ class Tags extends Model {
         let sql = `INSERT INTO\
                 ${this.tableName}(post_id, tag_name)\
                 VALUES(${post_id}, ${tag_name})`;
-        //console.log(sql);
         return await dbConnection.query(sql);
     }
 
@@ -23,7 +22,6 @@ class Tags extends Model {
         const tag_name = mysql.escape(params.tag_name);
         
         let sql = `DELETE FROM ${this.tableName} WHERE post_id=${post_id} AND tag_name=${tag_name}`;
-        //console.log(sql);
         return await dbConnection.query(sql);
     }
 }

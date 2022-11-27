@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useStore } from "../../../../store/hooks";
 import { handleGetJoinedChannelsAPI } from "../../../../services/chat";
 
@@ -14,12 +14,11 @@ import ListSubheader from '@mui/material/ListSubheader';
 import { Box } from "@mui/material";
 import { Stack, Typography } from "@mui/material";
 import { Divider } from "@mui/material";
-import { IconButton } from "@mui/material";
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import SearchBar from "../../../../components/SearchBar";
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ChannelCreator from "../ChannelCreator";
 
 const List = styled(MuiList)({
     "& .MuiListItemButton-root": {
@@ -145,16 +144,7 @@ export default function ChannelList() {
                     >
                         Channels
                     </Typography>
-                    <IconButton
-                        size="large" color="inherit"
-                        style={{
-                            marginRight: -10,
-                        }}
-                        component={Link}
-                        to="/channels/create"
-                    >
-                        <AddCircleOutlineIcon sx={{ fontSize: 28 }} />
-                    </IconButton>
+                    <ChannelCreator />
                 </Stack>
 
                 <Stack>

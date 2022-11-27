@@ -12,11 +12,11 @@ class Channels extends Model {
         let title = mysql.escape(params.title);
         let description = mysql.escape(params.description);
         let avatar_url = mysql.escape(params.avatar_url);
+        let background_url = mysql.escape(params.background_url);
 
         let sql = `INSERT INTO\ 
-            ${this.tableName}(admin_id, title, description, avatar_url, created_at)\
-            VALUES(${admin_id}, ${title}, ${description}, ${avatar_url}, NOW())`;
-        //console.log(sql);
+            ${this.tableName}(admin_id, title, description, avatar_url, background_url, created_at)\
+            VALUES(${admin_id}, ${title}, ${description}, ${avatar_url}, ${background_url}, NOW())`;
 
         return await dbConnection.query(sql);
     }
@@ -26,7 +26,6 @@ class Channels extends Model {
         let channel_id = mysql.escape(params.channel_id);
 
         let sql = `DELETE FROM ${this.tableName} WHERE id=${channel_id} AND admin_id=${admin_id}`;
-        //console.log(sql);
         return await dbConnection.query(sql);
     }
 }

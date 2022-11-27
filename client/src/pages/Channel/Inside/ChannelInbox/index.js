@@ -183,10 +183,10 @@ export default function ChannelInbox() {
             />
             <Box
                 key="boxChatHeader"
-                sx={{
-                    height: 70,
+                style={{
+                    height: 60,
                     width: "100%",
-                    bgcolor: "#121858",
+                    backgroundColor: "#121858",
                 }}
             >
                 <Stack
@@ -200,7 +200,6 @@ export default function ChannelInbox() {
                 >
                     <Stack
                         direction={"row"}
-                        spacing={2}
                         marginLeft={3}
                     >
                         <Stack
@@ -255,9 +254,9 @@ export default function ChannelInbox() {
 
             <Box
                 key="sendBox"
-                sx={{
+                style={{
                     width: "100%",
-                    //bgcolor: "#000",
+                    height: 75,
                 }}
             >
                 <Stack

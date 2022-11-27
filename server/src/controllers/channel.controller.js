@@ -1,8 +1,14 @@
+const url = require('node:url');
+const path = require('path')
 const Channels = require('../models/channels.model')
 const Users = require('../models/users.model');
 const UserChannel = require('../models/user_channel.model');
 const UserRoom = require('../models/user_room.model')
 const Rooms = require('../models/rooms.model')
+const { isValidHttpUrl } = require('../utils/is-valid-http-url')
+const dotenv = require('dotenv');
+dotenv.config();
+const backendHostname = process.env.BACKEND_HOST;
 
 class channelController {
     //[GET] /api/channel/:id?user_id=
@@ -22,6 +28,13 @@ class channelController {
                         `user_id=${user_id} AND channel_id=${channel_id}`,
                 })
 
+            if (!isValidHttpUrl(channelData.avatar_url)) {
+                channelData.avatar_url = url.parse(backendHostname + '/' + channelData.avatar_url).href
+            }
+            if (!isValidHttpUrl(channelData.background_url)) {
+                channelData.background_url = url.parse(backendHostname + '/' + channelData.background_url).href
+            }
+
             return res.status(200).json({
                 message: "Get channel successfully",
                 channel: channelData,
@@ -39,38 +52,61 @@ class channelController {
 
     //[POST] /api/channel/create
     async createChannel(req, res, next) {
-        let { user_id, title, description, avatar_url } = req.body;
+        const {
+            admin_id,
+            title, description,
+        } = JSON.parse(req.body.document);
+
+        const avatar_path = path.join('upload', 'channel',
+            req.files['avatar'][0].filename);
+        const background_path = path.join('upload', 'channel',
+            req.files['background'][0].filename);
+
         if (!title || title === '') {
-            return res.status(200).json({
+            //TODO: remove all images.
+            return res.status(400).json({
                 message: "Empty title of channel",
-                results: null,
             })
         }
 
         try {
-            const checkUserIdExists = await Users.checkExistence({ where: { id: user_id } });
+            const checkUserIdExists = await Users.checkExistence({ where: { id: admin_id } });
             if (!checkUserIdExists) {
+                //TODO: remove all images.
                 return res.status(404).json({
                     message: "Can not find user ID",
                 })
             } else {
                 const result = await Channels.create({
-                    admin_id: user_id,
-                    title: title,
-                    description: description,
-                    avatar_url: avatar_url,
+                    admin_id,
+                    title, description,
+                    avatar_url: avatar_path,
+                    background_url: background_path,
                 });
 
-                //console.log(result);
-                return res.status(200).json({
-                    message: "Create new channel successfully",
-                    results: result,
+                if (result.affectedRows === 0) {
+                    throw new Error("DB error");
+                }
+
+                //Save in user_channel.
+                const userChannelSaving = await UserChannel.create({
+                    user_id: admin_id,
+                    channel_id: result.insertId,
                 })
+
+                if (userChannelSaving.affectedRows === 0) {
+                    throw new Error("DB error")
+                } else {
+                    return res.status(200).json({
+                        message: "Create new channel successfully",
+                        channel_id: result.insertId,
+                    })
+                }
             }
         } catch (err) {
-            console.log(err.message);
+            console.log(err);
             return res.status(500).json({
-                message: "An internal error from server",
+                message: "Internal Server Error",
             })
         }
     }
@@ -281,8 +317,8 @@ class channelController {
         try {
             const members = await UserChannel.getMembers({ channel_id })
             return res.status(200).json({
-                message: "Success", 
-                members, 
+                message: "Success",
+                members,
             })
         } catch (err) {
             console.log(err);
@@ -349,6 +385,23 @@ class channelController {
             })
         } catch (err) {
             console.log(err);
+            return res.status(500).json({
+                message: "Internal Server Error",
+                err: err.message,
+            })
+        }
+    }
+
+    //[GET] /api/channel/check/title/:title 
+    async checkTitleExistence(req, res, next) {
+        const { title } = req.params;
+        try {
+            const exist = await Channels.checkExistence({ where: { title, } })
+            return res.status(200).json({
+                exist,
+            })
+        } catch (err) {
+            console.log(err)
             return res.status(500).json({
                 message: "Internal Server Error",
                 err: err.message,
