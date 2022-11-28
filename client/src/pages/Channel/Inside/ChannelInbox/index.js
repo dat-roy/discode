@@ -13,11 +13,9 @@ import SendIcon from '@mui/icons-material/Send';
 
 import {
     handleGetGroupRoomByIdAPI,
-} from "../../../../services/chat";
-import {
-    handleGetOldMessages,
-    handleSaveNewMessage,
-} from "../../../../services/message";
+    handleGetOldMessagesAPI,
+    handleSaveNewMessageAPI,
+} from "../../../../services/";
 import { MessageTypes } from "../../../../types/db.type"
 
 import VideocamIcon from '@mui/icons-material/Videocam';
@@ -67,27 +65,27 @@ export default function ChannelInbox() {
     useEffect(() => {
         message.current.value = '';
         setImageBase64(null);
+        setImageFile(null);
     }, [params])
 
     useEffect(() => {
-        handleGetOldMessages(state.user.id, room_id)
+        handleGetOldMessagesAPI(state.user.id, room_id)
             .then(res => {
                 setAllMessages(res.data.messages);
             })
     }, [state.user.id, room_id])
 
     useEffect(() => {
-        socket.emit('addUser', state.user.id);
-        socket.emit('joinChatRoom', room_id);
-    }, [socket, state.user.id, room_id])
-
-    useEffect(() => {
         //Add a new message to oldMsg
-        socket.on('receiveChatMessage', newMsg => {
-            if (newMsg.sender_id !== state.user.id) {
+        socket.on('receiveChatMessage', (newMsg, roomId) => {
+            if (room_id === roomId && newMsg.sender_id !== state.user.id) {
                 setAllMessages(oldMsgs => [...oldMsgs, newMsg]);
             }
         })
+
+        return () => {
+            socket.off('receiveChatMessage')
+        }
     }, [socket, state.user.id, room_id]);
 
     const renderAllMessages = allMessages.map((obj, index) => {
@@ -130,7 +128,7 @@ export default function ChannelInbox() {
                 formData.append("file", imageFile);
             }
 
-            handleSaveNewMessage(formData)
+            handleSaveNewMessageAPI(formData)
                 .then(res => {
                     if (res.status !== 200) {
                         throw new Error("Failed to connect to server");

@@ -87,6 +87,35 @@ class messageController {
         }
     }
 
+    //[POST] /api/message/mark/read
+    async markMessagesAsRead(req, res, next) {
+        const { user_id, room_id } = req.body;
+
+        try {
+            const userRoomId =
+                (await UserRoom.findOne({
+                    where:
+                        `user_id=${user_id} AND room_id=${room_id}`,
+                })).id
+            
+            const result = await MessageRecipients.markAsReadForAll({
+                recipient_id: user_id, 
+                recipient_room_id: userRoomId, 
+            })
+
+            return res.status(200).json({
+                message: "Success", 
+                result,
+            })
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({
+                message: "Internal Server Error",
+                error: err.message,
+            })
+        }
+    }
+
     //[POST] /api/message/save
     async saveNewMessage(req, res, next) {
         //TODO:

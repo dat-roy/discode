@@ -22,15 +22,12 @@ export default function Inbox() {
 
     useEffect(() => {
         setOtherUser(location.state?.partner_data);
-        async function checkCommonSingleRoom() {
-            const response = await handleGetCommonSingleRoomsAPI(myID, otherID);
-            if (response) {
+        handleGetCommonSingleRoomsAPI(myID, otherID)
+            .then((response) => {
                 if (response.data.common_room) {
                     setCommonRoom(response?.data?.common_room[0])
                 }
-            }
-        }
-        checkCommonSingleRoom()
+            })
     }, [params, myID, otherID, location.state?.partner_data])
 
     useEffect(() => {
@@ -46,15 +43,12 @@ export default function Inbox() {
         }
 
         if (myID && otherUser && !commonRoom) {
-            async function checkCommonSingleRoom() {
-                const response = await handleGetCommonSingleRoomsAPI(myID, otherID);
-                if (response) {
-                    if (response.data.common_room) {
+            handleGetCommonSingleRoomsAPI(myID, otherID)
+                .then(response => {
+                    if (response.data?.common_room) {
                         setCommonRoom(response?.data?.common_room[0])
                     }
-                }
-            }
-            checkCommonSingleRoom();
+                })
         }
     }, [myID, otherID, otherUser, navigate, commonRoom])
 

@@ -2,6 +2,7 @@
  * Handle events when having any client connection.
  */
 
+const Users = require("../../models/users.model")
 const UserRoom = require("../../models/user_room.model")
 
 let onlineUsers = []
@@ -38,22 +39,18 @@ const socketHandler = (io, socket) => {
         //Find all room_id
         UserRoom.findAll({
             where: {
-                user_id: userId, 
+                user_id: userId,
             }
         })
             .then((res) => {
-                //console.log(res);
                 for (const userRoom of res) {
                     socket.join(userRoom.room_id);
                     socket.broadcast.to(userRoom.room_id).emit("notifyOnline", userId)
-                    //console.log(userId, " ", userRoom.room_id)
                 }
             })
     })
 
     socket.on("joinChatRoom", (roomId) => {
-        //console.log("Rooms: ")
-        //console.log(socket.rooms);
         socket.join(roomId);
     })
 
@@ -66,11 +63,27 @@ const socketHandler = (io, socket) => {
 
     socket.on("sendChatMessage", (message, roomId) => {
         message.room_id = roomId;
-        io.to(roomId).emit("receiveChatMessage", message);
-        //socket.broadcast.to(roomId).emit("receiveChatMessage", message);
-        //console.log(message);
-        //console.log("Room_id: " + room_id);
+        io.to(roomId).emit("receiveChatMessage", message, roomId);
+        io.to(roomId).emit("receiveChatMessageAgain", message, roomId);
         //console.log("Members: " + io.sockets.adapter.rooms.get(room_id).size)
+    })
+
+    socket.on("readMessage", (userId, roomId) => {
+        io.to(roomId).emit("seenMessage", userId, roomId);
+
+        //TODO: implement for group chat        
+        //Get user data 
+        // Users.findOne({
+        //     attributes: [
+        //         'id', 'username', 'avatar_url',
+        //     ],
+        //     where: {
+        //         id: userId,
+        //     }
+        // })
+        //     .then(user => {
+        //         io.to(roomId).emit("seenMessage", user, roomId);
+        //     })
     })
 
     socket.on("disconnect", () => {
@@ -79,19 +92,17 @@ const socketHandler = (io, socket) => {
         const userData = onlineUsers.find((user) => user.socketId === socket.id);
         const userId = userData?.id;
 
-        if (! userId) return;
+        if (!userId) return;
 
         //Find all room_id
         UserRoom.findAll({
             where: {
-                user_id: userId, 
+                user_id: userId,
             }
         })
             .then((res) => {
-                //console.log(res);
                 for (const userRoom of res) {
                     socket.broadcast.to(userRoom.room_id).emit("notifyOffline", userId)
-                    //console.log(userId, " ", userRoom.room_id)
                 }
             })
         removeUser(socket.id);

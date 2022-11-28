@@ -6,7 +6,7 @@ import { useSocket } from "../../../../store/hooks";
 
 import {
     Box, Stack, TextField,
-    Button, Typography, IconButton, InputAdornment,
+    Button, Typography, IconButton, InputAdornment, Avatar,
 } from "@mui/material";
 import ChatMsg from '../../../../components/ChatMsg';
 import SendIcon from '@mui/icons-material/Send';
@@ -20,9 +20,12 @@ import Picker from '@emoji-mart/react'
 
 import BadgeAvatar from "../../../../components/BadgeAvatar"
 
-import { handleGetOldMessages, handleSaveNewMessage } from "../../../../services/message";
 import { MessageTypes } from "../../../../types/db.type"
-import { handleCreateNewSingleRoomAPI } from "../../../../services";
+import {
+    handleCreateNewSingleRoomAPI,
+    handleGetOldMessagesAPI, handleSaveNewMessageAPI, handleMarkReadMessagesAPI,
+    handleGetReadStatusAPI,
+} from "../../../../services";
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -40,6 +43,7 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
     const [imageFile, setImageFile] = useState(null);
     const [imageBase64, setImageBase64] = useState(null);
     const [emojiMartDisplay, setEmojiMartDisplay] = useState(false);
+    const [seen, setSeen] = useState(false);
 
     const scrollToBottom = () => {
         latestMessage.current.scrollIntoView({ behavior: "smooth" });
@@ -50,14 +54,48 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
         scrollToBottom();
     }, [allMessages])
 
+    //Reset when changing between routes.
     useEffect(() => {
         message.current.value = '';
+        setAllMessages([]);
+        setImageFile(null);
         setImageBase64(null);
+        setSeen(false);
     }, [params])
 
     useEffect(() => {
         if (commonRoom?.room_id) {
-            handleGetOldMessages(myID, commonRoom.room_id)
+            socket.on('seenMessage', (userId, roomId) => {
+                if (roomId === commonRoom?.room_id && userId === otherUser?.id) {
+                    setSeen(true);
+                }
+            })
+        }
+        return () => {
+            socket.off('seenMessage')
+        }
+    }, [commonRoom?.room_id])
+
+    //Handle receiving message from socket.
+    useEffect(() => {
+        if (commonRoom?.room_id) {
+            socket.on('receiveChatMessage', (newMsg, roomId) => {
+                if (roomId === commonRoom?.room_id
+                    && parseInt(params?.id) === parseInt(newMsg.sender_id)) {
+                    setAllMessages(oldMsgs => [...oldMsgs, newMsg]);
+                    socket.emit("readMessage", state.user.id, commonRoom?.room_id)
+                }
+            })
+        }
+        return () => {
+            socket.off('receiveChatMessage');
+        }
+    }, [commonRoom?.room_id]);
+
+    //Get old messages.
+    useEffect(() => {
+        if (commonRoom?.room_id) {
+            handleGetOldMessagesAPI(myID, commonRoom.room_id)
                 .then(res => {
                     if (res.status !== 200) {
                         throw new Error(res.message)
@@ -70,24 +108,30 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
         }
     }, [myID, commonRoom?.room_id])
 
+    //Mark all messages as read.
     useEffect(() => {
         if (commonRoom?.room_id) {
-            socket.emit('addUser', state.user.id);
-            socket.emit('joinChatRoom', commonRoom.room_id);
+            handleMarkReadMessagesAPI(state.user.id, commonRoom?.room_id)
+                .then((res) => {
+                    if (!res.data?.result?.affectedRows) return;
+                    socket.emit("readMessage", state.user.id, commonRoom?.room_id)
+                })
         }
-    }, [socket, commonRoom?.room_id, state.user.id])
+    }, [params, commonRoom?.room_id, state.user.id, socket])
 
+    //Get seen status of member(s).
     useEffect(() => {
-        //Note: fix duplicate new message
         if (commonRoom?.room_id) {
-            //Add a new message to oldMsg
-            socket.on('receiveChatMessage', newMsg => {
-                if (newMsg.sender_id !== state.user.id) {
-                    setAllMessages(oldMsgs => [...oldMsgs, newMsg]);
-                }
-            })
+            //Check last message only.
+            handleGetReadStatusAPI(state.user.id, commonRoom?.room_id)
+                .then((res) => {
+                    const users = res.data?.users;
+                    if (users.find(user => user.id === otherUser?.id)) {
+                        setSeen(true)
+                    }
+                })
         }
-    }, [socket, commonRoom?.room_id, state.user.id]);
+    }, [commonRoom?.room_id, state.user.id, otherUser?.id])
 
     const renderAllMessages = allMessages.map((obj, index) => {
         const side = (!obj.sender_id)
@@ -123,7 +167,7 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
             }
 
             if (commonRoom) {
-                handleSaveNewMessage(formData)
+                handleSaveNewMessageAPI(formData)
                     .then(res => {
                         if (res.status !== 200) {
                             throw new Error(res.message);
@@ -131,6 +175,7 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                         const { msg_data } = res.data;
                         socket.emit('sendChatMessage', msg_data, commonRoom.room_id);
                         message.current.value = '';
+                        setSeen(false);
                         setAllMessages(oldMsgs => [...oldMsgs, msg_data]);
                         setImageBase64(null);
                         scrollToBottom();
@@ -159,9 +204,8 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
             let formData = new FormData();
             formData.append("document", JSON.stringify(msg))
 
-            handleSaveNewMessage(formData)
+            handleSaveNewMessageAPI(formData)
                 .then(res => {
-                    //console.log(res);
                     if (res.status !== 200) {
                         return new Error(res.message)
                     }
@@ -176,7 +220,7 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
     const handleUploadClick = (event) => {
         let file = event.target.files[0];
         setImageFile(file);
-        
+
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onloadend = () => {
@@ -277,6 +321,18 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                     Start a chat
                 </Button>
                 {renderAllMessages}
+                {(() => {
+                    if ((allMessages[allMessages.length - 1])?.sender_id === state.user.id) {
+                        return seen
+                        ? <>
+                            Seen:
+                            <Avatar
+                                src={otherUser?.avatar_url}
+                                style={{ width: 20, height: 20, }}
+                            />
+                        </> : <>Not seen</>
+                    }
+                })()}
                 <Box
                     style={{
                         float: "left",

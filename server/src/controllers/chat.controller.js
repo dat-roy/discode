@@ -1,9 +1,11 @@
 const UserRoom = require('../models/user_room.model')
 const Room = require('../models/rooms.model')
 const Messages = require('../models/messages.model')
+const MessageRecipients = require('../models/message_recipients.model')
+const Users = require('../models/users.model');
 
 const { pick } = require('../utils/object-handler');
-const { RoomTypes } = require('../types/db.type')
+const { RoomTypes } = require('../types/db.type');
 
 class chatController {
     //[GET] /api/chat/get/room/:id
@@ -34,8 +36,7 @@ class chatController {
         const room_id = parseInt(req.body.room_id);
         try {
             const result = await Messages.fetchLastMessage({
-                user_id: user_id,
-                room_id: room_id,
+                user_id, room_id,
             })
             return res.status(200).json({
                 message: "Fetch last message successfully",
@@ -206,6 +207,57 @@ class chatController {
                     })
                 }
             }
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({
+                message: "Internal Server Error",
+                error: err.message,
+            })
+        }
+    }
+
+    //[POST] /api/chat/get/seen 
+    async getSeenUsers(req, res, next) {
+        const { user_id, room_id } = req.body
+        try {
+            //Get last message.
+            const lastMessage =
+                (await Messages.fetchLastMessage({
+                    user_id, room_id,
+                }))[0];
+            
+            //Get seen status of all members.
+            const result = await MessageRecipients.findAll({
+                attributes: [
+                    'recipient_id', 'message_id', 'is_read', 
+                ], 
+                where: 
+                    `recipient_id != ${user_id} AND message_id = ${lastMessage.message_id}\
+                    AND is_read = 1`, 
+            })
+
+            let users = []
+            for (const elem of result) {
+                const memberData = await Users.findOne({
+                    attributes: [
+                        'id', 'username', 'avatar_url', 
+                    ], 
+                    where: {
+                        id: elem.recipient_id, 
+                    }
+                })
+                // elem.user = {
+                //     ...memberData, 
+                // }
+                users.push({
+                    ...memberData, 
+                })
+            }
+
+            return res.status(200).json({
+                message: "Success", 
+                users, 
+            })
         } catch (err) {
             console.log(err);
             return res.status(500).json({

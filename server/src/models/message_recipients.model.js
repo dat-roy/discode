@@ -17,6 +17,16 @@ class MessageRecipients extends Model {
                 VALUES(${recipient_id}, ${recipient_room_id}, ${message_id}, ${is_read})`;
         return await dbConnection.query(sql);
     }
+
+    async markAsReadForAll(params) {
+        let recipient_id = mysql.escape(params.recipient_id);
+        let recipient_room_id = mysql.escape(params.recipient_room_id);
+        
+        let sql = `UPDATE ${this.tableName} SET is_read=1\
+                WHERE recipient_id=${recipient_id} AND recipient_room_id=${recipient_room_id}\
+                    AND is_read=0`;
+        return await dbConnection.query(sql);
+    }
 }
 
 module.exports = new MessageRecipients("message_recipients")

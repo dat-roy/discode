@@ -77,6 +77,12 @@ const handleCreateNewSingleRoomAPI = (myID, otherID) => {
     })
 }
 
+const handleGetReadStatusAPI = (user_id, room_id) => {
+    return axios.post(`api/chat/get/seen`, {
+        user_id, room_id, 
+    })
+}
+
 export {
     handleGetLastMessageAPI,
     handleGetUnreadMessagesAPI,
@@ -90,4 +96,5 @@ export {
     handleGetGroupRoomByIdAPI,
     handleGetCommonSingleRoomsAPI,
     handleCreateNewSingleRoomAPI,
+    handleGetReadStatusAPI,
 }

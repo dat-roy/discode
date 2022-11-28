@@ -1,22 +1,20 @@
 import axios from "../config/axios";
 
-const handleGetOldMessages = (my_id, room_id) => {
+const handleGetOldMessagesAPI = (my_id, room_id) => {
     return axios.post(`api/message/get/old`, {
         user_id: my_id,
-        room_id: room_id,
+        room_id,
     })
 }
 
-const handleSaveNewMessage = (formData) => {
-    // let { sender_id, room_id, content, message_type, parent_message_id } = params;
-    // return axios.post(`api/message/save`, {
-    //     sender_id: sender_id,
-    //     room_id: room_id,
-    //     content: content,
-    //     message_type: message_type,
-    //     parent_message_id: parent_message_id,
-    // })
+const handleMarkReadMessagesAPI = (my_id, room_id) => {
+    return axios.post(`api/message/mark/read`, {
+        user_id: my_id, 
+        room_id, 
+    })
+}
 
+const handleSaveNewMessageAPI = (formData) => {
     return axios({
         method: "post", 
         url: `${process.env.REACT_APP_SERVER_HOST}/api/message/save`, 
@@ -28,6 +26,7 @@ const handleSaveNewMessage = (formData) => {
 }
 
 export {
-    handleGetOldMessages,
-    handleSaveNewMessage,
+    handleGetOldMessagesAPI,
+    handleMarkReadMessagesAPI, 
+    handleSaveNewMessageAPI,
 }

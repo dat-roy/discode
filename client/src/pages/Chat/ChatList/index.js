@@ -22,7 +22,180 @@ import CreateIcon from '@mui/icons-material/Create';
 import SearchBar from "../../../components/SearchBar";
 import BadgeAvatar from "../../../components/BadgeAvatar";
 
-const ChatElement = ({ selected, online, room_data }) => {
+export default function ChatList() {
+    const location = useLocation();
+    const [state,] = useStore();
+    const [socketState,] = useSocket();
+    const socket = socketState.instance;
+    const [selected, setSelected] = useState(location.state?.selected_room_id || null);
+    const [singleRooms, setSingleRooms] = useState([])
+    const [onlineUsers, setOnlineUsers] = useState([])
+    const latestRoom = useRef();
+
+    const scrollToTop = () => {
+        latestRoom.current.scrollIntoView({ behavior: "smooth" });
+    }
+
+    useEffect(() => {
+        setSelected(location.state?.selected_room_id || null);
+    }, [location])
+
+    useEffect(() => {
+        async function fetchData() {
+            const result = await handleGetJoinedSingleRoomsAPI(state.user.id, true);
+            const roomList = result.data.room_list || [];
+
+            for (const room of roomList) {
+                const lastMsgRes = await handleGetLastMessageAPI(state.user.id, room.room_id);
+                const unreadMsgRes = await handleGetUnreadMessagesAPI(state.user.id, room.room_id);
+                room.last_message = lastMsgRes.data.last_message || null;
+                room.unread_messages = unreadMsgRes.data.unread_messages || [];
+            }
+
+            //Sort roomList:
+            roomList.sort((a, b) => {
+                return new Date(b.last_message.created_at) - new Date(a.last_message.created_at);
+            })
+            scrollToTop();
+
+            setSingleRooms(roomList);
+        }
+        fetchData();
+    }, [state.user.id])
+
+    useEffect(() => {
+        if (singleRooms) {
+            socket.emit("requestOnlineUsers", singleRooms.map(room => room.partner_data.id))
+        }
+    }, [socket, singleRooms])
+
+    useEffect(() => {
+        socket.on("receiveOnlineUsers", online => {
+            setOnlineUsers(online);
+        })
+        return () => {
+            socket.off("receiveOnlineUsers");
+        }
+    }, [socket])
+
+    useEffect(() => {
+        socket.on("notifyOnline", user_id => {
+            if (!singleRooms.includes(room => room.partner_data.id === user_id)) {
+                setOnlineUsers(old => [...old, user_id]);
+            }
+        })
+
+        socket.on("notifyOffline", user_id => {
+            setOnlineUsers(old => old.filter(id => id !== user_id))
+        })
+
+        return () => {
+            socket.off("notifyOnline")
+            socket.off("notifyOffline")
+        }
+    }, [socket])
+
+    useEffect(() => {
+        if (singleRooms) {
+            socket.on("receiveChatMessageAgain", newMsg => {
+                newMsg.created_at = moment().format().slice(0, 19).replace('T', ' ');
+                const roomList = singleRooms.map(room => {
+                    if (room.room_id === newMsg.room_id) {
+                        room.last_message = newMsg
+                    }
+                    return room
+                })
+                //Sort roomList:
+                roomList.sort((a, b) => {
+                    return new Date(b.last_message.created_at) - new Date(a.last_message.created_at);
+                })
+                setSingleRooms(roomList)
+                scrollToTop();
+            })
+        }
+        return () => {
+            socket.off("receiveChatMessageAgain")
+        }
+    }, [socket, singleRooms])
+
+    return (
+        <Box>
+            <Stack>
+                <Stack
+                    p={3}
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="space-between"
+                >
+                    <Typography
+                        variant="h5"
+                        sx={{
+                            fontWeight: 'bold',
+                        }}
+                    >
+                        Chats
+                    </Typography>
+                    <IconButton
+                        size="large" color="inherit"
+                        style={{
+                            marginRight: -10,
+                        }}
+                    >
+                        <CreateIcon />
+                    </IconButton>
+                </Stack>
+
+                <Stack>
+                    <SearchBar placeholder={"Search..."} />
+                </Stack>
+
+                <Box
+                    marginTop={3}
+                    padding={1}
+                >
+                    <Divider
+                        variant="middle"
+                        color={"gray"}
+                    />
+                </Box>
+            </Stack>
+
+            <Stack
+                direction="column"
+                p={3}
+                spacing={2}
+                flexGrow={1}
+                sx={{
+                    height: "70vh",
+                    overflowY: "scroll"
+                }}
+            >
+                <Box
+                    style={{
+                        float: "left",
+                        clear: "both",
+                        marginBottom: -12,
+                    }}
+                    ref={latestRoom}
+                />
+                {
+                    singleRooms.map((obj, index) => {
+                        return (
+                            <ChatElement
+                                key={index}
+                                selected={selected}
+                                online={(onlineUsers.includes(obj.partner_data.id)) ? true : false}
+                                room_data={obj}
+                            />
+                        )
+                    })
+                }
+            </Stack>
+        </Box>
+    )
+}
+
+function ChatElement({ selected, online, room_data }) {
     const [state,] = useStore();
     const navigate = useNavigate();
 
@@ -114,168 +287,5 @@ const ChatElement = ({ selected, online, room_data }) => {
                 </Stack>
             </Stack>
         </Box>
-
     )
 }
-
-export default function ChatList() {
-    const location = useLocation();
-    const [state,] = useStore();
-    const [socketState, ] = useSocket();
-    const socket = socketState.instance;
-    const [selected, setSelected] = useState(location.state?.selected_room_id || null);
-    const [singleRooms, setSingleRooms] = useState([])
-    const [onlineUsers, setOnlineUsers] = useState([])
-    const latestRoom = useRef();
-
-    const scrollToTop = () => {
-        latestRoom.current.scrollIntoView({ behavior: "smooth" });
-    }
-
-    useEffect(() => {
-        setSelected(location.state?.selected_room_id || null);
-    }, [location])
-
-    useEffect(() => {
-        async function fetchData() {
-            const result = await handleGetJoinedSingleRoomsAPI(state.user.id, true);
-            const roomList = result.data.room_list || [];
-
-            for (const room of roomList) {
-                const lastMsgRes = await handleGetLastMessageAPI(state.user.id, room.room_id);
-                const unreadMsgRes = await handleGetUnreadMessagesAPI(state.user.id, room.room_id);
-                room.last_message = lastMsgRes.data.last_message || null;
-                //console.log(lastMsgRes.data.last_message || null);
-                room.unread_messages = unreadMsgRes.data.unread_messages || [];
-            }
-
-            //Sort roomList:
-            roomList.sort((a, b) => {
-                return new Date(b.last_message.created_at) - new Date(a.last_message.created_at);
-            })
-            scrollToTop();
-
-            //console.log(roomList);
-            setSingleRooms(roomList);
-        }
-        fetchData();
-    }, [state.user.id])
-
-    useEffect(() => {
-        socket.emit("requestOnlineUsers", singleRooms.map(room => room.partner_data.id))
-    }, [socket, singleRooms])
-
-    useEffect(() => {
-        socket.on("receiveOnlineUsers", online => {
-            //console.log(online);
-            setOnlineUsers(online);
-        })
-    }, [socket])
-
-    useEffect(() => {
-        socket.on("notifyOnline", user_id => {
-            //console.log(user_id);
-            if (!singleRooms.includes(room => room.partner_data.id === user_id)) {
-                setOnlineUsers(old => [...old, user_id]);
-            }
-        })
-
-        socket.on("notifyOffline", user_id => {
-            setOnlineUsers(old => old.filter(id => id !== user_id))
-        })
-    }, [socket, singleRooms])
-
-    useEffect(() => {
-        socket.on("receiveChatMessage", newMsg => {
-            newMsg.created_at = moment().format().slice(0, 19).replace('T', ' ');
-            const roomList = singleRooms.map(room => {
-                if (room.room_id === newMsg.room_id) {
-                    room.last_message = newMsg
-                }
-                return room
-            })
-            //Sort roomList:
-            roomList.sort((a, b) => {
-                return new Date(b.last_message.created_at) - new Date(a.last_message.created_at);
-            })
-            setSingleRooms(roomList)
-            scrollToTop();
-        })
-    }, [socket, singleRooms])
-
-    return (
-        <Box>
-            <Stack>
-                <Stack
-                    p={3}
-                    direction="row"
-                    alignItems="center"
-                    justifyContent="space-between"
-                >
-                    <Typography
-                        variant="h5"
-                        sx={{
-                            fontWeight: 'bold',
-                        }}
-                    >
-                        Chats
-                    </Typography>
-                    <IconButton
-                        size="large" color="inherit"
-                        style={{
-                            marginRight: -10,
-                        }}
-                    >
-                        <CreateIcon />
-                    </IconButton>
-                </Stack>
-
-                <Stack>
-                    <SearchBar placeholder={"Search..."} />
-                </Stack>
-
-                <Box
-                    marginTop={3}
-                    padding={1}
-                >
-                    <Divider
-                        variant="middle"
-                        color={"gray"}
-                    />
-                </Box>
-            </Stack>
-
-            <Stack
-                direction="column"
-                p={3}
-                spacing={2}
-                flexGrow={1}
-                sx={{
-                    height: "70vh",
-                    overflowY: "scroll"
-                }}
-            >
-                <Box
-                    style={{
-                        float: "left",
-                        clear: "both",
-                        marginBottom: -12,
-                    }}
-                    ref={latestRoom}
-                />
-                {
-                    singleRooms.map((obj, index) => {
-                        return (
-                            <ChatElement
-                                key={index}
-                                selected={selected}
-                                online={(onlineUsers.includes(obj.partner_data.id)) ? true : false}
-                                room_data={obj}
-                            />
-                        )
-                    })
-                }
-            </Stack>
-        </Box>
-    )
-} 
