@@ -14,7 +14,7 @@ import moment from "moment"
 
 import { Box, Stack } from "@mui/system";
 import { Typography } from "@mui/material";
-//import { Badge } from "@mui/material";
+import { Badge } from "@mui/material";
 import { IconButton } from "@mui/material";
 import { Link } from "@mui/material";
 import { Divider } from '@mui/material';
@@ -40,6 +40,17 @@ export default function ChatList() {
         setSelected(location.state?.selected_room_id || null);
     }, [location])
 
+    //Set badge number to 0.
+    useEffect(() => {
+        if (singleRooms) {
+            for (const room of singleRooms) {
+                if (room.room_id === selected) {
+                    room.unread_messages = 0;
+                }
+            }
+        }
+    }, [selected, singleRooms])
+
     useEffect(() => {
         async function fetchData() {
             const result = await handleGetJoinedSingleRoomsAPI(state.user.id, true);
@@ -49,7 +60,7 @@ export default function ChatList() {
                 const lastMsgRes = await handleGetLastMessageAPI(state.user.id, room.room_id);
                 const unreadMsgRes = await handleGetUnreadMessagesAPI(state.user.id, room.room_id);
                 room.last_message = lastMsgRes.data.last_message || null;
-                room.unread_messages = unreadMsgRes.data.unread_messages || [];
+                room.unread_messages = unreadMsgRes.data?.unread_messages?.length || 0;
             }
 
             //Sort roomList:
@@ -102,6 +113,7 @@ export default function ChatList() {
                 const roomList = singleRooms.map(room => {
                     if (room.room_id === newMsg.room_id) {
                         room.last_message = newMsg
+                        room.unread_messages++;
                     }
                     return room
                 })
@@ -200,7 +212,7 @@ function ChatElement({ selected, online, room_data }) {
     const navigate = useNavigate();
 
     const {
-        room_id, last_message, partner_data, //unread_messages,
+        room_id, last_message, partner_data, unread_messages,
     } = room_data;
 
     const last_message_time = (moment(last_message?.created_at).isSame(moment(), 'day'))
@@ -283,7 +295,7 @@ function ChatElement({ selected, online, room_data }) {
                         {last_message_time}
                     </Typography>
 
-                    {/* <Badge color="primary" badgeContent={unread_messages.length} /> */}
+                    <Badge color="primary" badgeContent={unread_messages} />
                 </Stack>
             </Stack>
         </Box>

@@ -42,7 +42,6 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
     const [allMessages, setAllMessages] = useState([]);
     const [imageFile, setImageFile] = useState(null);
     const [imageBase64, setImageBase64] = useState(null);
-    const [emojiMartDisplay, setEmojiMartDisplay] = useState(false);
     const [seen, setSeen] = useState(false);
 
     const scrollToBottom = () => {
@@ -324,13 +323,13 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                 {(() => {
                     if ((allMessages[allMessages.length - 1])?.sender_id === state.user.id) {
                         return seen
-                        ? <>
-                            Seen:
-                            <Avatar
-                                src={otherUser?.avatar_url}
-                                style={{ width: 20, height: 20, }}
-                            />
-                        </> : <>Not seen</>
+                            ? <>
+                                Seen:
+                                <Avatar
+                                    src={otherUser?.avatar_url}
+                                    style={{ width: 20, height: 20, }}
+                                />
+                            </> : <>Not seen</>
                     }
                 })()}
                 <Box
@@ -349,145 +348,152 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                     width: "100%",
                 }}
             >
-                <Stack
-                    direction="row"
-                    alignItems={"center"}
-                    justifyContent={"space-between"}
-                    spacing={3}
-                    padding={1}
-                    marginLeft={2}
-                    marginRight={2}
-                >
-                    <TextField
-                        disabled={(commonRoom) ? false : true}
-                        fullWidth
-                        multiline
-                        placeholder="Write a message..."
-                        variant="filled"
-                        inputRef={message}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter' && e.shiftKey === false) {
-                                sendMessage()
-                                message.current.value = ''
-                            }
-                        }}
-
-                        sx={{
-                            ".MuiOutlinedInput-root": {
-                                paddingTop: "1rem",
-                                flexDirection: "column"
-                            },
-                            img: {
-                                paddingRight: "1rem"
-                            }
-                        }}
-                        InputProps={{
-                            inputProps: {
-                                style: {
-                                    color: "white",
-                                }
-                            },
-                            startAdornment:
-                                <Fragment>
-                                    {
-                                        imageBase64
-                                            ? <Stack
-                                                position="relative"
-                                                style={{
-                                                    width: 180,
-                                                    paddingRight: 20,
-                                                }}
-                                            >
-                                                <img alt="uploaded" src={imageBase64} style={{ width: "100%" }} />
-                                                <IconButton
-                                                    sx={{
-                                                        position: "absolute",
-                                                        color: "yellow",
-                                                        top: -15,
-                                                        right: 4,
-                                                    }}
-                                                    component="label"
-                                                    onClick={() => setImageBase64(null)}
-                                                >
-                                                    <HighlightOffIcon />
-                                                </IconButton>
-                                            </Stack>
-                                            : <InputAdornment
-                                                position="end"
-                                                style={{
-                                                    paddingRight: 15,
-                                                }}
-                                            >
-
-                                                <IconButton
-                                                    sx={{
-                                                        color: "white",
-                                                    }}
-                                                    component="label"
-                                                >
-                                                    <input hidden accept="image/*" type="file" alt="Image Upload"
-                                                        onChange={handleUploadClick}
-                                                    />
-                                                    <PhotoCamera />
-                                                </IconButton>
-                                            </InputAdornment>
-                                    }
-                                </Fragment>,
-
-                            endAdornment:
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        sx={{
-                                            color: "white",
-                                            position: "relative"
-                                        }}
-                                        onClick={() => { setEmojiMartDisplay(!emojiMartDisplay) }}
-                                    >
-                                        <SentimentSatisfiedRoundedIcon />
-                                    </IconButton>
-                                    <Box
-                                        sx={{
-                                            zIndex: 1000,
-                                            position: "absolute",
-                                            marginRight: 5,
-                                            bottom: 65,
-                                            display: (emojiMartDisplay) ? "block" : "none",
-                                        }}
-                                    >
-                                        <Picker
-                                            data={data}
-                                            onEmojiSelect={(e) => {
-                                                //console.log(e);
-                                                message.current.value += e.native;
-                                            }}
-                                            emojiButtonSize={40}
-                                            emojiSize={20}
-                                            onClickOutside={() => {
-                                                if (emojiMartDisplay) {
-                                                    setEmojiMartDisplay(!emojiMartDisplay)
-                                                }
-                                            }}
-                                        />
-                                    </Box>
-                                </InputAdornment>,
-                        }}
-                    />
-                    <Button
-                        disabled={(commonRoom) ? false : true}
-                        variant="contained"
-                        endIcon={<SendIcon />}
-                        onClick={sendMessage}
-                        sx={{
-                            "&:disabled": {
-                                color: "white",
-                                backgroundColor: 'gray'
-                            }
-                        }}
-                    >
-                        Send
-                    </Button>
-                </Stack>
+                <SendBox />
             </Box>
         </Stack>
     )
+
+    function SendBox() {
+        const [emojiMartDisplay, setEmojiMartDisplay] = useState(false);
+
+        return (
+            <Stack
+                direction="row"
+                alignItems={"center"}
+                justifyContent={"space-between"}
+                spacing={3}
+                padding={1}
+                marginLeft={2}
+                marginRight={2}
+            >
+                <TextField
+                    disabled={(commonRoom) ? false : true}
+                    fullWidth
+                    multiline
+                    placeholder="Write a message..."
+                    variant="filled"
+                    inputRef={message}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' && e.shiftKey === false) {
+                            sendMessage()
+                            message.current.value = ''
+                        }
+                    }}
+                    sx={{
+                        ".MuiOutlinedInput-root": {
+                            paddingTop: "1rem",
+                            flexDirection: "column"
+                        },
+                        img: {
+                            paddingRight: "1rem"
+                        }
+                    }}
+                    InputProps={{
+                        inputProps: {
+                            style: {
+                                color: "white",
+                            }
+                        },
+                        startAdornment:
+                            <Fragment>
+                                {
+                                    imageBase64
+                                        ? <Stack
+                                            position="relative"
+                                            style={{
+                                                width: 180,
+                                                paddingRight: 20,
+                                            }}
+                                        >
+                                            <img alt="uploaded" src={imageBase64} style={{ width: "100%" }} />
+                                            <IconButton
+                                                sx={{
+                                                    position: "absolute",
+                                                    color: "yellow",
+                                                    top: -15,
+                                                    right: 4,
+                                                }}
+                                                component="label"
+                                                onClick={() => setImageBase64(null)}
+                                            >
+                                                <HighlightOffIcon />
+                                            </IconButton>
+                                        </Stack>
+                                        : <InputAdornment
+                                            position="end"
+                                            style={{
+                                                paddingRight: 15,
+                                            }}
+                                        >
+
+                                            <IconButton
+                                                sx={{
+                                                    color: "white",
+                                                }}
+                                                component="label"
+                                            >
+                                                <input hidden accept="image/*" type="file" alt="Image Upload"
+                                                    onChange={handleUploadClick}
+                                                />
+                                                <PhotoCamera />
+                                            </IconButton>
+                                        </InputAdornment>
+                                }
+                            </Fragment>,
+
+                        endAdornment:
+                            <InputAdornment position="end">
+                                <IconButton
+                                    sx={{
+                                        color: "white",
+                                        position: "relative"
+                                    }}
+                                    onClick={() => { setEmojiMartDisplay(!emojiMartDisplay) }}
+                                >
+                                    <SentimentSatisfiedRoundedIcon />
+                                </IconButton>
+                                <Box
+                                    sx={{
+                                        zIndex: 1000,
+                                        position: "absolute",
+                                        marginRight: 5,
+                                        bottom: 65,
+                                        display: (emojiMartDisplay) ? "block" : "none",
+                                    }}
+                                >
+                                    <Picker
+                                        data={data}
+                                        onEmojiSelect={(e) => {
+                                            //console.log(e);
+                                            message.current.value += e.native;
+                                        }}
+                                        emojiButtonSize={40}
+                                        emojiSize={20}
+                                        onClickOutside={() => {
+                                            if (emojiMartDisplay) {
+                                                setEmojiMartDisplay(!emojiMartDisplay)
+                                            }
+                                        }}
+                                    />
+                                </Box>
+                            </InputAdornment>,
+                    }}
+                />
+                <Button
+                    disabled={(commonRoom) ? false : true}
+                    variant="contained"
+                    endIcon={<SendIcon />}
+                    onClick={sendMessage}
+                    sx={{
+                        "&:disabled": {
+                            color: "white",
+                            backgroundColor: 'gray'
+                        }
+                    }}
+                >
+                    Send
+                </Button>
+            </Stack>
+        )
+    }
 }

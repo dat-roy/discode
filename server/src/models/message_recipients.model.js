@@ -27,6 +27,14 @@ class MessageRecipients extends Model {
                     AND is_read=0`;
         return await dbConnection.query(sql);
     }
+
+    async countUnread(params) {
+        let recipient_room_id = mysql.escape(params.recipient_room_id);
+
+        let sql = `SELECT COUNT(id) AS count FROM ${this.tableName}\
+            WHERE recipient_room_id=${recipient_room_id} AND is_read=0`;
+        return (await dbConnection.query(sql))[0].count;
+    }
 }
 
 module.exports = new MessageRecipients("message_recipients")

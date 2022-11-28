@@ -97,18 +97,50 @@ class messageController {
                     where:
                         `user_id=${user_id} AND room_id=${room_id}`,
                 })).id
-            
+
             const result = await MessageRecipients.markAsReadForAll({
-                recipient_id: user_id, 
-                recipient_room_id: userRoomId, 
+                recipient_id: user_id,
+                recipient_room_id: userRoomId,
             })
 
             return res.status(200).json({
-                message: "Success", 
+                message: "Success",
                 result,
             })
         } catch (err) {
             console.log(err);
+            return res.status(500).json({
+                message: "Internal Server Error",
+                error: err.message,
+            })
+        }
+    }
+
+    //[GET] /api/message/count/all/unread/?user_id=&type=
+    async countAllUnreadMessages(req, res, next) {
+        const user_id = parseInt(req.query.user_id);
+        const type = req.query.type;
+        if (!user_id) {
+            return res.status(400).json({
+                message: "Empty user_id",
+            })
+        }
+        try {
+            const result = await UserRoom.getSingleRoomsByUserID({ user_id });
+
+            let total = 0;
+            for (const recipientRoom of result) {
+                total += await MessageRecipients.countUnread({
+                    recipient_room_id: recipientRoom.id
+                });
+            }
+            res.status(200).json({
+                message: "Success",
+                result,
+                unread: total,
+            })
+        } catch (err) {
+            console.log(err)
             return res.status(500).json({
                 message: "Internal Server Error",
                 error: err.message,

@@ -2,7 +2,7 @@
  * Handle events when having any client connection.
  */
 
-const Users = require("../../models/users.model")
+// const Users = require("../../models/users.model")
 const UserRoom = require("../../models/user_room.model")
 
 let onlineUsers = []
@@ -65,6 +65,7 @@ const socketHandler = (io, socket) => {
         message.room_id = roomId;
         io.to(roomId).emit("receiveChatMessage", message, roomId);
         io.to(roomId).emit("receiveChatMessageAgain", message, roomId);
+        io.to(roomId).emit("receiveChatMessageAtMenuBar", message, roomId);
         //console.log("Members: " + io.sockets.adapter.rooms.get(room_id).size)
     })
 

@@ -14,6 +14,10 @@ const handleMarkReadMessagesAPI = (my_id, room_id) => {
     })
 }
 
+const handleCountAllUnreadMessagesAPI = (user_id, type) => {
+    return axios.get(`api/message/count/all/unread/?user_id=${user_id}&type=${type}`)
+}
+
 const handleSaveNewMessageAPI = (formData) => {
     return axios({
         method: "post", 
@@ -28,5 +32,6 @@ const handleSaveNewMessageAPI = (formData) => {
 export {
     handleGetOldMessagesAPI,
     handleMarkReadMessagesAPI, 
+    handleCountAllUnreadMessagesAPI, 
     handleSaveNewMessageAPI,
 }

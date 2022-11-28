@@ -18,16 +18,21 @@ import Badge from '@mui/material/Badge';
 import IconButton from '@mui/material/IconButton';
 
 import AccountMenu from "../AccountMenu";
+import { RoomTypes } from "../../../types/db.type";
+import { handleCountAllUnreadMessagesAPI } from "../../../services"
 
-const logoLink = process.env.PUBLIC_URL + "assets/img/logo.png";
+const logoLink = process.env.PUBLIC_URL + "/assets/img/logo.png";
 
 export default function MenuBar() {
     //const theme = useTheme();
-    const [state, ] = useStore();
-    const [socketState, ] = useSocket();
+    const [state,] = useStore();
+    const [socketState,] = useSocket();
     const socket = socketState.instance;
     const location = useLocation();
     const [selected, setSelected] = useState('/' + location.pathname.split('/')[1]);
+
+    const [messageBadge, setMessageBadge] = useState(0);
+    const [channelBadge, setChannelBadge] = useState(0);
 
     useEffect(() => {
         socket.emit("subscribe", state.user.id);
@@ -37,36 +42,52 @@ export default function MenuBar() {
         setSelected('/' + location.pathname.split('/')[1]);
     }, [location])
 
+    useEffect(() => {
+        handleCountAllUnreadMessagesAPI(state.user.id, RoomTypes.SINGLE)
+            .then(res => {
+                console.log(res.data?.unread)
+                setMessageBadge(res.data?.unread)
+            })
+    }, [state.user.id])
+
+    useEffect(() => {
+        socket.on("receiveChatMessageAtMenuBar", (newMsg, _) => {
+            if (newMsg.sender_id !== state.user.id) {
+                setMessageBadge(old => old + 1);
+            }
+        })
+    }, [socket])
+
     const NavButtons = [
         {
             path: "/home",
             element: <HomeIcon />,
-            badge: null,
+            badge: false,
         },
         {
             path: "/notifications",
             element: <NotificationsIcon />,
-            badge: 100,
+            badge: null,
         },
         {
             path: "/chat",
             element: <MailIcon />,
-            badge: 5,
+            badge: messageBadge,
         },
         {
             path: "/channels",
             element: <GroupsIcon />,
-            badge: 1,
+            badge: true,
         },
         {
             path: "/posts",
             element: <MenuBookIcon />,
-            badge: null,
+            badge: false,
         },
         {
             path: "/explore",
             element: <ExploreIcon />,
-            badge: null,
+            badge: false,
         }
     ]
 

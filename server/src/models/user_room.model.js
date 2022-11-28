@@ -31,9 +31,14 @@ class UserRoom extends Model {
 
     async getSingleRoomsByUserID(params) {
         let user_id = mysql.escape(params.user_id);
-        let sql = `SELECT * FROM ${this.tableName}\
-                INNER JOIN ${Rooms.tableName} ON ${this.tableName}.room_id = ${Rooms.tableName}.id\
-                WHERE ${this.tableName}.user_id = ${user_id} AND ${Rooms.tableName}.type = '${RoomTypes.SINGLE}'`;
+
+        const ur = this.tableName;
+        const r = Rooms.tableName;
+        let sql = `SELECT ${ur}.id, ${ur}.user_id, ${ur}.room_id,\
+                    ${r}.channel_id, ${r}.type, ${r}.created_at, ${r}.removable\
+                FROM ${ur}\
+                INNER JOIN ${r} ON ${ur}.room_id = ${r}.id\
+                WHERE ${ur}.user_id = ${user_id} AND ${r}.type = '${RoomTypes.SINGLE}'`;
         return await dbConnection.query(sql);
     }
 
