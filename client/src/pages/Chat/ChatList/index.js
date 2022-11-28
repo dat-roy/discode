@@ -45,6 +45,8 @@ export default function ChatList() {
         if (singleRooms) {
             for (const room of singleRooms) {
                 if (room.room_id === selected) {
+                    //TODO: set to menubar
+                    socket.emit("markAsReadFromChatList", state.user.id, room.unread_messages);
                     room.unread_messages = 0;
                 }
             }

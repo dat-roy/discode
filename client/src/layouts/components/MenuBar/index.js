@@ -56,6 +56,15 @@ export default function MenuBar() {
                 setMessageBadge(old => old + 1);
             }
         })
+        socket.on("markAsReadToMenuBar", (userId, number) => {
+            if (userId === state.user.id) {
+                setMessageBadge(old => old - number);
+            }
+        })
+        return () => {
+            socket.off("receiveChatMessageAtMenuBar");
+            socket.off("markAsReadToMenuBar");
+        }
     }, [socket])
 
     const NavButtons = [
@@ -77,7 +86,7 @@ export default function MenuBar() {
         {
             path: "/channels",
             element: <GroupsIcon />,
-            badge: true,
+            badge: false,
         },
         {
             path: "/posts",

@@ -87,6 +87,12 @@ const socketHandler = (io, socket) => {
         //     })
     })
 
+    socket.on("markAsReadFromChatList", (userId, number) => {
+        //Send back to myself.
+        const mySocketId = findUser(userId).socketId;
+        io.to(mySocketId).emit("markAsReadToMenuBar", userId, number);
+    })
+
     socket.on("disconnect", () => {
         console.log("Client disconnected");
         //Get user_id by socket.id
