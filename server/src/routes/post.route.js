@@ -6,6 +6,7 @@ const postController = require('../controllers/post.controller')
 router.post('/save', postController.saveNewPost);
 router.get('/get/by-post/:id', postController.getPostById);
 router.get('/get/by-author/:id', postController.getPostsByAuthorId);
+router.get('/get/tags/:post_id', postController.getTags);
 router.get('/count/likes/:id', postController.countLikesNumber);
 router.post('/check-liked', postController.checkLiked);
 router.post('/toggle/like', postController.toggleLiked);

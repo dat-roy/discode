@@ -29,8 +29,7 @@ import {
     handleGetReadStatusAPI,
 } from "../../../../services";
 
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
 export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom }) {
     const params = useParams();
@@ -252,18 +251,6 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                 margin: "0 auto",
             }}
         >
-            <ToastContainer
-                position="top-center"
-                autoClose={2500}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-            />
             <Box
                 key="boxChatHeader"
                 sx={{

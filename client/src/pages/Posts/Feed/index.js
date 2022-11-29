@@ -9,9 +9,6 @@ import { Grid, Stack } from "@mui/material";
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 
-
-import { ToastContainer, toast } from 'react-toastify';
-
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -51,18 +48,6 @@ export default function Feed() {
                 color: "black"
             }}
         >
-            <ToastContainer
-                position="top-center"
-                autoClose={1800}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-            />
             <Grid item xs={8} sx={{ border: "1px solid red" }}>
                 <Fab color="primary" aria-label="add"
                     onClick={() => navigate('/posts/publish')}
@@ -71,7 +56,7 @@ export default function Feed() {
                 </Fab>
                 <Box sx={{ padding: 6, border: "1px solid red", height: "100vh" }}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                        <Tabs value={value} onChange={(event, newValue) => {
+                        <Tabs value={value} onChange={(_, newValue) => {
                             setValue(newValue);
                         }}>
                             <Tab label="Hot" />

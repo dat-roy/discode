@@ -8,21 +8,52 @@ import SentimentSatisfiedRoundedIcon from '@mui/icons-material/SentimentSatisfie
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import { CommentTypes } from '../../../../../../types/comment.type';
+import { useStore } from '../../../../../../store/hooks';
+import { handleSaveCommentsAPI } from '../../../../../../services';
+import { toast } from 'react-toastify';
 
 export default function CommentBox(props) {
     const {
+        postId,
         commentType,
         parentCommentId,
         parentCommentUsername,
         setOpenCommentBox,
+        handleAppendNewComment,
     } = props;
 
     const commentRef = useRef()
+    const [state,] = useStore();
     const [canSend, setCanSend] = useState(false);
     const [emojiMartDisplay, setEmojiMartDisplay] = useState(false);
 
     const saveNewComment = () => {
-        console.log(parentCommentId);
+        // console.log(postId);
+        // console.log(parentCommentId);
+        // console.log(commentRef.current.value);
+
+        handleSaveCommentsAPI(
+            postId,
+            state.user.id,
+            commentRef.current.value,
+            parentCommentId,
+        )
+            .then(res => {
+                if (res.status !== 200) {
+                    throw new Error(res.message);
+                }
+                const comment = res.data?.comment;
+                //Handle display new comment.
+                handleAppendNewComment({
+                    id: comment?.id, 
+                    created_at: comment?.created_at, 
+                    content: comment?.content, 
+                    parent_comment_id: (parentCommentId) ? parentCommentId : null, 
+                })
+            })
+            .catch(err => {
+                toast.error(err.message)
+            })
     }
 
     const handleCancel = () => {

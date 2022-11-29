@@ -15,13 +15,12 @@ import { Avatar } from '@mui/material';
 import ShareIcon from '@mui/icons-material/Share';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-
 import Comments from "./Comments";
+import { toast } from 'react-toastify';
 
 export default function PostLeft(props) {
     const {
         postData,
-        toast,
     } = props;
 
     const post_id = postData.id;
@@ -98,8 +97,9 @@ export default function PostLeft(props) {
                 </Typography>
                 <br />
                 <Stack direction={"row"}>
-                    <Chip label="Javascript" />
-                    <Chip label="DevOps" />
+                    {postData?.tags?.map((tag, index) => {
+                        return <Chip key={index} label={tag.tag_name} />
+                    })}
                 </Stack>
                 <br />
                 <Divider />
@@ -129,6 +129,7 @@ export default function PostLeft(props) {
                     >
                         <Comments
                             anchor={"right"}
+                            postId={post_id}
                             commentList={commentList}
                         />
                         <Typography>

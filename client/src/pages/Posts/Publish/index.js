@@ -7,8 +7,7 @@ import { useStore } from "../../../store/hooks"
 import { Box, Stack } from "@mui/system";
 import { Button } from "@mui/material";
 import TextField from '@mui/material/TextField';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
 import Tags from "../../../components/Tags";
 import TextEditor from "../../../components/TextEditor";
@@ -68,18 +67,6 @@ export default function Publish() {
                     paddingTop: 5,
                 }}
             >
-                <ToastContainer
-                    position="top-center"
-                    autoClose={2500}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                    theme="light"
-                />
                 <TextField
                     id="title"
                     variant="standard"

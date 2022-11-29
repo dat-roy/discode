@@ -9,15 +9,16 @@ import CommentIcon from '@mui/icons-material/Comment';
 import CommentBox from './CommentBox';
 import CommentElement from './CommentElement';
 import { CommentTypes } from '../../../../../types/comment.type';
+import { useStore } from '../../../../../store/hooks';
 
-export default function Comments({ anchor, commentList }) {
-    const [state, setState] = useState({
+export default function Comments({ anchor, postId, commentList }) {
+    const [anchorState, setAnchorState] = useState({
         top: false,
         left: false,
         bottom: false,
         right: false,
     });
-
+    const [state,] = useStore();
     const [comments, setComments] = useState([])
 
     useEffect(() => {
@@ -42,14 +43,46 @@ export default function Comments({ anchor, commentList }) {
         setComments(res)
     }, [commentList])
 
-    useEffect(() => {
-        if (comments) {
-            console.log(comments);
+    // useEffect(() => {
+    //     if (comments) {
+    //         console.log(comments);
+    //     }
+    // }, [comments])
+
+    const handleAppendNewComment = (params) => {
+        const newComment = {
+            post_id: postId,
+            sender_id: state.user.id,
+            username: state.user.username,
+            avatar_url: state.user.avatar_url,
+            children: [],
+            ...params,
         }
-    }, [comments])
+
+        //Recursion for appending a new comment.
+        const appendRecursion = (newOne, list) => {
+            if (!list || list.length === 0) return;
+            for (const elem of list) {
+                if (elem.id === newOne?.parent_comment_id) {
+                    newOne.level = elem.level + 1;
+                    return elem.children.push(newOne);
+                }
+                appendRecursion(newOne, elem.children)
+            }
+        }
+
+        if (!newComment?.parent_comment_id) {
+            newComment.level = 1;
+            setComments(old => [...old, newComment])
+        } else {
+            const copyComments = [...comments]
+            appendRecursion(newComment, copyComments);
+            setComments(copyComments);
+        }
+    }
 
     const toggleDrawer = (anchor, open) => () => {
-        setState({ ...state, [anchor]: open });
+        setAnchorState({ ...anchorState, [anchor]: open });
     };
 
     const renderCommentBox = () => (
@@ -73,7 +106,9 @@ export default function Comments({ anchor, commentList }) {
             </Typography>
             <Box id="main-comment-box">
                 <CommentBox
+                    postId={postId}
                     commentType={CommentTypes.PARENT}
+                    handleAppendNewComment={handleAppendNewComment}
                 />
             </Box>
             <Divider
@@ -87,7 +122,9 @@ export default function Comments({ anchor, commentList }) {
                         return <Fragment key={index}>
                             <CommentElement
                                 key={index}
+                                postId={postId}
                                 comment={comment}
+                                handleAppendNewComment={handleAppendNewComment}
                             />
                             <Divider
                                 sx={{
@@ -109,7 +146,7 @@ export default function Comments({ anchor, commentList }) {
             </IconButton>
             <Drawer
                 anchor={anchor}
-                open={state[anchor]}
+                open={anchorState[anchor]}
                 onClose={toggleDrawer(anchor, false)}
             >
                 {renderCommentBox()}

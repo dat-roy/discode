@@ -26,8 +26,7 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
 export default function ChannelInbox() {
     const params = useParams();
@@ -167,18 +166,6 @@ export default function ChannelInbox() {
                 margin: "0 auto",
             }}
         >
-            <ToastContainer
-                position="top-center"
-                autoClose={2500}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-            />
             <Box
                 key="boxChatHeader"
                 style={{

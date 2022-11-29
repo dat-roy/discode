@@ -13,7 +13,9 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import CommentBox from '../CommentBox';
 import { CommentTypes } from '../../../../../../types/comment.type'
 
-export default function CommentElement({ comment }) {
+export default function CommentElement({
+    postId, comment, handleAppendNewComment
+}) {
     const maxChar = 180;
     const [liked, setLiked] = useState(false);
     const [likesNumber, setLikesNumber] = useState(Math.floor(Math.random() * 20))
@@ -22,6 +24,17 @@ export default function CommentElement({ comment }) {
     const [openReplyComments, setOpenReplyComments] = useState(false);
 
     const sent_at = moment(comment?.created_at).fromNow();
+
+    const countTotalReplyComments = (parent) => {
+        if (!parent) return 0;
+        if (!parent?.children || !parent?.children?.length) return 0;
+        
+        let total = 0;
+        for (const child of parent.children) {
+            total += countTotalReplyComments(child)
+        }
+        return (parent.children).length + total;
+    }
 
     if (!comment) return null;
     return (
@@ -101,18 +114,20 @@ export default function CommentElement({ comment }) {
                         <Typography marginLeft={-0.3}>{likesNumber}</Typography>
                     </Stack>
                     <Stack direction="row" alignItems="center">
-                        <IconButton>
+                        <IconButton
+                            onClick={() => {
+                                if (comment?.children.length) {
+                                    setOpenReplyComments(old => !old)
+                                }
+                            }}
+                        >
                             <QuestionAnswerIcon
                                 style={{ color: "" }}
-                                onClick={() => {
-                                    if (comment?.children.length) {
-                                        setOpenReplyComments(old => !old)
-                                    }
-                                }}
                             />
                         </IconButton>
                         <Typography marginLeft={-0.3}>
-                            {(openReplyComments) ? "Hide" : (comment?.children.length)} replies
+                            {(openReplyComments) ? "Hide"
+                                : (countTotalReplyComments(comment))} replies
                         </Typography>
                     </Stack>
                 </Stack>
@@ -130,10 +145,12 @@ export default function CommentElement({ comment }) {
                 !openCommentBox ? null
                     : <Box sx={{ paddingLeft: 8 }}>
                         <CommentBox
+                            postId={postId}
                             commentType={CommentTypes.REPLY}
                             parentCommentId={comment?.id}
                             parentCommentUsername={comment?.username}
                             setOpenCommentBox={setOpenCommentBox}
+                            handleAppendNewComment={handleAppendNewComment}
                         />
                     </Box>
             }
@@ -145,7 +162,10 @@ export default function CommentElement({ comment }) {
                     >
                         {comment.children.map((child, index) => {
                             return <CommentElement
+                                key={index}
+                                postId={postId}
                                 comment={child}
+                                handleAppendNewComment={handleAppendNewComment}
                             />
                         })}
                     </Stack>

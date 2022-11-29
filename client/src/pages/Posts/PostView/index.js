@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom"
 import { useStore } from "../../../store/hooks";
 
 import { Grid } from "@mui/material";
-import { ToastContainer, toast } from 'react-toastify';
 
 import PostLeft from "./PostLeft";
 import PostContent from "./PostContent";
@@ -29,8 +28,6 @@ export default function PostView() {
         handleGetPostByIdAPI(post_id)
             .then(res => {
                 //console.log(res.data?.post);
-                //console.log("HightLight")
-                //console.log(hljs.highlightAuto(res.data?.post.content).value)
                 setPostData(res.data?.post);
             })
     }, [params, post_id, state.user.id])
@@ -50,22 +47,9 @@ export default function PostView() {
                 color: "black"
             }}
         >
-            <ToastContainer
-                position="top-center"
-                autoClose={1800}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-            />
             <Grid item xs>
                 <PostLeft
                     postData={postData}
-                    toast={toast}
                 />
             </Grid>
             <Grid item xs={6}

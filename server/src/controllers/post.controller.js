@@ -18,9 +18,7 @@ class postController {
             }
 
             const postSaving = await Posts.create({
-                author_id: author_id,
-                title: title,
-                content: content,
+                author_id, title, content,
             })
 
             if (postSaving.affectedRows === 0) {
@@ -30,14 +28,13 @@ class postController {
                 if (tag_list) {
                     for (const tagname of tag_list) {
                         const tagSaving = await Tags.create({
-                            post_id: post_id,
-                            tag_name: tagname,
+                            post_id, tagname,
                         })
                     }
                 }
                 return res.status(200).json({
                     message: "Save new post successfully",
-                    post_id: post_id,
+                    post_id,
                 })
             }
         } catch (err) {
@@ -53,18 +50,23 @@ class postController {
     async getPostById(req, res, next) {
         const post_id = parseInt(req.params.id);
         try {
-            const result = await Posts.fetchPostWithAuthor({
-                post_id: post_id,
-            })
+            const result = await Posts.fetchPostWithAuthor({ post_id })
             if (!result) {
                 return res.status(404).json({
-                    message: "Post id not found"
+                    message: "Post id not found",
                 })
             }
+            const tags = await Tags.findAll({
+                attributes: [`tag_name`],
+                where: { post_id },
+            })
 
             return res.status(200).json({
                 message: "Get a post successfully",
-                post: result[0],
+                post: {
+                    ...result[0],
+                    tags,
+                }
             })
         } catch (err) {
             console.log(err);
@@ -81,7 +83,7 @@ class postController {
 
         try {
             //TODO: validate user_id
-            const posts = await Posts.findAll({ where: { author_id: author_id } })
+            const posts = await Posts.findAll({ where: { author_id } })
 
             for (const post of posts) {
                 const tags = await Tags.findAll({ where: { post_id: post.id } })
@@ -90,7 +92,26 @@ class postController {
 
             return res.status(200).json({
                 message: "Get all posts successfully",
-                posts: posts,
+                posts,
+            })
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({
+                message: "Internal Server Error",
+                error: err.message,
+            })
+        }
+    }
+
+    //[GET] /api/post/get/tags/:post_id
+    async getTags(req, res, next) {
+        const post_id = parseInt(req.params.post_id)
+        try {
+            const tags = await Tags.findAll({ where: { post_id } })
+
+            return res.status(200).json({
+                message: "Get post tags successfully",
+                tags,
             })
         } catch (err) {
             console.log(err);
@@ -180,7 +201,7 @@ class postController {
         const post_id = parseInt(req.params.id)
         try {
             const comments = await PostComments.fetchCommentWithSender({
-                post_id, 
+                post_id,
             })
             return res.status(200).json({
                 message: "Get all comments successfully",
@@ -201,24 +222,30 @@ class postController {
 
         try {
             const commentSaving = await PostComments.create({
-                post_id, sender_id, content, parent_comment_id, 
+                post_id, sender_id, content, parent_comment_id,
             })
             if (commentSaving.affectedRows === 0) {
                 throw new Error("DB error")
             }
+            const savedComment = await PostComments.findOne({
+                attributes: [`created_at`], 
+                where: { id: commentSaving.insertId }
+            })
+
             return res.status(200).json({
-                message: "Success", 
+                message: "Success",
                 comment: {
-                    id: commentSaving.insertId, 
-                    post_id, sender_id, 
-                    content, parent_comment_id, 
+                    id: commentSaving.insertId,
+                    post_id, sender_id,
+                    content, parent_comment_id,
+                    created_at: savedComment.created_at, 
                 }
             })
         } catch (err) {
             console.log(err);
             return res.status(500).json({
-                message: "Internal Server Error", 
-                err: err.message, 
+                message: "Internal Server Error",
+                err: err.message,
             })
         }
     }

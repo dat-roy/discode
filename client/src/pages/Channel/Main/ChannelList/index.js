@@ -16,8 +16,7 @@ import { Stack, Typography } from "@mui/material";
 import { Divider } from "@mui/material";
 import SearchBar from "../../../../components/SearchBar";
 
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 import ChannelCreator from "../ChannelCreator";
 
 const List = styled(MuiList)({
@@ -117,18 +116,6 @@ export default function ChannelList() {
 
     return (
         <Box>
-            <ToastContainer
-                position="top-center"
-                autoClose={2500}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-            />
             <Stack>
                 <Stack
                     p={3}

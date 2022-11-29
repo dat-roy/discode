@@ -12,8 +12,7 @@ import StepLabel from '@mui/material/StepLabel';
 import StepOne from "./StepOne";
 import StepTwo from "./StepTwo";
 import StepThree from "./StepThree";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 import { handleCreateNewChannelAPI } from "../../../../services";
 import { useNavigate } from "react-router-dom";
 
@@ -136,18 +135,6 @@ function HorizontalLinearStepper() {
 
     return (
         <Box sx={{ width: '100%' }}>
-            <ToastContainer
-                position="top-center"
-                autoClose={2000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-            />
             <Stepper activeStep={activeStep} alternativeLabel>
                 {steps.map((label, index) => {
                     const stepProps = {};

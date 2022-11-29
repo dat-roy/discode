@@ -18,8 +18,7 @@ import ListItemText from '@mui/material/ListItemText';
 import { Avatar, Box } from "@mui/material";
 import { Stack, Typography } from "@mui/material";
 import { Divider } from "@mui/material";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
 const List = styled(MuiList)({
     "& .MuiListItemButton-root": {
@@ -143,18 +142,6 @@ export default function RoomList() {
 
     return (
         <Box>
-            <ToastContainer
-                position="top-center"
-                autoClose={2500}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-            />
             <Stack>
                 <Stack
                     p={0}
