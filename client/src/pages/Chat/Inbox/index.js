@@ -35,7 +35,7 @@ export default function Inbox() {
             handleGetUserByIdAPI(otherID)
                 .then(response => {
                     if (!response.data.user_data) {
-                        return navigate('/err/invalid-user-id')
+                        return navigate('/chat')
                     } else {
                         setOtherUser(response.data.user_data);
                     }
@@ -54,8 +54,17 @@ export default function Inbox() {
 
     if (!otherID || otherID === myID) {
         return (
-            <div style={{ padding: 20 }}>
-                <h3>Select a chat or create a new conversation</h3>
+            <div
+                style={{
+                    width: "100%",
+                    height: "100%",
+                    textAlign: "center",
+                    display: "flex", 
+                    alignItems: "center", 
+                    justifyContent: "center", 
+                }}
+            >
+                <h3><i>Select a chat or create a new conversation</i></h3>
             </div>
         )
     }

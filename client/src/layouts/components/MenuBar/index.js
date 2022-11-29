@@ -45,7 +45,7 @@ export default function MenuBar() {
     useEffect(() => {
         handleCountAllUnreadMessagesAPI(state.user.id, RoomTypes.SINGLE)
             .then(res => {
-                console.log(res.data?.unread)
+                //console.log(res.data?.unread)
                 setMessageBadge(res.data?.unread)
             })
     }, [state.user.id])
