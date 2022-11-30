@@ -49,7 +49,7 @@ function App() {
             </Routes>
             <ToastContainer
                 position="top-center"
-                autoClose={2500}
+                autoClose={2000}
                 hideProgressBar={false}
                 newestOnTop={false}
                 closeOnClick
@@ -57,7 +57,10 @@ function App() {
                 pauseOnFocusLoss
                 draggable
                 pauseOnHover
-                theme="light"
+                theme="dark"
+                toastStyle={{ 
+                    //backgroundColor: "#33691e"
+                }}
             />
         </>
     )

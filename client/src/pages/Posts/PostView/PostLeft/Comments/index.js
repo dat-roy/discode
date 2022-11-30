@@ -23,31 +23,26 @@ export default function Comments({ anchor, postId, commentList }) {
 
     useEffect(() => {
         //Get children of comments 
-        const res = []
+        let res = []
         for (const comment of commentList) {
             comment.children = []
             comment.level = 1
         }
+        commentList.sort((a, b) => a.id - b.id)
         for (const comment of commentList) {
             if (!comment?.parent_comment_id) {
-                res.push(comment)
+                res = [comment, ...res]
             } else {
                 for (const parent of commentList) {
                     if (parent.id === comment?.parent_comment_id) {
                         comment.level = parent.level + 1;
-                        parent.children.push(comment);
+                        parent.children = [comment, ...parent.children];
                     }
                 }
             }
         }
         setComments(res)
     }, [commentList])
-
-    // useEffect(() => {
-    //     if (comments) {
-    //         console.log(comments);
-    //     }
-    // }, [comments])
 
     const handleAppendNewComment = (params) => {
         const newComment = {
@@ -65,7 +60,8 @@ export default function Comments({ anchor, postId, commentList }) {
             for (const elem of list) {
                 if (elem.id === newOne?.parent_comment_id) {
                     newOne.level = elem.level + 1;
-                    return elem.children.push(newOne);
+                    elem.children = [newOne, ...elem.children];
+                    return;
                 }
                 appendRecursion(newOne, elem.children)
             }
@@ -73,7 +69,7 @@ export default function Comments({ anchor, postId, commentList }) {
 
         if (!newComment?.parent_comment_id) {
             newComment.level = 1;
-            setComments(old => [...old, newComment])
+            setComments(old => [newComment, ...old])
         } else {
             const copyComments = [...comments]
             appendRecursion(newComment, copyComments);

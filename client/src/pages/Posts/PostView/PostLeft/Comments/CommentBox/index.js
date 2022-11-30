@@ -112,7 +112,7 @@ export default function CommentBox(props) {
                     },
 
                     '& .MuiInput-underline:hover:after': {
-                        borderBottom: "none",
+                        //borderBottom: "none",
                     }
                 }}
                 InputProps={{

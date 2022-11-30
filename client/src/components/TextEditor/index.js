@@ -2,7 +2,6 @@ import React from "react";
 import ReactQuill, { Quill } from "react-quill";
 import ImageResize from 'quill-image-resize-module-react';
 import 'react-quill/dist/quill.snow.css';
-import "highlight.js/styles/atom-one-light.css";
 
 Quill.register('modules/imageResize', ImageResize);
 
@@ -54,12 +53,13 @@ export default function TextEditor(props) {
     
     return (
         <ReactQuill
-            theme={"snow"}
+            theme={"bubble"}
             style={{
                 height: "60vh",
                 marginBottom: 20,
-                color: "black",
                 paddingBottom: 40,
+                border: "1px solid gray", 
+                borderRadius: "6px",
             }}
             onChange={(html) => {
                 props.setEditorHtml(html)

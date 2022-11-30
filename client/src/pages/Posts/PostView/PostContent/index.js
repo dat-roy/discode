@@ -12,6 +12,8 @@ export default function PostContent(props) {
         <Fragment>
             <Typography variant="h3" gutterBottom
                 marginTop={10}
+                //padding={2}
+                textAlign={"center"}
             >
                 {postData.title}
             </Typography>
@@ -43,6 +45,9 @@ export default function PostContent(props) {
                 theme={"bubble"}
                 modules={{
                     syntax: true,
+                }}
+                style={{
+                    padding: "20px",
                 }}
             />
 

@@ -44,8 +44,8 @@ export default function Feed() {
             sx={{
                 width: "100%",
                 height: "100vh",
-                bgcolor: "white",
-                color: "black"
+                //bgcolor: "white",
+                //color: "black"
             }}
         >
             <Grid item xs={8} sx={{ border: "1px solid red" }}>
@@ -56,9 +56,12 @@ export default function Feed() {
                 </Fab>
                 <Box sx={{ padding: 6, border: "1px solid red", height: "100vh" }}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                        <Tabs value={value} onChange={(_, newValue) => {
-                            setValue(newValue);
-                        }}>
+                        <Tabs
+                            value={value}
+                            onChange={(_, newValue) => {
+                                setValue(newValue);
+                            }}
+                        >
                             <Tab label="Hot" />
                             <Tab label="Following" />
                             <Tab label="For you" />

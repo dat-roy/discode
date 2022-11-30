@@ -14,6 +14,7 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import { CardActionArea } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
+import { Image } from 'antd';
 
 import { MessageTypes } from '../../types/db.type';
 
@@ -100,7 +101,6 @@ const ChatMsg = (props) => {
     moment.locale("vi")
     const convertedTime = moment(created_at).calendar();
     const [openProfile, setOpenProfile] = useState(false);
-    const [openLargerImage, setOpenLargerImage] = useState(false);
 
     return (
         <Fragment>
@@ -144,27 +144,16 @@ const ChatMsg = (props) => {
                                         className={cx(`${side}Card`)}
                                     >
                                         <Tooltip placement="left" title={convertedTime}>
-                                            <CardActionArea>
-                                                <CardMedia
-                                                    component="img"
-                                                    src={message_attachments}
-                                                    alt="green iguana"
-                                                    onClick={() => setOpenLargerImage(true)}
-                                                />
-                                            </CardActionArea>
-                                        </Tooltip>
-
-                                        <Dialog
-                                            open={openLargerImage}
-                                            onClose={() => setOpenLargerImage(false)}
-                                            style={{ maxWidth: "100%", maxHeight: "100%" }}
-                                        >
-                                            <img
-                                                style={{ width: 'auto', height: '80%' }}
+                                            <Image
                                                 src={message_attachments}
-                                                alt="dialog"
+                                                placeholder={
+                                                    <Image
+                                                        preview={false}
+                                                        src={message_attachments}
+                                                    />
+                                                }
                                             />
-                                        </Dialog>
+                                        </Tooltip>
                                     </Card>
                                 </div>
                             }
@@ -191,33 +180,21 @@ const ChatMsg = (props) => {
                                                         className={cx("msg",
                                                             TypographyProps.className
                                                         )}
-                                                        style={{
-                                                            // fontFamily: "cursive",
-                                                        }}
                                                     >
                                                         {content}
                                                     </Typography>
                                                 </CardContent>
-                                                <CardMedia
-                                                    component="img"
+                                                <Image
                                                     src={message_attachments}
-                                                    alt="green iguana"
-                                                    onClick={() => setOpenLargerImage(true)}
+                                                    placeholder={
+                                                        <Image
+                                                            preview={false}
+                                                            src={message_attachments}
+                                                        />
+                                                    }
                                                 />
                                             </CardActionArea>
                                         </Tooltip>
-                                        <Dialog
-                                            open={openLargerImage}
-                                            onClose={() => setOpenLargerImage(false)}
-                                            //hasCloseButton
-                                            style={{ maxWidth: "100%", maxHeight: "100%" }}
-                                        >
-                                            <img
-                                                style={{ width: 'auto', height: '80%', background: "transparent" }}
-                                                src={message_attachments}
-                                                alt="dialog"
-                                            />
-                                        </Dialog>
                                     </Card>
                                 </div>
                             )

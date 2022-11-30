@@ -28,7 +28,7 @@ export default function CommentElement({
     const countTotalReplyComments = (parent) => {
         if (!parent) return 0;
         if (!parent?.children || !parent?.children?.length) return 0;
-        
+
         let total = 0;
         for (const child of parent.children) {
             total += countTotalReplyComments(child)
@@ -141,35 +141,41 @@ export default function CommentElement({
                     </Button>
                 </Stack>
             </Stack>
-            {
-                !openCommentBox ? null
-                    : <Box sx={{ paddingLeft: 8 }}>
-                        <CommentBox
-                            postId={postId}
-                            commentType={CommentTypes.REPLY}
-                            parentCommentId={comment?.id}
-                            parentCommentUsername={comment?.username}
-                            setOpenCommentBox={setOpenCommentBox}
-                            handleAppendNewComment={handleAppendNewComment}
-                        />
-                    </Box>
-            }
 
-            {
-                !openReplyComments ? null
-                    : <Stack
-                        sx={{ paddingLeft: 8 }}
-                    >
-                        {comment.children.map((child, index) => {
-                            return <CommentElement
-                                key={index}
+            <Stack
+                sx={{
+                    paddingLeft: 8,
+                    borderLeft: "1px dotted gray",
+                }}
+            >
+                {
+                    !openCommentBox ? null
+                        : <Box>
+                            <CommentBox
                                 postId={postId}
-                                comment={child}
+                                commentType={CommentTypes.REPLY}
+                                parentCommentId={comment?.id}
+                                parentCommentUsername={comment?.username}
+                                setOpenCommentBox={setOpenCommentBox}
                                 handleAppendNewComment={handleAppendNewComment}
                             />
-                        })}
-                    </Stack>
-            }
+                        </Box>
+                }
+
+                {
+                    !openReplyComments ? null
+                        : <Stack>
+                            {comment.children.map((child, index) => {
+                                return <CommentElement
+                                    key={index}
+                                    postId={postId}
+                                    comment={child}
+                                    handleAppendNewComment={handleAppendNewComment}
+                                />
+                            })}
+                        </Stack>
+                }
+            </Stack>
         </Stack>
     )
 }

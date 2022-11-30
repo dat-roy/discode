@@ -30,7 +30,7 @@ export default function Publish() {
         if (editorHtml === '' || editorHtml === '<p><br></p>') {
             return toast.error("Content can not be empty")
         }
-        //console.log(tags);
+        console.log(tags);
         //console.log(editorHtml);
         handlePublishNewPostAPI({
             author_id: state.user.id,
@@ -38,12 +38,14 @@ export default function Publish() {
             content: editorHtml,
             tag_list: tags,
         })
-            .then((res) => {
+            .then(res => {
                 toast.success("Publish new post successfully")
                 setTimeout(() => {
                     navigate(`/posts/view/${res.data?.post_id}`)
-                }, 2500)
-                console.log(res);
+                }, 2000)
+            })
+            .catch(err => {
+                toast.error(err.message);
             })
     }
 
@@ -55,7 +57,8 @@ export default function Publish() {
                 height: "100vh",
                 overflowY: "scroll",
             }}
-            bgcolor={"white"}
+            //bgcolor={"white"}
+
             noValidate
             autoComplete="off"
         >
@@ -65,6 +68,7 @@ export default function Publish() {
                     width: "50%",
                     margin: "auto",
                     paddingTop: 5,
+                    color: "inherit",
                 }}
             >
                 <TextField
@@ -77,12 +81,31 @@ export default function Publish() {
                     }}
                     inputProps={{
                         style: {
+                            color: "orange",
                             fontSize: 36,
                             paddingTop: 10,
                             paddingRight: 10,
                             fontWeight: 500,
                             letterSpacing: 0.5,
                             lineHeight: 1,
+                        }
+                    }}
+                    sx={{
+                        '& .MuiInput-root:hover': {
+                            borderBottom: "none",
+                        },
+                        '& .MuiInput-underline:before': {
+                            borderBottom: '1px solid orange',
+                        },
+                        '& .MuiInput-underline:hover:before': {
+                            borderBottom: '1px dotted orange',
+                        },
+                        '& .MuiInput-underline:after': {
+                            borderBottomColor: 'orange',
+                        },
+    
+                        '& .MuiInput-underline:hover:after': {
+                            //borderBottom: "none",
                         }
                     }}
                     inputRef={title}

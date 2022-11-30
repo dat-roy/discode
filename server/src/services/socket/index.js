@@ -64,8 +64,8 @@ const socketHandler = (io, socket) => {
     socket.on("sendChatMessage", (message, roomId) => {
         message.room_id = roomId;
         io.to(roomId).emit("receiveChatMessage", message, roomId);
-        io.to(roomId).emit("receiveChatMessageAgain", message, roomId);
-        io.to(roomId).emit("receiveChatMessageAtMenuBar", message, roomId);
+        io.to(roomId).emit("receiveChatMessageAtChatList", message, roomId);
+        socket.broadcast.to(roomId).emit("receiveChatMessageAtMenuBar", message, roomId);
         //console.log("Members: " + io.sockets.adapter.rooms.get(room_id).size)
     })
 
@@ -89,8 +89,10 @@ const socketHandler = (io, socket) => {
 
     socket.on("markAsReadFromChatList", (userId, number) => {
         //Send back to myself.
-        const mySocketId = findUser(userId).socketId;
-        io.to(mySocketId).emit("markAsReadToMenuBar", userId, number);
+        const mySocketId = findUser(userId)?.socketId;
+        if (mySocketId) {
+            io.to(mySocketId).emit("markAsReadToMenuBar", userId, number);
+        }
     })
 
     socket.on("disconnect", () => {

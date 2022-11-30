@@ -28,7 +28,8 @@ class postController {
                 if (tag_list) {
                     for (const tagname of tag_list) {
                         const tagSaving = await Tags.create({
-                            post_id, tagname,
+                            post_id, 
+                            tag_name: tagname,
                         })
                     }
                 }

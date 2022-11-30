@@ -1,6 +1,23 @@
 import React, { Fragment } from 'react';
-import Autocomplete from '@mui/material/Autocomplete';
+import MuiAutocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
+import { styled } from "@mui/material/styles";
+
+const Autocomplete = styled(MuiAutocomplete)({
+    "& .MuiAutocomplete-inputRoot": {
+        color: "orange",
+        "&:before": {
+            borderBottomColor: "inherit"
+        },
+        "&:hover:not(.Mui-focused):before": {
+            borderBottomColor: "orange"
+        },
+        "&:after": {
+            // focused
+            borderBottomColor: "orange"
+        },
+    },
+})
 
 export default function Tags(props) {
     const { tags, setTags } = props;
@@ -43,7 +60,8 @@ export default function Tags(props) {
                     style: {
                         borderRadius: 30,
                         height: 28,
-                        backgroundColor: "#ffe0b2"
+                        backgroundColor: "#b26a00",
+                        color: "#fff391"
                     }
                 }}
             />
@@ -53,5 +71,5 @@ export default function Tags(props) {
 
 const technologies = [
     "Javascript", "Java", "NodeJS", "ReactJS", "DevOps", "C++", "Blockchain",
-    "MySQL", "MongoDB", "Express", "NuxtJs", "Machine Learning", 
+    "MySQL", "MongoDB", "Express", "NuxtJs", "Machine Learning",
 ]

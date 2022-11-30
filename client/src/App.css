@@ -23,5 +23,24 @@ body {
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-    background:  #676767;
+    background: #676767;
+}
+
+.ql-editor {
+    font-size: 16px;
+    line-height: 1.8rem;
+}
+
+.ql-bubble .ql-editor pre {
+    padding: 24px;
+    border-radius: 10px;
+}
+
+.ql-bubble .ql-editor pre.ql-syntax {
+    color: #ab9bab;
+    background: #1b181b;
+}
+
+.ql-editor.ql-blank::before {
+    color: white;
 }

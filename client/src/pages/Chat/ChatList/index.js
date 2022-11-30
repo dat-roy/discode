@@ -21,6 +21,7 @@ import { Divider } from '@mui/material';
 import CreateIcon from '@mui/icons-material/Create';
 import SearchBar from "../../../components/SearchBar";
 import BadgeAvatar from "../../../components/BadgeAvatar";
+import { toast } from "react-toastify";
 
 export default function ChatList() {
     const location = useLocation();
@@ -73,7 +74,10 @@ export default function ChatList() {
 
             setSingleRooms(roomList);
         }
-        fetchData();
+        fetchData()
+            .catch(err => {
+                toast.error(err.message);
+            });
     }, [state.user.id])
 
     useEffect(() => {
@@ -110,7 +114,10 @@ export default function ChatList() {
 
     useEffect(() => {
         if (singleRooms) {
-            socket.on("receiveChatMessageAgain", newMsg => {
+            socket.on("receiveChatMessageAtChatList", newMsg => {
+                if (newMsg.sender_id === state.user.id) {
+                    return;
+                }
                 newMsg.created_at = moment().format().slice(0, 19).replace('T', ' ');
                 const roomList = singleRooms.map(room => {
                     if (room.room_id === newMsg.room_id) {
@@ -128,7 +135,7 @@ export default function ChatList() {
             })
         }
         return () => {
-            socket.off("receiveChatMessageAgain")
+            socket.off("receiveChatMessageAtChatList")
         }
     }, [socket, singleRooms])
 

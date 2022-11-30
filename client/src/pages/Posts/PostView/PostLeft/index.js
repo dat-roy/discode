@@ -68,7 +68,7 @@ export default function PostLeft(props) {
     }
 
     return (
-        <Stack direction={"column"}>
+        <Stack>
             <Box padding={1}>
                 <Button href="#back">
                     Back
@@ -96,9 +96,18 @@ export default function PostLeft(props) {
                     (Description) A simple person
                 </Typography>
                 <br />
-                <Stack direction={"row"}>
+                <Stack direction={"row"} spacing={1}>
                     {postData?.tags?.map((tag, index) => {
-                        return <Chip key={index} label={tag.tag_name} />
+                        return <Chip
+                            key={index}
+                            label={tag.tag_name}
+                            style={{
+                                color: "inherit",
+                                borderRadius: 30,
+                                height: 28,
+                                backgroundColor: "#ab5600"
+                            }}
+                        />
                     })}
                 </Stack>
                 <br />

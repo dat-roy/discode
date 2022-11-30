@@ -15,7 +15,6 @@ import {
 } from "../../../services"
 import 'react-quill/dist/quill.snow.css';
 import 'react-quill/dist/quill.bubble.css'
-import "highlight.js/styles/atom-one-light.css";
 
 export default function PostView() {
     const params = useParams();
@@ -43,11 +42,15 @@ export default function PostView() {
             sx={{
                 width: "100%",
                 height: "100vh",
-                bgcolor: "white",
-                color: "black"
+                //bgcolor: "white",
+                //color: "black"
             }}
         >
-            <Grid item xs>
+            <Grid item xs
+                style={{
+                    backgroundColor: "rgba(19, 47, 76, 0.4)"
+                }}
+            >
                 <PostLeft
                     postData={postData}
                 />
@@ -62,7 +65,11 @@ export default function PostView() {
                     postData={postData}
                 />
             </Grid>
-            <Grid item xs>
+            <Grid item xs
+                style={{
+                    backgroundColor: "rgba(19, 47, 76, 0.4)"
+                }}
+            >
                 <PostRight
                     postData={postData}
                 />
