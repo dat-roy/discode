@@ -29,6 +29,7 @@ const poolUtils = {
             password: process.env.DATABASE_PWD,
             database: process.env.DATABASE_NAME,
             dateStrings: true,
+            multipleStatements: true, 
         })
         return pool;
     }

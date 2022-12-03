@@ -1,3 +1,6 @@
+const Notifications = require('../models/notifications.model');
+const NotificationReceivers = require('../models/notification_receivers.model');
+
 class testController {
     //[GET] /api/test/get 
     //Used for testing purpose only.
@@ -9,10 +12,15 @@ class testController {
     //[POST] /api/test/post
     //Used for testing purpose only.
     async testPost(req, res, next) {
-        const {html} = req.body;
-        //console.log(html);
+        const {a, b, c, d} = req.body;
+        const aaa = await NotificationReceivers.checkChannelNotiSent({
+            sender_id: a, 
+            receiver_id: b, 
+            channel_id: c, 
+            noti_type: d, 
+        })
         return res.json({
-            html: html
+            aaa, 
         })
     }
 }

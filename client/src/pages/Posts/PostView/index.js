@@ -55,7 +55,7 @@ export default function PostView() {
                     postData={postData}
                 />
             </Grid>
-            <Grid item xs={6}
+            <Grid item xs={7}
                 sx={{
                     height: "100vh",
                     overflowY: "scroll",

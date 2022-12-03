@@ -12,8 +12,15 @@ const handleSearchUserByTextAPI = (text) => {
     return axios.get(`/api/search/user/${text}`)
 }
 
+const handleSearchUserNotInChannelByTextAPI = (sender_id, channel_id, text) => {
+    return axios.post(`/api/search/user/channel/not-in`, {
+        sender_id, channel_id, text, 
+    })
+}
+
 export {
     handleGetUserByIdAPI,
     handleGetUserByUsernameAPI, 
     handleSearchUserByTextAPI,
+    handleSearchUserNotInChannelByTextAPI, 
 }

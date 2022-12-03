@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useStore } from "../../../../store/hooks";
-import { handleGetJoinedChannelsAPI } from "../../../../services/chat";
+import { handleGetJoinedChannelsAPI } from "../../../../services";
 
 import { styled } from "@mui/material/styles";
 import MuiList from '@mui/material/List';

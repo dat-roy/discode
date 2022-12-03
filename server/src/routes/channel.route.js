@@ -22,5 +22,6 @@ router.post('/get/members', channelController.getMembers);
 router.post('/get/joined-channels', channelController.getJoinedChannels);
 router.post('/get/rooms', channelController.getGroupRooms);
 router.get('/get/room/:id', channelController.getRoomById);
+router.post('/create/room', channelController.createGroupRoom);
 router.get('/check/title/:title', channelController.checkTitleExistence);
 module.exports = router;

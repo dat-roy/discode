@@ -5,7 +5,7 @@ export default function RightBar({children}) {
     return (
         <Box
             sx={{
-                width: "25%", 
+                width: "23%", 
                 bgcolor: "rgba(19, 47, 76, 0.4)",
             }}
         >

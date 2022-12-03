@@ -115,14 +115,13 @@ export default function ChatList() {
     useEffect(() => {
         if (singleRooms) {
             socket.on("receiveChatMessageAtChatList", newMsg => {
-                if (newMsg.sender_id === state.user.id) {
-                    return;
-                }
                 newMsg.created_at = moment().format().slice(0, 19).replace('T', ' ');
                 const roomList = singleRooms.map(room => {
                     if (room.room_id === newMsg.room_id) {
                         room.last_message = newMsg
-                        room.unread_messages++;
+                        if (newMsg.sender_id !== state.user.id) {
+                            room.unread_messages++;
+                        }
                     }
                     return room
                 })
@@ -278,7 +277,7 @@ function ChatElement({ selected, online, room_data }) {
                         style={{
                             overflow: "hidden",
                             textOverflow: "ellipsis",
-                            width: '8rem'
+                            width: '6rem'
                         }}
                     >
                         <Typography variant="subtitle1" color="#dce775">

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, /*useLocation*/ } from 'react-router-dom';
+import React, { useEffect, useState, useRef } from "react";
+import { useParams, useNavigate } from 'react-router-dom';
 
 import { styled } from "@mui/material/styles";
 
@@ -7,7 +7,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import { useStore } from "../../../../store/hooks";
-import { handleGetChannelByIdAPI, handleGetGroupRoomsAPI } from "../../../../services/chat";
+import { handleGetChannelByIdAPI, handleGetGroupRoomsAPI, handleCreateNewChannelRoomAPI } from "../../../../services";
 
 import MuiList from '@mui/material/List';
 import MuiListItem from '@mui/material/ListItem';
@@ -15,10 +15,12 @@ import MuiListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 
-import { Avatar, Box } from "@mui/material";
+import { Avatar, Box, Button, TextField } from "@mui/material";
 import { Stack, Typography } from "@mui/material";
 import { Divider } from "@mui/material";
+import { Modal } from "antd";
 import { toast } from 'react-toastify';
+import "../../../../styles/modal.css";
 
 const List = styled(MuiList)({
     "& .MuiListItemButton-root": {
@@ -92,6 +94,7 @@ export default function RoomList() {
     const [selected, setSelected] = useState(parseInt(params.room_id));
 
     const navigate = useNavigate();
+    console.log(rooms);
 
     useEffect(() => {
         if (!channel) {
@@ -139,10 +142,9 @@ export default function RoomList() {
     if (!joined) {
         return <></>
     }
-
     return (
-        <Box>
-            <Stack>
+        <Box style={{ height: "100%" }}>
+            <Stack height={"35vh"}>
                 <Stack
                     p={0}
                     direction="row"
@@ -158,7 +160,7 @@ export default function RoomList() {
                         }}>
                         <CardMedia
                             component="img"
-                            height="160"
+                            height="140"
                             image={channel?.background_url}
                             alt="backdrop"
                         />
@@ -216,8 +218,26 @@ export default function RoomList() {
                 </Box>
             </Stack>
 
-            <Stack pl={4} pr={4}>
-                <List>
+            <Stack>
+                {
+                    (channel?.admin_id === state.user.id)
+                        ? <Stack
+                            top={0}
+                            position={"sticky"}
+                            alignItems={"center"}
+                        >
+                            <RoomCreator />
+                        </Stack>
+                        : null
+                }
+                <List
+                    style={{
+                        height: "48vh",
+                        overflowY: "scroll",
+                        paddingLeft: 20,
+                        paddingRight: 20,
+                    }}
+                >
                     {
                         rooms.map((room, index) => {
                             return <RoomElement
@@ -230,6 +250,80 @@ export default function RoomList() {
                     }
                 </List>
             </Stack>
-        </Box>
+            <Stack
+                style={{
+                    border: "1px solid red",
+                    height: "100%",
+                }}
+            >
+                <Avatar src={state.user.avatar_url} />
+            </Stack>
+        </Box >
     )
+
+    function RoomCreator() {
+        const roomNameRef = useRef();
+        const [openModal, setOpenModal] = useState(false);
+        const [confirmLoading, setConfirmLoading] = useState(false);
+
+        const handleOk = () => {
+            if (!roomNameRef.current?.value) {
+                return toast.error("Room name can not be empty")
+            }
+            setConfirmLoading(true);
+            handleCreateNewChannelRoomAPI(
+                channel_id,
+                state.user.id,
+                roomNameRef.current.value
+            )
+                .then(res => {
+                    if (res.data?.exist) {
+                        return toast.error("Duplicate name error!")
+                    }
+                    toast.success("Create new room successfully!")
+                    setRooms(old => [...old, res.data?.new_room])
+                    setTimeout(() => {
+                        setOpenModal(false);
+                    }, 1000)
+                })
+                .catch(err => {
+                    return toast.error(err.message)
+                })
+                .finally(() => {
+                    setConfirmLoading(false);
+                })
+        }
+
+        const handleCancel = () => {
+            setOpenModal(false);
+        }
+
+        return (<>
+            <Button onClick={() => setOpenModal(true)}>Create new room</Button>
+            <Modal
+                title={<Typography variant={"h5"} color={"white"}>Create new room</Typography>}
+                centered
+                open={openModal}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                okText={"Create room"}
+                confirmLoading={confirmLoading}
+                className={"createRoomModal"}
+            >
+                <Typography variant="subtitle1">
+                    Room name:
+                </Typography>
+                <TextField
+                    inputRef={roomNameRef}
+                    variant="filled"
+                    placeholder="Enter here"
+                    inputProps={{
+                        style: {
+                            color: "white",
+                        }
+                    }}
+                />
+            </Modal>
+        </>)
+    }
 }

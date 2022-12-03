@@ -5,8 +5,11 @@ const Users = require('../models/users.model');
 const UserChannel = require('../models/user_channel.model');
 const UserRoom = require('../models/user_room.model')
 const Rooms = require('../models/rooms.model')
+const Notifications = require('../models/notifications.model')
+const NotificationReceivers = require('../models/notification_receivers.model')
 const { isValidHttpUrl } = require('../utils/is-valid-http-url')
 const dotenv = require('dotenv');
+const { RoomTypes, ChannelNotificationTypes } = require('../types/db.type');
 dotenv.config();
 const backendHostname = process.env.BACKEND_HOST;
 
@@ -153,36 +156,74 @@ class channelController {
 
     //[POST] /api/channel/invite
     async inviteMember(req, res, next) {
+        const { sender_id, receiver_id, channel_id } = req.body
+        try {
+            //TODO: check sender_id, receiver_id existence & joined channel or not.
+
+            //if already invite -> nothing to do.
+            //else: create a noti.
+            const invitationExists = await NotificationReceivers.checkChannelNotiSent({
+                sender_id, receiver_id, channel_id,
+                noti_type: ChannelNotificationTypes.CHANNEL_INVITE,
+            })
+            //return res.json({invitationExists});
+            if (invitationExists) {
+                return res.status(200).json({
+                    exist: true,
+                    message: "Pending",
+                })
+            } else {
+                const notifiable_id =
+                    (await UserChannel.findOne({
+                        attributes: [`notifiable_id`],
+                        where: {
+                            user_id: sender_id,
+                            channel_id,
+                        }
+                    })).notifiable_id;
+
+                const notification_id =
+                    (await Notifications.create({
+                        notifiable_id,
+                        type: ChannelNotificationTypes.CHANNEL_INVITE, 
+                    })).insertId;
+
+                const noti_receiver_id =
+                    (await NotificationReceivers.create({
+                        notification_id, receiver_id,
+                    })).insertId;
+                return res.status(200).json({
+                    exist: false,
+                    message: "Invitation sent",
+                    noti_receiver_id,
+                })
+            }
+        } catch (err) {
+            console.log(err);
+            return res.status(err.message);
+        }
     }
 
     //[POST] /api/channel/add-member
     async addMember(req, res, next) {
         /*  Request body: 
-                + admin_id.
-                + req_id: ID of user who sent a joining request.
+                + user_id: ID of user who sent a joining request.
                 + channel_id.
             Steps:
                 + Check valid.
-                + Check admin group.
-                + Check member already in conv.
+                + Check member already in channel.
                 + Add member.
         */
-        let { admin_id, req_id, channel_id } = req.body;
+        let { user_id, channel_id } = req.body;
 
         try {
-            const checkAdminIdExists = await Users.checkExistence({ where: { id: admin_id } });
-            const checkReqIdExists = await Users.checkExistence({ where: { id: req_id } });
+            const checkUserIdExists = await Users.checkExistence({ where: { id: user_id } });
             const checkChannelIdExists = await Channels.checkExistence({ where: { id: channel_id } });
 
             // check valid
-            if (!checkAdminIdExists) {
+            if (!checkUserIdExists) {
                 return res.status(404).json({
-                    message: "Can not detect Admin ID"
-                })
-            }
-            if (!checkReqIdExists) {
-                return res.status(404).json({
-                    message: "Can not detect Request ID"
+                    message: "Can not detect User ID"
                 })
             }
             if (!checkChannelIdExists) {
@@ -191,33 +232,20 @@ class channelController {
                 })
             }
 
-            //check authenticate
-            const authenAdminId = await Channels.findOne({
+            //Check if user is already in channel or not.
+            const userExists = await UserChannel.checkExistence({
                 where:
-                    `id = ${channel_id} AND admin_id = ${admin_id}`
+                    `channel_id = ${channel_id} AND user_id = ${user_id}`,
             })
 
-            if (!authenAdminId) {
-                return res.status(404).json({
-                    message: "ID is not Admin",
-                })
-            }
-
-            //Check request in conversation
-            const checkRequestIdInChannel = await UserChannel.checkExistence({
-                where:
-                    `channel_id = ${channel_id} AND user_id = ${req_id}`,
-            })
-
-            if (checkRequestIdInChannel) {
+            if (userExists) {
                 return res.status(404).json({
                     message: "Request ID is already in this channel",
                 })
             } else {
                 //Add member to channel
                 const result = await UserChannel.create({
-                    user_id: req_id,
-                    channel_id: channel_id,
+                    user_id, channel_id,
                 });
 
                 if (result.affectedRows === 0) {
@@ -231,7 +259,7 @@ class channelController {
         } catch (error) {
             console.log(error.message);
             return res.status(500).json({
-                message: "An internal error from server",
+                message: "Internal Server Error",
                 error: error.message,
             })
         }
@@ -361,6 +389,71 @@ class channelController {
             return res.status(200).json({
                 rooms,
             })
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({
+                message: "Internal Server Error",
+                error: err.message,
+            })
+        }
+    }
+
+    //[POST] /api/channel/create/room
+    async createGroupRoom(req, res, next) {
+        const { channel_id, admin_id, room_name } = req.body;
+        try {
+            //TODO: Check admin id.
+            //Check room name exist.
+            const roomCheck = await Rooms.checkExistence({
+                where:
+                    `channel_id=${channel_id} AND type='${RoomTypes.GROUP}' AND title='${room_name}'`,
+            })
+            if (roomCheck) {
+                return res.status(200).json({
+                    exist: roomCheck,
+                    message: "Duplicate room name error!",
+                })
+            } else {
+                //Saving
+                const roomSaving = await Rooms.create({
+                    type: RoomTypes.GROUP,
+                    channel_id,
+                    title: room_name,
+                    removable: 1,
+                })
+                if (roomSaving.affectedRows === 0) {
+                    throw new Error("DB error")
+                }
+
+                const userRoomSaving = await UserRoom.create({
+                    user_id: admin_id,
+                    room_id: roomSaving.insertId,
+                })
+
+                if (userRoomSaving.affectedRows === 0) {
+                    throw new Error("DB error")
+                } else {
+                    //Fetch created_at
+                    const time =
+                        (await Rooms.findOne({
+                            attributes: [`created_at`],
+                            where: { id: roomSaving.insertId },
+                        })).created_at;
+
+                    return res.status(200).json({
+                        exist: roomCheck,
+                        message: "Saved",
+                        new_room: {
+                            room_id: roomSaving.insertId,
+                            title: room_name,
+                            created_at: time,
+                            removable: 1,
+                            type: RoomTypes.GROUP,
+                            admin_id,
+                        }
+                    })
+                }
+            }
         } catch (err) {
             console.log(err);
             return res.status(500).json({

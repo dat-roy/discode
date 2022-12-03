@@ -2,7 +2,6 @@ const mysql = require('mysql2/promise');
 const dbConnection = require("../config/db/index.db");
 const Users = require('./users.model')
 const { Model } = require('./Model');
-const PostLikes = require('./post_likes.model')
 
 class Posts extends Model {
     constructor(tableName) {

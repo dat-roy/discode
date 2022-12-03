@@ -9,7 +9,12 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { IconButton } from "@mui/material";
 import SearchBar from "../../../../components/SearchBar"
-import { handleGetChannelByIdAPI, handleGetChannelMembers } from "../../../../services/chat";
+import {
+    handleGetChannelByIdAPI,
+    handleGetChannelMembersAPI,
+} from "../../../../services";
+import "../../../../styles/modal.css"
+import InvitePeopleModal from "./InvitePeopleModal";
 
 export default function ChannelDetail() {
     const params = useParams();
@@ -23,10 +28,9 @@ export default function ChannelDetail() {
     useEffect(() => {
         handleGetChannelByIdAPI(state.user.id, channel_id)
             .then(res => {
-                //console.log(res.data?.channel?.admin_id);
                 setAdminId(res.data?.channel?.admin_id)
             })
-        handleGetChannelMembers(channel_id)
+        handleGetChannelMembersAPI(channel_id)
             .then(res => {
                 setMembers(res.data?.members);
             })
@@ -70,10 +74,10 @@ export default function ChannelDetail() {
                 alignItems={"center"}
                 justifyContent={"space-between"}
                 style={{
-                    width: "100%", 
+                    width: "100%",
                     height: 78,
-                    //border: "1px solid red",
                 }}
+                spacing={-2}
             >
                 <Stack>
                     <SearchBar placeholder={"Search members..."} />
@@ -100,13 +104,15 @@ export default function ChannelDetail() {
                     flexGrow: 1,
                     paddingLeft: 22,
                     paddingRight: 22,
-                    overflowX: "hidden", 
-                    overflowY: "scroll", 
+                    overflowX: "hidden",
+                    overflowY: "scroll",
                 }}
             >
                 <Stack direction="row" alignItems={"center"} justifyContent={"space-between"}>
                     <Typography>Members ({members.length}): </Typography>
-                    <Button>Add member</Button>
+                    <InvitePeopleModal
+                        channel_id={channel_id}
+                    />
                 </Stack>
                 <Stack
                     style={{

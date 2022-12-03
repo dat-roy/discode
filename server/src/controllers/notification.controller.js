@@ -1,5 +1,5 @@
-const NotifyReceiver = require('../models/notification_receiver.model');
-const NotifyObject = require('../models/notification_object.model');
+const NotifyReceiver = require('../models/notification_receivers.model');
+const NotifyObject = require('../models/notifications.model');
 const PostLikes = require('../models/post_likes.model');
 const PostComments = require('../models/post_comments.model');
 const Channels = require('../models/channels.model');

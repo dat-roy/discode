@@ -2,6 +2,9 @@ const Posts = require("../models/posts.model");
 const Tags = require('../models/tags.model')
 const PostLikes = require('../models/post_likes.model')
 const PostComments = require('../models/post_comments.model')
+const Notifications = require('../models/notifications.model');
+const NotificationReceiver = require('../models/notification_receivers.model')
+const { PostNotificationTypes } = require("../types/db.type");
 
 class postController {
     //[POST] /api/post/save
@@ -28,7 +31,7 @@ class postController {
                 if (tag_list) {
                     for (const tagname of tag_list) {
                         const tagSaving = await Tags.create({
-                            post_id, 
+                            post_id,
                             tag_name: tagname,
                         })
                     }
@@ -225,11 +228,48 @@ class postController {
             const commentSaving = await PostComments.create({
                 post_id, sender_id, content, parent_comment_id,
             })
-            if (commentSaving.affectedRows === 0) {
-                throw new Error("DB error")
+            const author_id =
+                (await Posts.findOne({
+                    attributes: [`author_id`],
+                    where: { id: post_id },
+                }))?.author_id
+
+            const parent_comment_sender_id =
+                (!parent_comment_id) ? null
+                    : (await PostComments.findOne({
+                        attributes: [`sender_id`],
+                        where: { id: parent_comment_id },
+                    }))?.sender_id;
+
+            const notiSaving =
+                (author_id == sender_id && 
+                    (!parent_comment_id || parent_comment_sender_id == author_id))
+                    ? null
+                    : (await Notifications.create({
+                        notifiable_id: commentSaving.notifiable_id,
+                        type: PostNotificationTypes.POST_COMMENTS,
+                    }));
+
+            if (notiSaving) {
+                // Add a notification to author.
+                if (author_id != sender_id) {
+                    await NotificationReceiver.create({
+                        notification_id: notiSaving.insertId,
+                        receiver_id: author_id,
+                    });
+                }
+
+                // Add a notification to parent_comment's sender.
+                if (parent_comment_id && parent_comment_sender_id != sender_id) {
+                    await NotificationReceiver.create({
+                        notification_id: notiSaving.insertId,
+                        receiver_id: parent_comment_sender_id,
+                    });
+                }
             }
+
             const savedComment = await PostComments.findOne({
-                attributes: [`created_at`], 
+                attributes: [`created_at`],
                 where: { id: commentSaving.insertId }
             })
 
@@ -239,7 +279,7 @@ class postController {
                     id: commentSaving.insertId,
                     post_id, sender_id,
                     content, parent_comment_id,
-                    created_at: savedComment.created_at, 
+                    created_at: savedComment.created_at,
                 }
             })
         } catch (err) {

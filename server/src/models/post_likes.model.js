@@ -12,6 +12,7 @@ class PostLikes extends Model {
         let user_id = mysql.escape(params.user_id);
         let liked = mysql.escape(params.liked);
 
+        //TODO: implement Notifiable.
         let sql = `INSERT INTO ${this.tableName}(post_id, user_id, liked)\
             VALUES(${post_id}, ${user_id}, TRUE)\
             ON DUPLICATE KEY UPDATE liked = ${liked}`;

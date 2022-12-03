@@ -13,9 +13,32 @@ class UserChannel extends Model {
         let user_id = mysql.escape(params.user_id);
         let channel_id = mysql.escape(params.channel_id);
 
-        let sql = `INSERT INTO ${this.tableName}(user_id, channel_id)\
-                    VALUES(${user_id}, ${channel_id})`;
-        return await dbConnection.query(sql);
+        /* ---Without notifiable_id (deprecated)--- */
+        // const sql = `INSERT INTO ${this.tableName}(user_id, channel_id)\
+        //             VALUES(${user_id}, ${channel_id})`;
+
+        /* --------------------------------------------------------- */
+        /* ---Call procedure to be able to insert into notifiable--- */
+        const sql = `CALL insert_notifiable_user_channel(${user_id}, ${channel_id}, @user_channel_id)`;
+        return {
+            insertId: (await dbConnection.query(sql))[0][0]['@user_channel_id'],
+        }
+        //Result sample from API:
+        /*[
+            [
+                {
+                    "@user_channel_id": 28
+                }
+            ],
+            {
+                "fieldCount": 0,
+                "affectedRows": 0,
+                "insertId": 0,
+                "info": "",
+                "serverStatus": 2,
+                "warningStatus": 0
+            }
+        ] */
     }
 
     async delete(params) {
@@ -29,7 +52,7 @@ class UserChannel extends Model {
 
     async getMembers(params) {
         let channel_id = mysql.escape(params.channel_id)
-        
+
         const uc = this.tableName;
         const u = Users.tableName;
 

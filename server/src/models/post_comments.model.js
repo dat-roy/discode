@@ -13,10 +13,22 @@ class PostComments extends Model {
         let sender_id = mysql.escape(params.sender_id);
         let content = mysql.escape(params.content);
         let parent_comment_id = mysql.escape(params.parent_comment_id);
+        if (!parent_comment_id) parent_comment_id = 0;
 
-        let sql = `INSERT INTO ${this.tableName}(post_id, sender_id, content, parent_comment_id, created_at) 
-        VALUES(${post_id}, ${sender_id}, ${content}, ${parent_comment_id}, NOW())`;
-        return await dbConnection.query(sql);
+        /* ---Without notifiable (deprecated)--- */
+        // const sql = `INSERT INTO ${this.tableName}(post_id, sender_id, content, parent_comment_id, created_at) 
+        // VALUES(${post_id}, ${sender_id}, ${content}, ${parent_comment_id}, NOW())`;
+
+        /* See user_channel model */
+        const sql = `CALL insert_notifiable_post_comments(\
+                    ${post_id}, ${sender_id}, ${content}, ${parent_comment_id}, @post_comment_id, @notifiable_id\
+                )`;
+
+        const result = (await dbConnection.query(sql))[0][0];
+        return {
+            insertId: result['@post_comment_id'], 
+            notifiable_id: result['@notifiable_id'], 
+        }
     }
 
     async delete(params) {
