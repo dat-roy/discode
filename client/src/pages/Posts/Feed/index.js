@@ -5,9 +5,15 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { Grid, Stack } from "@mui/material";
-import Fab from '@mui/material/Fab';
+import { Chip, Grid, Stack } from "@mui/material";
+import CreateIcon from '@mui/icons-material/Create';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import AddIcon from '@mui/icons-material/Add';
+import AuthorItem from './AuthorItem';
+import AutoStoriesOutlinedIcon from '@mui/icons-material/AutoStoriesOutlined';
+import ControlledSpeedDial from "../../../components/ControlledSpeedDial"
+import PostItem from './PostItem';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -21,7 +27,7 @@ function TabPanel(props) {
         >
             {value === index && (
                 <Box sx={{ p: 3 }}>
-                    <Typography>{children}</Typography>
+                    {children}
                 </Box>
             )}
         </div>
@@ -34,10 +40,27 @@ TabPanel.propTypes = {
     value: PropTypes.number.isRequired,
 };
 
-
 export default function Feed() {
     const navigate = useNavigate();
     const [value, setValue] = React.useState(0);
+
+    const speedDialActions = [
+        {
+            icon: <BookmarkBorderIcon style={{ color: "blue" }} />, name: 'Saved',
+        },
+        {
+            icon: <FavoriteBorderIcon style={{ color: "red" }} />, name: 'Love'
+        },
+        {
+            icon: <AutoStoriesOutlinedIcon style={{ color: "orange" }} />, name: 'Yours'
+        },
+        {
+            icon: <AddIcon style={{ color: "green" }} />, name: 'Create',
+            onClick: function () {
+                navigate('/posts/publish')
+            }
+        },
+    ]
 
     return (
         <Grid container spacing={0}
@@ -48,46 +71,134 @@ export default function Feed() {
                 //color: "black"
             }}
         >
-            <Grid item xs={8} sx={{ border: "1px solid red" }}>
-                <Fab color="primary" aria-label="add"
-                    onClick={() => navigate('/posts/publish')}
+            <Grid item xs={9} height={"100vh"} position={"relative"}
+                border={"1px solid orange"}
+            >
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        zIndex: 10,
+                        top: 0,
+                        right: 0,
+                        left: 0,
+                        bottom: 0,
+                        border: "1px solid yellow"
+                    }}
                 >
-                    <AddIcon />
-                </Fab>
-                <Box sx={{ padding: 6, border: "1px solid red", height: "100vh" }}>
-                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                        <Tabs
-                            value={value}
-                            onChange={(_, newValue) => {
-                                setValue(newValue);
+                    <ControlledSpeedDial
+                        direction={'up'}
+                        hidden={false}
+                        actions={speedDialActions}
+                        icon={<CreateIcon />}
+                    />
+                    <Box
+                        sx={{
+                            pl: 6,
+                            pr: 6,
+                            height: "100vh",
+                            overflowY: "scroll",
+                        }}>
+                        <Box
+                            sx={{
+                                borderBottom: 1,
+                                borderColor: 'divider',
+                                pl: 2,
+                                pr: 2,
+                                border: "1px solid red",
+                                position: "sticky",
+                                top: 0,
+                                bgcolor: "rgb(10, 25, 41)",
                             }}
                         >
-                            <Tab label="Hot" />
-                            <Tab label="Following" />
-                            <Tab label="For you" />
-                        </Tabs>
+                            <Tabs
+                                value={value}
+                                onChange={(_, newValue) => {
+                                    setValue(newValue);
+                                }}
+                            >
+                                <Tab label="Hot" />
+                                <Tab label="Following" />
+                                <Tab label="For you" />
+                            </Tabs>
+                        </Box>
+                        <TabPanel value={value} index={0}>
+                            <Stack
+                                direction={"row"}
+                                flex={"1 1 30%"}
+                                alignItems={"center"}
+                                justifyContent={"space-between"}
+                                flexWrap={"wrap"}
+                            >
+                                {[1, 2, 3, 4, 5, 6].map((i, index) => {
+                                    return <PostItem key={index} />
+                                })}
+                            </Stack>
+                        </TabPanel>
+                        <TabPanel value={value} index={1}>
+                            Following
+                        </TabPanel>
+                        <TabPanel value={value} index={2}>
+                            For you
+                        </TabPanel>
                     </Box>
-                    <TabPanel value={value} index={0}>
-                        Hot
-                    </TabPanel>
-                    <TabPanel value={value} index={1}>
-                        Following
-                    </TabPanel>
-                    <TabPanel value={value} index={2}>
-                        For you
-                    </TabPanel>
                 </Box>
+
             </Grid>
-            <Grid item xs sx={{ border: "1px solid red" }}>
+            <Grid item xs>
                 <Stack direction="column" height="100vh">
-                    <Box height="50%" sx={{ border: "1px solid red" }}>
-                        <Typography>Featured Authors</Typography>
+                    <Box height="50%" sx={{ border: "1px solid red", padding: "0.6rem 1.5rem", }}>
+                        <FeaturedAuthors />
                     </Box>
-                    <Box height="50%" sx={{ border: "1px solid red" }}>
-                        <Typography>Featured Posts</Typography>
+                    <Box height="50%" sx={{ border: "1px solid red", padding: "0.6rem 1.5rem", }}>
+                        <FeaturedTopics />
                     </Box>
                 </Stack>
             </Grid>
         </Grid>
     );
+}
+
+function FeaturedAuthors() {
+    return (
+        <>
+            <Typography>Featured Authors</Typography>
+            {[1, 2, 3].map((obj, index) => {
+                return <AuthorItem key={index} />
+            })}
+        </>
+    )
+}
+
+function FeaturedTopics() {
+    return (
+        <>
+            <Typography>Featured Topics</Typography>
+            <Stack
+                direction="row"
+                flex={"1 1 30%"}
+                alignItems={"center"}
+                spacing={1}
+                justifyContent={"flex-start"}
+                flexWrap={"wrap"}
+                border="1px solid red"
+            >
+                {['JavaScript', 'Java', 'DevOps', 'SHA256', 'GraphQL'].map((label, index) => {
+                    return <Chip
+                        key={index}
+                        label={label}
+                        style={{
+                            color: "inherit",
+                            borderRadius: 30,
+                            height: 28,
+                            backgroundColor: "#ab5600", 
+                            margin: 6,
+                            marginTop: 0,
+                            marginLeft: 0,
+                        }}
+                    />
+                })
+                }
+            </Stack>
+        </>
+    )
 }

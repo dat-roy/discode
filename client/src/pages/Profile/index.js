@@ -12,7 +12,6 @@ export default function Profile() {
     useEffect(() => {
         async function fetchData() {
             const response = await handleGetUserByUsernameAPI(param)
-            //console.log(response);
             if (response.data.user_data) {
                 setUserInfo(response.data.user_data);
             }
