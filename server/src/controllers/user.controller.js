@@ -21,7 +21,7 @@ class userController {
         /**
          * Request body:
          * * credential: from google sign-in service. 
-         */        
+         */
         try {
             const email = (await getGooglePayload(req.body.credential)).email;
             const results = await Users.findAll({
@@ -35,7 +35,7 @@ class userController {
             //console.log(results);
 
             if (results.length !== 0) {
-                const token = jwt.sign({ email: email}, JWTPrivateKey, { expiresIn: '3h'});
+                const token = jwt.sign({ email: email }, JWTPrivateKey, { expiresIn: '3h' });
                 const user_data = results[0];
 
                 //Existing email
@@ -48,15 +48,15 @@ class userController {
             } else {
                 //New account
                 res.status(200).json({
-                    exist: false, 
+                    exist: false,
                     user_data: {
-                        email: email, 
-                    }, 
+                        email: email,
+                    },
                     token: null,
                     message: "New account",
                 })
             }
-            
+
         } catch (err) {
             console.error(err.message);
             res.status(500).json({
@@ -79,17 +79,17 @@ class userController {
          * * birthday,
          * * nation
          * * credential,
-         */    
+         */
 
         let { email, username, password, gender, birthday, nation, credential } = req.body;
         try {
-            const emailExists = await Users.checkExistence({ where: {email: email} });
-            const usernameExists = await Users.checkExistence({ where: {username: username} });
+            const emailExists = await Users.checkExistence({ where: { email: email } });
+            const usernameExists = await Users.checkExistence({ where: { username: username } });
 
             if (email && username && password && !emailExists && !usernameExists) {
                 //Encrypt password with bcrypt
                 const hashedPwd = await bcrypt.hash(password, saltRounds);
-                if (! hashedPwd) {
+                if (!hashedPwd) {
                     throw new Error("Empty hashedPwd, an error occurred when hashing");
                 }
 
@@ -97,30 +97,30 @@ class userController {
                 const avatar_url = (await getGooglePayload(credential)).picture;
 
                 const result = await Users.create({
-                    email: email, 
-                    username: username, 
+                    email: email,
+                    username: username,
                     birthday: birthday,
-                    password: hashedPwd, 
-                    gender: gender, 
-                    avatar_url: avatar_url, 
+                    password: hashedPwd,
+                    gender: gender,
+                    avatar_url: avatar_url,
                     nation: nation,
                 });
-                if (! result) {
+                if (!result) {
                     throw new Error("Error when inserting into `users` table");
                 }
-                const userRecord = await Users.findOne({ where: {id: result.insertId} });
-                if (! userRecord) {
+                const userRecord = await Users.findOne({ where: { id: result.insertId } });
+                if (!userRecord) {
                     throw new Error("Error when searching from `users` table");
                 }
                 const user_data = pick(userRecord, "id", "email", "username", "birthday", "gender", "avatar_url");
                 //JWT sign
-                const token = jwt.sign({ email: email}, JWTPrivateKey, { expiresIn: '3h'});
+                const token = jwt.sign({ email: email }, JWTPrivateKey, { expiresIn: '3h' });
                 return res.status(200).json({
-                    validInfo: true, 
+                    validInfo: true,
                     saved: true,
                     emailExists: emailExists,
                     usernameExists: usernameExists,
-                    user_data: user_data, 
+                    user_data: user_data,
                     token: token,
                 })
             }
@@ -130,7 +130,7 @@ class userController {
                 saved: false,
                 emailExists: emailExists,
                 usernameExists: usernameExists,
-                user_data: null, 
+                user_data: null,
                 token: null,
             })
         } catch (err) {
@@ -157,41 +157,33 @@ class userController {
         try {
             let whereClause;
             if (id && username) {
-                whereClause = {
-                    id: id, 
-                    username: username, 
-                }
+                whereClause = { id, username, }
             } else if (id) {
-                whereClause = {
-                    id: id, 
-                }
+                whereClause = { id, }
             } else if (username) {
-                whereClause = {
-                    username: username,
-                }
+                whereClause = { username, }
             }
             const result = await Users.findOne({
                 attributes: [
-                    "id", "username", "email", "birthday", "avatar_url"
+                    "id", "username", "email", "birthday", "avatar_url", "last_active",
                 ],
-                where: whereClause, 
+                where: whereClause,
             })
 
-            if (! result) {
+            if (!result) {
                 return res.status(200).json({
-                    message: "Invalid id/username", 
+                    message: "Invalid id/username",
                     user_data: null,
                 })
             }
-            //console.log(result);
             res.status(200).json({
-                message: "Get user successfully", 
+                message: "Get user successfully",
                 user_data: result
             });
         } catch (err) {
             console.log(err.message);
             res.status(500).json({
-                message: "Internal Server Error", 
+                message: "Internal Server Error",
             })
         }
     }

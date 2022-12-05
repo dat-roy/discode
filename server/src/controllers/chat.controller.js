@@ -84,11 +84,14 @@ class chatController {
             if (fetch_partner_data) {
                 for (const room of single_room_list) {
                     let partner_data = await UserRoom.getPartnerData({
-                        user_id: user_id,
+                        user_id,
                         room_id: room.room_id
                     })
                     if (partner_data) {
-                        room.partner_data = pick(partner_data, "id", "email", "username", "gender", "nation", "avatar_url");
+                        room.partner_data = pick(partner_data,
+                            "id", "email", "username",
+                            "avatar_url", "last_active", 
+                        );
                     }
                 }
                 return res.status(200).json({
@@ -225,38 +228,38 @@ class chatController {
                 (await Messages.fetchLastMessage({
                     user_id, room_id,
                 }))[0];
-            
+
             //Get seen status of all members.
             const result = await MessageRecipients.findAll({
                 attributes: [
-                    'recipient_id', 'message_id', 'is_read', 
-                ], 
-                where: 
+                    'recipient_id', 'message_id', 'is_read',
+                ],
+                where:
                     `recipient_id != ${user_id} AND message_id = ${lastMessage.message_id}\
-                    AND is_read = 1`, 
+                    AND is_read = 1`,
             })
 
             let users = []
             for (const elem of result) {
                 const memberData = await Users.findOne({
                     attributes: [
-                        'id', 'username', 'avatar_url', 
-                    ], 
+                        'id', 'username', 'avatar_url',
+                    ],
                     where: {
-                        id: elem.recipient_id, 
+                        id: elem.recipient_id,
                     }
                 })
                 // elem.user = {
                 //     ...memberData, 
                 // }
                 users.push({
-                    ...memberData, 
+                    ...memberData,
                 })
             }
 
             return res.status(200).json({
-                message: "Success", 
-                users, 
+                message: "Success",
+                users,
             })
         } catch (err) {
             console.log(err);

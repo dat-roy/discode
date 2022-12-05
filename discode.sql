@@ -2,10 +2,10 @@
 -- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1:3306
--- Generation Time: Dec 03, 2022 at 05:06 PM
--- Server version: 8.0.31
--- PHP Version: 8.1.6
+-- Máy chủ: 127.0.0.1:3306
+-- Thời gian đã tạo: Th12 05, 2022 lúc 11:32 AM
+-- Phiên bản máy phục vụ: 8.0.31
+-- Phiên bản PHP: 8.1.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,12 +18,12 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `discode`
+-- Cơ sở dữ liệu: `discode`
 --
 
 DELIMITER $$
 --
--- Procedures
+-- Thủ tục
 --
 CREATE DEFINER=`root`@`localhost` PROCEDURE `insert_notifiable_post_comments` (IN `p_post_id` INT UNSIGNED, IN `p_sender_id` INT UNSIGNED, IN `p_content` LONGTEXT CHARSET utf8mb4, IN `p_parent_comment_id` INT UNSIGNED, OUT `@post_comment_id` INT UNSIGNED, OUT `@notifiable_id` INT UNSIGNED)   begin 
 	declare p_notifiable_id int unsigned;
@@ -60,7 +60,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `channels`
+-- Cấu trúc bảng cho bảng `channels`
 --
 
 CREATE TABLE `channels` (
@@ -74,7 +74,7 @@ CREATE TABLE `channels` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `channels`
+-- Đang đổ dữ liệu cho bảng `channels`
 --
 
 INSERT INTO `channels` (`id`, `admin_id`, `title`, `description`, `avatar_url`, `background_url`, `created_at`) VALUES
@@ -84,7 +84,7 @@ INSERT INTO `channels` (`id`, `admin_id`, `title`, `description`, `avatar_url`, 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `messages`
+-- Cấu trúc bảng cho bảng `messages`
 --
 
 CREATE TABLE `messages` (
@@ -98,7 +98,7 @@ CREATE TABLE `messages` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `messages`
+-- Đang đổ dữ liệu cho bảng `messages`
 --
 
 INSERT INTO `messages` (`id`, `sender_id`, `content`, `message_type`, `parent_message_id`, `created_at`, `deleted_at`) VALUES
@@ -375,12 +375,119 @@ INSERT INTO `messages` (`id`, `sender_id`, `content`, `message_type`, `parent_me
 (436, 2, 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'text', NULL, '2022-12-01 09:05:08', NULL),
 (437, 2, 'aaaaaaaaaaaaaaaaaaaaaaaaa', 'text', NULL, '2022-12-01 09:05:12', NULL),
 (438, 2, 'iii', 'text', NULL, '2022-12-01 09:06:52', NULL),
-(439, 2, 'kk', 'text', NULL, '2022-12-01 09:07:00', NULL);
+(439, 2, 'kk', 'text', NULL, '2022-12-01 09:07:00', NULL),
+(440, 4, 'a', 'text', NULL, '2022-12-05 08:58:13', NULL),
+(441, 4, 'a', 'text', NULL, '2022-12-05 09:02:09', NULL),
+(442, 4, 'a', 'text', NULL, '2022-12-05 09:04:26', NULL),
+(443, 4, 'a', 'text', NULL, '2022-12-05 09:05:07', NULL),
+(444, 4, 'a', 'text', NULL, '2022-12-05 09:06:07', NULL),
+(445, 4, 'a', 'text', NULL, '2022-12-05 09:08:08', NULL),
+(446, 4, 'a', 'text', NULL, '2022-12-05 09:09:15', NULL),
+(447, 4, 'a', 'text', NULL, '2022-12-05 09:09:32', NULL),
+(448, 4, 'a', 'text', NULL, '2022-12-05 09:11:58', NULL),
+(449, 4, 'as', 'text', NULL, '2022-12-05 09:12:02', NULL),
+(450, 4, 'a', 'text', NULL, '2022-12-05 09:14:01', NULL),
+(451, 2, 'a', 'text', NULL, '2022-12-05 09:19:49', NULL),
+(452, 2, 'aaa', 'text', NULL, '2022-12-05 09:19:56', NULL),
+(453, 4, 'kk', 'text', NULL, '2022-12-05 09:23:29', NULL),
+(454, 4, 'hihi', 'text', NULL, '2022-12-05 09:23:38', NULL),
+(455, 4, 'hehe', 'text', NULL, '2022-12-05 09:23:42', NULL),
+(456, 4, 'kk', 'text', NULL, '2022-12-05 09:23:51', NULL),
+(457, 4, 'jj', 'text', NULL, '2022-12-05 09:23:55', NULL),
+(458, 4, '\nasdasd', 'text', NULL, '2022-12-05 09:23:59', NULL),
+(459, 4, 'kk', 'text', NULL, '2022-12-05 09:24:48', NULL),
+(460, 4, 'kads', 'text', NULL, '2022-12-05 09:24:51', NULL),
+(461, 4, 'hehh', 'text', NULL, '2022-12-05 09:24:54', NULL),
+(462, 4, 'hahds', 'text', NULL, '2022-12-05 09:25:00', NULL),
+(463, 4, 'hehe', 'text', NULL, '2022-12-05 10:07:02', NULL),
+(464, 4, 'a', 'text', NULL, '2022-12-05 10:08:38', NULL),
+(465, 4, 'hh', 'text', NULL, '2022-12-05 10:09:16', NULL),
+(466, 4, 'ahh', 'text', NULL, '2022-12-05 10:09:23', NULL),
+(467, 4, 'hah', 'text', NULL, '2022-12-05 10:12:22', NULL),
+(468, 4, 'a', 'text', NULL, '2022-12-05 10:15:41', NULL),
+(469, 4, 'a', 'text', NULL, '2022-12-05 10:16:23', NULL),
+(470, 4, 'r', 'text', NULL, '2022-12-05 10:16:29', NULL),
+(471, 4, 'hh', 'text', NULL, '2022-12-05 10:16:37', NULL),
+(472, 4, 'kk', 'text', NULL, '2022-12-05 10:16:43', NULL),
+(473, 4, 'jj', 'text', NULL, '2022-12-05 10:16:49', NULL),
+(474, 4, 'kk', 'text', NULL, '2022-12-05 10:16:52', NULL),
+(475, 4, 'jk', 'text', NULL, '2022-12-05 10:16:55', NULL),
+(476, 4, 'adas', 'text', NULL, '2022-12-05 10:17:01', NULL),
+(477, 4, 'jhsdhasd', 'text', NULL, '2022-12-05 10:17:04', NULL),
+(478, 4, 'hah', 'text', NULL, '2022-12-05 10:18:34', NULL),
+(479, 4, 'haha', 'text', NULL, '2022-12-05 10:18:46', NULL),
+(480, 4, 'haha', 'text', NULL, '2022-12-05 10:18:50', NULL),
+(481, 4, 'huhu', 'text', NULL, '2022-12-05 10:18:54', NULL),
+(482, 4, 'a', 'text', NULL, '2022-12-05 10:25:53', NULL),
+(483, 4, 'hello', 'text', NULL, '2022-12-05 10:25:57', NULL),
+(484, 4, 'hh', 'text', NULL, '2022-12-05 10:26:04', NULL),
+(485, 4, 'hehe', 'text', NULL, '2022-12-05 10:26:08', NULL),
+(486, 4, 'working', 'text', NULL, '2022-12-05 10:26:11', NULL),
+(487, 4, 'hehe', 'text', NULL, '2022-12-05 10:26:15', NULL),
+(488, 4, 'hehe', 'text', NULL, '2022-12-05 10:26:19', NULL),
+(489, 4, 'huuhu', 'text', NULL, '2022-12-05 10:26:24', NULL),
+(490, 4, 'hehe', 'text', NULL, '2022-12-05 10:26:32', NULL),
+(491, 4, 'huu', 'text', NULL, '2022-12-05 10:26:40', NULL),
+(492, 4, 'hehe', 'text', NULL, '2022-12-05 10:26:44', NULL),
+(493, 4, 'home', 'text', NULL, '2022-12-05 10:26:46', NULL),
+(494, 2, '???', 'text', NULL, '2022-12-05 10:26:57', NULL),
+(495, 2, '???', 'text', NULL, '2022-12-05 10:27:14', NULL),
+(496, 2, '???', 'text', NULL, '2022-12-05 10:27:24', NULL),
+(497, 2, 'hahah', 'text', NULL, '2022-12-05 10:27:27', NULL),
+(498, 2, 'hhaha', 'text', NULL, '2022-12-05 10:27:31', NULL),
+(499, 4, 'haha', 'text', NULL, '2022-12-05 10:28:26', NULL),
+(500, 4, 'haha', 'text', NULL, '2022-12-05 10:28:41', NULL),
+(501, 4, 'haia', 'text', NULL, '2022-12-05 10:29:38', NULL),
+(502, 4, 'haizz', 'text', NULL, '2022-12-05 10:29:43', NULL),
+(503, 4, 'hiad', 'text', NULL, '2022-12-05 10:29:46', NULL),
+(504, 4, 'hhhhe', 'text', NULL, '2022-12-05 10:29:49', NULL),
+(505, 4, 'hieie', 'text', NULL, '2022-12-05 10:29:58', NULL),
+(506, 4, 'hehrher', 'text', NULL, '2022-12-05 10:30:01', NULL),
+(507, 4, 'jhejrer', 'text', NULL, '2022-12-05 10:30:05', NULL),
+(508, 2, 'hehe', 'text', NULL, '2022-12-05 10:30:14', NULL),
+(509, 4, 'kk', 'text', NULL, '2022-12-05 10:33:09', NULL),
+(510, 4, 'kk', 'text', NULL, '2022-12-05 10:33:17', NULL),
+(511, 4, 'kk', 'text', NULL, '2022-12-05 10:33:27', NULL),
+(512, 4, 'heheh', 'text', NULL, '2022-12-05 10:33:31', NULL),
+(513, 4, 'hehe', 'text', NULL, '2022-12-05 10:33:50', NULL),
+(514, 4, 'heheh', 'text', NULL, '2022-12-05 10:33:54', NULL),
+(515, 4, 'ikekrker', 'text', NULL, '2022-12-05 10:33:59', NULL),
+(516, 4, 'hehe', 'text', NULL, '2022-12-05 10:34:06', NULL),
+(517, 4, 'eherhe', 'text', NULL, '2022-12-05 10:34:13', NULL),
+(518, 4, 'jajdjahsd', 'text', NULL, '2022-12-05 10:34:16', NULL),
+(519, 4, 'hehe', 'text', NULL, '2022-12-05 10:36:49', NULL),
+(520, 2, 'hehe', 'text', NULL, '2022-12-05 10:38:29', NULL),
+(521, 4, 'hehe', 'text', NULL, '2022-12-05 10:38:34', NULL),
+(522, 4, 'heheh', 'text', NULL, '2022-12-05 10:38:37', NULL),
+(523, 2, 'heher', 'text', NULL, '2022-12-05 10:38:42', NULL),
+(524, 2, 'jherjher', 'text', NULL, '2022-12-05 10:38:46', NULL),
+(525, 2, 'jhasdajsd', 'text', NULL, '2022-12-05 10:38:52', NULL),
+(526, 4, 'hehe', 'text', NULL, '2022-12-05 14:20:41', NULL),
+(527, 4, 'haha', 'text', NULL, '2022-12-05 14:20:51', NULL),
+(528, 4, 'hehe', 'text', NULL, '2022-12-05 14:21:14', NULL),
+(529, 4, 'hehe', 'text', NULL, '2022-12-05 14:21:22', NULL),
+(530, 4, 'kk', 'text', NULL, '2022-12-05 14:33:42', NULL),
+(531, 4, 'hhe', 'text', NULL, '2022-12-05 14:33:56', NULL),
+(532, 4, 'hh', 'text', NULL, '2022-12-05 14:34:06', NULL),
+(533, 4, 'hajdads', 'text', NULL, '2022-12-05 14:43:31', NULL),
+(534, 4, 'adsashasd', 'text', NULL, '2022-12-05 14:43:39', NULL),
+(535, 4, 'hhas', 'text', NULL, '2022-12-05 14:43:46', NULL),
+(536, 4, 'hee', 'text', NULL, '2022-12-05 14:44:03', NULL),
+(537, 4, 'haha', 'text', NULL, '2022-12-05 14:45:24', NULL),
+(538, 4, 'haha', 'text', NULL, '2022-12-05 14:45:30', NULL),
+(539, 4, 'hahah', 'text', NULL, '2022-12-05 14:45:36', NULL),
+(540, 4, 'hahaha', 'text', NULL, '2022-12-05 14:45:46', NULL),
+(541, 4, 'hahah', 'text', NULL, '2022-12-05 14:45:53', NULL),
+(542, 4, 'heheh', 'text', NULL, '2022-12-05 14:45:59', NULL),
+(543, 2, 'HELLO HELLO', 'text', NULL, '2022-12-05 15:04:16', NULL),
+(544, 4, 'a', 'text', NULL, '2022-12-05 15:36:39', NULL),
+(545, 4, 'heheheheheheh', 'text', NULL, '2022-12-05 15:36:54', NULL),
+(546, 4, 'hmm', 'text', NULL, '2022-12-05 15:40:07', NULL);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `message_attachments`
+-- Cấu trúc bảng cho bảng `message_attachments`
 --
 
 CREATE TABLE `message_attachments` (
@@ -390,7 +497,7 @@ CREATE TABLE `message_attachments` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `message_attachments`
+-- Đang đổ dữ liệu cho bảng `message_attachments`
 --
 
 INSERT INTO `message_attachments` (`id`, `message_id`, `attachment_content`) VALUES
@@ -403,7 +510,7 @@ INSERT INTO `message_attachments` (`id`, `message_id`, `attachment_content`) VAL
 -- --------------------------------------------------------
 
 --
--- Table structure for table `message_recipients`
+-- Cấu trúc bảng cho bảng `message_recipients`
 --
 
 CREATE TABLE `message_recipients` (
@@ -415,7 +522,7 @@ CREATE TABLE `message_recipients` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `message_recipients`
+-- Đang đổ dữ liệu cho bảng `message_recipients`
 --
 
 INSERT INTO `message_recipients` (`id`, `recipient_id`, `recipient_room_id`, `message_id`, `is_read`) VALUES
@@ -1001,12 +1108,226 @@ INSERT INTO `message_recipients` (`id`, `recipient_id`, `recipient_room_id`, `me
 (898, 5, 28, 438, 0),
 (899, 2, 29, 438, 1),
 (900, 2, 32, 439, 1),
-(901, 8, 33, 439, 0);
+(901, 8, 33, 439, 0),
+(902, 2, 30, 440, 1),
+(903, 4, 31, 440, 1),
+(904, 2, 30, 441, 1),
+(905, 4, 31, 441, 1),
+(906, 2, 30, 442, 1),
+(907, 4, 31, 442, 1),
+(908, 2, 30, 443, 1),
+(909, 4, 31, 443, 1),
+(910, 2, 30, 444, 1),
+(911, 4, 31, 444, 1),
+(912, 2, 30, 445, 1),
+(913, 4, 31, 445, 1),
+(914, 2, 30, 446, 1),
+(915, 4, 31, 446, 1),
+(916, 2, 30, 447, 1),
+(917, 4, 31, 447, 1),
+(918, 2, 30, 448, 1),
+(919, 4, 31, 448, 1),
+(920, 2, 30, 449, 1),
+(921, 4, 31, 449, 1),
+(922, 2, 30, 450, 1),
+(923, 4, 31, 450, 1),
+(924, 2, 30, 451, 1),
+(925, 4, 31, 451, 1),
+(926, 2, 32, 452, 1),
+(927, 8, 33, 452, 0),
+(928, 2, 30, 453, 1),
+(929, 4, 31, 453, 1),
+(930, 2, 30, 454, 1),
+(931, 4, 31, 454, 1),
+(932, 2, 30, 455, 1),
+(933, 4, 31, 455, 1),
+(934, 2, 30, 456, 1),
+(935, 4, 31, 456, 1),
+(936, 2, 30, 457, 1),
+(937, 4, 31, 457, 1),
+(938, 2, 30, 458, 1),
+(939, 4, 31, 458, 1),
+(940, 2, 30, 459, 1),
+(941, 4, 31, 459, 1),
+(942, 2, 30, 460, 1),
+(943, 4, 31, 460, 1),
+(944, 2, 30, 461, 1),
+(945, 4, 31, 461, 1),
+(946, 2, 30, 462, 1),
+(947, 4, 31, 462, 1),
+(948, 2, 30, 463, 1),
+(949, 4, 31, 463, 1),
+(950, 2, 30, 464, 1),
+(951, 4, 31, 464, 1),
+(952, 2, 30, 465, 1),
+(953, 4, 31, 465, 1),
+(954, 2, 30, 466, 1),
+(955, 4, 31, 466, 1),
+(956, 2, 30, 467, 1),
+(957, 4, 31, 467, 1),
+(958, 2, 30, 468, 1),
+(959, 4, 31, 468, 1),
+(960, 2, 30, 469, 1),
+(961, 4, 31, 469, 1),
+(962, 2, 30, 470, 1),
+(963, 4, 31, 470, 1),
+(964, 2, 30, 471, 1),
+(965, 4, 31, 471, 1),
+(966, 2, 30, 472, 1),
+(967, 4, 31, 472, 1),
+(968, 2, 30, 473, 1),
+(969, 4, 31, 473, 1),
+(970, 2, 30, 474, 1),
+(971, 4, 31, 474, 1),
+(972, 2, 30, 475, 1),
+(973, 4, 31, 475, 1),
+(974, 2, 30, 476, 1),
+(975, 4, 31, 476, 1),
+(976, 2, 30, 477, 1),
+(977, 4, 31, 477, 1),
+(978, 2, 30, 478, 1),
+(979, 4, 31, 478, 1),
+(980, 2, 30, 479, 1),
+(981, 4, 31, 479, 1),
+(982, 2, 30, 480, 1),
+(983, 4, 31, 480, 1),
+(984, 2, 30, 481, 1),
+(985, 4, 31, 481, 1),
+(986, 2, 30, 482, 1),
+(987, 4, 31, 482, 1),
+(988, 2, 30, 483, 1),
+(989, 4, 31, 483, 1),
+(990, 2, 30, 484, 1),
+(991, 4, 31, 484, 1),
+(992, 2, 30, 485, 1),
+(993, 4, 31, 485, 1),
+(994, 2, 30, 486, 1),
+(995, 4, 31, 486, 1),
+(996, 2, 30, 487, 1),
+(997, 4, 31, 487, 1),
+(998, 2, 30, 488, 1),
+(999, 4, 31, 488, 1),
+(1000, 2, 30, 489, 1),
+(1001, 4, 31, 489, 1),
+(1002, 2, 30, 490, 1),
+(1003, 4, 31, 490, 1),
+(1004, 2, 30, 491, 1),
+(1005, 4, 31, 491, 1),
+(1006, 2, 30, 492, 1),
+(1007, 4, 31, 492, 1),
+(1008, 2, 30, 493, 1),
+(1009, 4, 31, 493, 1),
+(1010, 2, 30, 494, 1),
+(1011, 4, 31, 494, 1),
+(1012, 2, 30, 495, 1),
+(1013, 4, 31, 495, 1),
+(1014, 2, 30, 496, 1),
+(1015, 4, 31, 496, 1),
+(1016, 2, 30, 497, 1),
+(1017, 4, 31, 497, 1),
+(1018, 2, 32, 498, 1),
+(1019, 8, 33, 498, 0),
+(1020, 7, 57, 499, 0),
+(1021, 4, 58, 499, 1),
+(1022, 7, 57, 500, 0),
+(1023, 4, 58, 500, 1),
+(1024, 2, 30, 501, 1),
+(1025, 4, 31, 501, 1),
+(1026, 2, 30, 502, 1),
+(1027, 4, 31, 502, 1),
+(1028, 2, 30, 503, 1),
+(1029, 4, 31, 503, 1),
+(1030, 2, 30, 504, 1),
+(1031, 4, 31, 504, 1),
+(1032, 2, 30, 505, 1),
+(1033, 4, 31, 505, 1),
+(1034, 2, 30, 506, 1),
+(1035, 4, 31, 506, 1),
+(1036, 2, 30, 507, 1),
+(1037, 4, 31, 507, 1),
+(1038, 2, 30, 508, 1),
+(1039, 4, 31, 508, 1),
+(1040, 2, 30, 509, 1),
+(1041, 4, 31, 509, 1),
+(1042, 2, 30, 510, 1),
+(1043, 4, 31, 510, 1),
+(1044, 7, 57, 511, 0),
+(1045, 4, 58, 511, 1),
+(1046, 7, 57, 512, 0),
+(1047, 4, 58, 512, 1),
+(1048, 2, 30, 513, 1),
+(1049, 4, 31, 513, 1),
+(1050, 2, 30, 514, 1),
+(1051, 4, 31, 514, 1),
+(1052, 2, 30, 515, 1),
+(1053, 4, 31, 515, 1),
+(1054, 2, 30, 516, 1),
+(1055, 4, 31, 516, 1),
+(1056, 2, 30, 517, 1),
+(1057, 4, 31, 517, 1),
+(1058, 2, 30, 518, 1),
+(1059, 4, 31, 518, 1),
+(1060, 2, 30, 519, 1),
+(1061, 4, 31, 519, 1),
+(1062, 2, 32, 520, 1),
+(1063, 8, 33, 520, 0),
+(1064, 2, 30, 521, 1),
+(1065, 4, 31, 521, 1),
+(1066, 2, 30, 522, 1),
+(1067, 4, 31, 522, 1),
+(1068, 5, 28, 523, 0),
+(1069, 2, 29, 523, 1),
+(1070, 2, 40, 524, 1),
+(1071, 12, 41, 524, 0),
+(1072, 2, 34, 525, 1),
+(1073, 7, 35, 525, 0),
+(1074, 2, 30, 526, 1),
+(1075, 4, 31, 526, 1),
+(1076, 2, 30, 527, 1),
+(1077, 4, 31, 527, 1),
+(1078, 2, 30, 528, 1),
+(1079, 4, 31, 528, 1),
+(1080, 2, 30, 529, 1),
+(1081, 4, 31, 529, 1),
+(1082, 2, 30, 530, 1),
+(1083, 4, 31, 530, 1),
+(1084, 2, 30, 531, 1),
+(1085, 4, 31, 531, 1),
+(1086, 2, 30, 532, 1),
+(1087, 4, 31, 532, 1),
+(1088, 7, 57, 533, 0),
+(1089, 4, 58, 533, 1),
+(1090, 2, 30, 534, 1),
+(1091, 4, 31, 534, 1),
+(1092, 2, 30, 535, 1),
+(1093, 4, 31, 535, 1),
+(1094, 2, 30, 536, 1),
+(1095, 4, 31, 536, 1),
+(1096, 7, 57, 537, 0),
+(1097, 4, 58, 537, 1),
+(1098, 2, 30, 538, 1),
+(1099, 4, 31, 538, 1),
+(1100, 2, 30, 539, 1),
+(1101, 4, 31, 539, 1),
+(1102, 2, 30, 540, 1),
+(1103, 4, 31, 540, 1),
+(1104, 2, 30, 541, 1),
+(1105, 4, 31, 541, 1),
+(1106, 2, 30, 542, 1),
+(1107, 4, 31, 542, 1),
+(1108, 2, 60, 543, 1),
+(1109, 13, 61, 543, 0),
+(1110, 2, 30, 544, 1),
+(1111, 4, 31, 544, 1),
+(1112, 2, 30, 545, 1),
+(1113, 4, 31, 545, 1),
+(1114, 2, 30, 546, 1),
+(1115, 4, 31, 546, 1);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `notifiable`
+-- Cấu trúc bảng cho bảng `notifiable`
 --
 
 CREATE TABLE `notifiable` (
@@ -1015,7 +1336,7 @@ CREATE TABLE `notifiable` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
--- Dumping data for table `notifiable`
+-- Đang đổ dữ liệu cho bảng `notifiable`
 --
 
 INSERT INTO `notifiable` (`id`, `source_type`) VALUES
@@ -1041,7 +1362,7 @@ INSERT INTO `notifiable` (`id`, `source_type`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `notifications`
+-- Cấu trúc bảng cho bảng `notifications`
 --
 
 CREATE TABLE `notifications` (
@@ -1051,7 +1372,7 @@ CREATE TABLE `notifications` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
--- Dumping data for table `notifications`
+-- Đang đổ dữ liệu cho bảng `notifications`
 --
 
 INSERT INTO `notifications` (`id`, `notifiable_id`, `type`) VALUES
@@ -1067,7 +1388,7 @@ INSERT INTO `notifications` (`id`, `notifiable_id`, `type`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `notification_receivers`
+-- Cấu trúc bảng cho bảng `notification_receivers`
 --
 
 CREATE TABLE `notification_receivers` (
@@ -1079,7 +1400,7 @@ CREATE TABLE `notification_receivers` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
--- Dumping data for table `notification_receivers`
+-- Đang đổ dữ liệu cho bảng `notification_receivers`
 --
 
 INSERT INTO `notification_receivers` (`id`, `notification_id`, `receiver_id`, `status`, `created_at`) VALUES
@@ -1094,7 +1415,7 @@ INSERT INTO `notification_receivers` (`id`, `notification_id`, `receiver_id`, `s
 -- --------------------------------------------------------
 
 --
--- Table structure for table `posts`
+-- Cấu trúc bảng cho bảng `posts`
 --
 
 CREATE TABLE `posts` (
@@ -1107,7 +1428,7 @@ CREATE TABLE `posts` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `posts`
+-- Đang đổ dữ liệu cho bảng `posts`
 --
 
 INSERT INTO `posts` (`id`, `author_id`, `title`, `content`, `created_at`, `last_updated_at`) VALUES
@@ -1121,7 +1442,7 @@ INSERT INTO `posts` (`id`, `author_id`, `title`, `content`, `created_at`, `last_
 -- --------------------------------------------------------
 
 --
--- Table structure for table `post_comments`
+-- Cấu trúc bảng cho bảng `post_comments`
 --
 
 CREATE TABLE `post_comments` (
@@ -1135,7 +1456,7 @@ CREATE TABLE `post_comments` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `post_comments`
+-- Đang đổ dữ liệu cho bảng `post_comments`
 --
 
 INSERT INTO `post_comments` (`id`, `post_id`, `sender_id`, `content`, `parent_comment_id`, `created_at`, `notifiable_id`) VALUES
@@ -1156,7 +1477,7 @@ INSERT INTO `post_comments` (`id`, `post_id`, `sender_id`, `content`, `parent_co
 -- --------------------------------------------------------
 
 --
--- Table structure for table `post_likes`
+-- Cấu trúc bảng cho bảng `post_likes`
 --
 
 CREATE TABLE `post_likes` (
@@ -1167,7 +1488,7 @@ CREATE TABLE `post_likes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `post_likes`
+-- Đang đổ dữ liệu cho bảng `post_likes`
 --
 
 INSERT INTO `post_likes` (`id`, `user_id`, `post_id`, `liked`) VALUES
@@ -1178,7 +1499,7 @@ INSERT INTO `post_likes` (`id`, `user_id`, `post_id`, `liked`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `rooms`
+-- Cấu trúc bảng cho bảng `rooms`
 --
 
 CREATE TABLE `rooms` (
@@ -1191,7 +1512,7 @@ CREATE TABLE `rooms` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `rooms`
+-- Đang đổ dữ liệu cho bảng `rooms`
 --
 
 INSERT INTO `rooms` (`id`, `channel_id`, `type`, `title`, `created_at`, `removable`) VALUES
@@ -1208,12 +1529,13 @@ INSERT INTO `rooms` (`id`, `channel_id`, `type`, `title`, `created_at`, `removab
 (25, 5, 'group', 'DevOps', '2022-11-21 14:20:05', 1),
 (26, 5, 'group', 'Database', '2022-11-21 14:20:54', 1),
 (27, NULL, 'single', NULL, '2022-11-23 13:57:43', 0),
-(29, 5, 'group', 'Design', '2022-12-01 10:22:38', 1);
+(29, 5, 'group', 'Design', '2022-12-01 10:22:38', 1),
+(30, NULL, 'single', NULL, '2022-12-05 15:04:16', 0);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tags`
+-- Cấu trúc bảng cho bảng `tags`
 --
 
 CREATE TABLE `tags` (
@@ -1223,7 +1545,7 @@ CREATE TABLE `tags` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `tags`
+-- Đang đổ dữ liệu cho bảng `tags`
 --
 
 INSERT INTO `tags` (`id`, `post_id`, `tag_name`) VALUES
@@ -1234,7 +1556,7 @@ INSERT INTO `tags` (`id`, `post_id`, `tag_name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Cấu trúc bảng cho bảng `users`
 --
 
 CREATE TABLE `users` (
@@ -1246,29 +1568,30 @@ CREATE TABLE `users` (
   `gender` enum('male','female','other') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `avatar_url` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `joined_date` datetime NOT NULL,
-  `nation` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `nation` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `last_active` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `users`
+-- Đang đổ dữ liệu cho bảng `users`
 --
 
-INSERT INTO `users` (`id`, `email`, `username`, `birthday`, `password`, `gender`, `avatar_url`, `joined_date`, `nation`) VALUES
-(2, 'lvdat.roy@gmail.com', 'lvdat', NULL, '$2b$10$C3HqjsVkxY3D5hq6Gqh6TeO8yhkeMd/yOi4wo7Z68s/fBg6oywiG2', 'other', 'https://scontent.fhan14-1.fna.fbcdn.net/v/t1.15752-9/243978555_399918004863466_1703240540387963577_n.png?_nc_cat=111&ccb=1-7&_nc_sid=ae9488&_nc_ohc=dho8WpLGNJcAX8oALZI&_nc_ht=scontent.fhan14-1.fna&oh=03_AdRqImAa7DcuxULQAC0IKsnKiSgjskLzsCVMZIUV7DrUFg&oe=63AC6BB1', '0000-00-00 00:00:00', NULL),
-(4, 'dat.roy.2003@gmail.com', 'roy', NULL, '$2b$10$fNK.tEsPwzfNHl44OEXSF.Vsu5at3mRZmb0fVL5RspjCtSSCezzSG', 'other', 'https://lh3.googleusercontent.com/a/ALm5wu3cKEstY_5YSSQTHEfunU7ojzrWGV9uI7_ceZsn=s96-c', '2022-11-05 17:51:30', NULL),
-(5, 'a4k29.hh4@gmail.com', 'nekokun', NULL, '$2b$10$Gb8Eb6nH7sX8eVxtX8IeVOc1yBkl2KO3gKsr4k90BO1ZmlQGoMgzS', 'other', 'https://scontent.fhan14-1.fna.fbcdn.net/v/t1.15752-9/195974949_534419381069328_926187293498061728_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=ae9488&_nc_ohc=NOE20ofJWIkAX_vkfP3&_nc_ht=scontent.fhan14-1.fna&oh=03_AdQ-xy00IjLwQVmO3lvHsNk0oxb74Z95sZPsP3EgK5ktiw&oe=63AC6030', '2022-11-05 18:19:58', NULL),
-(7, '21020298@vnu.edu.vn', 'UETốt', NULL, '$2b$10$IG.KASH3/c9erpe.DayLoe0Qd8MZLyBmKWkNMbnzMa4OFhD/qWZ9C', 'other', 'https://scontent.fhan2-5.fna.fbcdn.net/v/t1.15752-9/296048571_5375031022616469_2440968245869429416_n.png?_nc_cat=110&ccb=1-7&_nc_sid=ae9488&_nc_ohc=-rQCk3GsFeMAX9oF1ya&_nc_ht=scontent.fhan2-5.fna&oh=03_AdSTHwHA-sc-brMhGvFtDN4LFStf2c6mrqmrV22cNHITGg&oe=639FD3B6', '2022-11-19 09:54:25', NULL),
-(8, 'meow@gmail.com', 'meow', NULL, '$2b$10$IG.KASH3/c9erpe.DayLoe0Qd8MZLyBmKWkNMbnzMa4OFhD/qWZ9C', NULL, 'https://scontent.fhan2-5.fna.fbcdn.net/v/t1.15752-9/275977893_727683845078674_6093481772108505383_n.webp?stp=dst-webp&_nc_cat=107&ccb=1-7&_nc_sid=ae9488&_nc_ohc=l9uPbnQbux8AX_2cLf5&_nc_ht=scontent.fhan2-5.fna&oh=03_AdTT0yzpwwYrpJH2ZAuD90mYKxk--wF5619a8_SxQoQn_A&oe=639FD39F', '2022-11-19 03:55:10', NULL),
-(10, 'bin@gmail.com', 'bin', NULL, '$2b$10$IG.KASH3/c9erpe.DayLoe0Qd8MZLyBmKWkNMbnzMa4OFhD/qWZ9C', NULL, 'https://scontent.fhan2-5.fna.fbcdn.net/v/t1.15752-9/284916187_399746062119657_6474159232839858156_n.png?_nc_cat=104&ccb=1-7&_nc_sid=ae9488&_nc_ohc=M4_b7H2QeHUAX_9Yg2M&_nc_ht=scontent.fhan2-5.fna&oh=03_AdQL9n4l00sn1DT6zz3HaLSZszD-QiaPrDt8A9bY-WMPjg&oe=639FC8F6', '2022-11-19 04:03:39', NULL),
-(11, 'pate@gmail.com', 'pate', NULL, '$2b$10$IG.KASH3/c9erpe.DayLoe0Qd8MZLyBmKWkNMbnzMa4OFhD/qWZ9C', NULL, 'https://scontent.fhan2-5.fna.fbcdn.net/v/t1.15752-9/300496546_1360520704473232_4132157348638922110_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=ae9488&_nc_ohc=WvjdVsTqLn8AX-0x6fx&tn=Jsb-ydERwOFU8E_N&_nc_ht=scontent.fhan2-5.fna&oh=03_AdSazLAjj3ugPb3Knn3TLXbAsEp7b1-k4C7XP7jqT5v1Ww&oe=639FB761', '2022-11-19 04:05:20', NULL),
-(12, 'shin@gmail.com', 'shin', NULL, '$2b$10$IG.KASH3/c9erpe.DayLoe0Qd8MZLyBmKWkNMbnzMa4OFhD/qWZ9C', NULL, 'https://scontent.fhan2-5.fna.fbcdn.net/v/t1.15752-9/291092349_469802784483235_2319594929695058300_n.png?_nc_cat=104&ccb=1-7&_nc_sid=ae9488&_nc_ohc=vtObZ3-nO7AAX90WoiF&tn=Jsb-ydERwOFU8E_N&_nc_ht=scontent.fhan2-5.fna&oh=03_AdSsVGRAhkoPVLAG3jOwL0xEI_FaPtaKULhYHtpSCe2sbw&oe=639FD028', '2022-11-19 04:08:14', NULL),
-(13, 'aaaa', 'aaaa', NULL, 'aaaaa', NULL, 'https://scontent.fhan2-5.fna.fbcdn.net/v/t1.15752-9/291092349_469802784483235_2319594929695058300_n.png?_nc_cat=104&ccb=1-7&_nc_sid=ae9488&_nc_ohc=vtObZ3-nO7AAX90WoiF&tn=Jsb-ydERwOFU8E_N&_nc_ht=scontent.fhan2-5.fna&oh=03_AdSsVGRAhkoPVLAG3jOwL0xEI_FaPtaKULhYHtpSCe2sbw&oe=639FD028', '2022-12-03 15:38:49', NULL),
-(14, 'abab', 'ababab', NULL, '', NULL, 'https://scontent.fhan2-5.fna.fbcdn.net/v/t1.15752-9/291092349_469802784483235_2319594929695058300_n.png?_nc_cat=104&ccb=1-7&_nc_sid=ae9488&_nc_ohc=vtObZ3-nO7AAX90WoiF&tn=Jsb-ydERwOFU8E_N&_nc_ht=scontent.fhan2-5.fna&oh=03_AdSsVGRAhkoPVLAG3jOwL0xEI_FaPtaKULhYHtpSCe2sbw&oe=639FD028', '2022-12-03 15:39:28', NULL);
+INSERT INTO `users` (`id`, `email`, `username`, `birthday`, `password`, `gender`, `avatar_url`, `joined_date`, `nation`, `last_active`) VALUES
+(2, 'lvdat.roy@gmail.com', 'lvdat', NULL, '$2b$10$C3HqjsVkxY3D5hq6Gqh6TeO8yhkeMd/yOi4wo7Z68s/fBg6oywiG2', 'other', 'https://scontent.fhan14-1.fna.fbcdn.net/v/t1.15752-9/243978555_399918004863466_1703240540387963577_n.png?_nc_cat=111&ccb=1-7&_nc_sid=ae9488&_nc_ohc=dho8WpLGNJcAX8oALZI&_nc_ht=scontent.fhan14-1.fna&oh=03_AdRqImAa7DcuxULQAC0IKsnKiSgjskLzsCVMZIUV7DrUFg&oe=63AC6BB1', '0000-00-00 00:00:00', NULL, '2022-12-05 17:26:01'),
+(4, 'dat.roy.2003@gmail.com', 'roy', NULL, '$2b$10$fNK.tEsPwzfNHl44OEXSF.Vsu5at3mRZmb0fVL5RspjCtSSCezzSG', 'other', 'https://lh3.googleusercontent.com/a/ALm5wu3cKEstY_5YSSQTHEfunU7ojzrWGV9uI7_ceZsn=s96-c', '2022-11-05 17:51:30', NULL, '2022-12-05 16:37:47'),
+(5, 'a4k29.hh4@gmail.com', 'nekokun', NULL, '$2b$10$Gb8Eb6nH7sX8eVxtX8IeVOc1yBkl2KO3gKsr4k90BO1ZmlQGoMgzS', 'other', 'https://scontent.fhan14-1.fna.fbcdn.net/v/t1.15752-9/195974949_534419381069328_926187293498061728_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=ae9488&_nc_ohc=NOE20ofJWIkAX_vkfP3&_nc_ht=scontent.fhan14-1.fna&oh=03_AdQ-xy00IjLwQVmO3lvHsNk0oxb74Z95sZPsP3EgK5ktiw&oe=63AC6030', '2022-11-05 18:19:58', NULL, '1900-01-01 00:00:00'),
+(7, '21020298@vnu.edu.vn', 'UETốt', NULL, '$2b$10$IG.KASH3/c9erpe.DayLoe0Qd8MZLyBmKWkNMbnzMa4OFhD/qWZ9C', 'other', 'https://scontent.fhan2-5.fna.fbcdn.net/v/t1.15752-9/296048571_5375031022616469_2440968245869429416_n.png?_nc_cat=110&ccb=1-7&_nc_sid=ae9488&_nc_ohc=-rQCk3GsFeMAX9oF1ya&_nc_ht=scontent.fhan2-5.fna&oh=03_AdSTHwHA-sc-brMhGvFtDN4LFStf2c6mrqmrV22cNHITGg&oe=639FD3B6', '2022-11-19 09:54:25', NULL, '1900-01-24 16:16:09'),
+(8, 'meow@gmail.com', 'meow', NULL, '$2b$10$IG.KASH3/c9erpe.DayLoe0Qd8MZLyBmKWkNMbnzMa4OFhD/qWZ9C', NULL, 'https://scontent.fhan2-5.fna.fbcdn.net/v/t1.15752-9/275977893_727683845078674_6093481772108505383_n.webp?stp=dst-webp&_nc_cat=107&ccb=1-7&_nc_sid=ae9488&_nc_ohc=l9uPbnQbux8AX_2cLf5&_nc_ht=scontent.fhan2-5.fna&oh=03_AdTT0yzpwwYrpJH2ZAuD90mYKxk--wF5619a8_SxQoQn_A&oe=639FD39F', '2022-11-19 03:55:10', NULL, '2022-12-07 15:45:34'),
+(10, 'bin@gmail.com', 'bin', NULL, '$2b$10$IG.KASH3/c9erpe.DayLoe0Qd8MZLyBmKWkNMbnzMa4OFhD/qWZ9C', NULL, 'https://scontent.fhan2-5.fna.fbcdn.net/v/t1.15752-9/284916187_399746062119657_6474159232839858156_n.png?_nc_cat=104&ccb=1-7&_nc_sid=ae9488&_nc_ohc=M4_b7H2QeHUAX_9Yg2M&_nc_ht=scontent.fhan2-5.fna&oh=03_AdQL9n4l00sn1DT6zz3HaLSZszD-QiaPrDt8A9bY-WMPjg&oe=639FC8F6', '2022-11-19 04:03:39', NULL, '2022-12-07 15:45:34'),
+(11, 'pate@gmail.com', 'pate', NULL, '$2b$10$IG.KASH3/c9erpe.DayLoe0Qd8MZLyBmKWkNMbnzMa4OFhD/qWZ9C', NULL, 'https://scontent.fhan2-5.fna.fbcdn.net/v/t1.15752-9/300496546_1360520704473232_4132157348638922110_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=ae9488&_nc_ohc=WvjdVsTqLn8AX-0x6fx&tn=Jsb-ydERwOFU8E_N&_nc_ht=scontent.fhan2-5.fna&oh=03_AdSazLAjj3ugPb3Knn3TLXbAsEp7b1-k4C7XP7jqT5v1Ww&oe=639FB761', '2022-11-19 04:05:20', NULL, '2022-12-07 15:45:34'),
+(12, 'shin@gmail.com', 'shin', NULL, '$2b$10$IG.KASH3/c9erpe.DayLoe0Qd8MZLyBmKWkNMbnzMa4OFhD/qWZ9C', NULL, 'https://scontent.fhan2-5.fna.fbcdn.net/v/t1.15752-9/291092349_469802784483235_2319594929695058300_n.png?_nc_cat=104&ccb=1-7&_nc_sid=ae9488&_nc_ohc=vtObZ3-nO7AAX90WoiF&tn=Jsb-ydERwOFU8E_N&_nc_ht=scontent.fhan2-5.fna&oh=03_AdSsVGRAhkoPVLAG3jOwL0xEI_FaPtaKULhYHtpSCe2sbw&oe=639FD028', '2022-11-19 04:08:14', NULL, '2022-12-05 16:35:17'),
+(13, 'aaaa', 'aaaa', NULL, 'aaaaa', NULL, 'https://scontent.fhan2-5.fna.fbcdn.net/v/t1.15752-9/291092349_469802784483235_2319594929695058300_n.png?_nc_cat=104&ccb=1-7&_nc_sid=ae9488&_nc_ohc=vtObZ3-nO7AAX90WoiF&tn=Jsb-ydERwOFU8E_N&_nc_ht=scontent.fhan2-5.fna&oh=03_AdSsVGRAhkoPVLAG3jOwL0xEI_FaPtaKULhYHtpSCe2sbw&oe=639FD028', '2022-12-03 15:38:49', NULL, '2022-12-07 15:45:34'),
+(14, 'abab', 'ababab', NULL, '', NULL, 'https://scontent.fhan2-5.fna.fbcdn.net/v/t1.15752-9/291092349_469802784483235_2319594929695058300_n.png?_nc_cat=104&ccb=1-7&_nc_sid=ae9488&_nc_ohc=vtObZ3-nO7AAX90WoiF&tn=Jsb-ydERwOFU8E_N&_nc_ht=scontent.fhan2-5.fna&oh=03_AdSsVGRAhkoPVLAG3jOwL0xEI_FaPtaKULhYHtpSCe2sbw&oe=639FD028', '2022-12-03 15:39:28', NULL, '2022-12-07 15:45:34');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_channel`
+-- Cấu trúc bảng cho bảng `user_channel`
 --
 
 CREATE TABLE `user_channel` (
@@ -1279,7 +1602,7 @@ CREATE TABLE `user_channel` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `user_channel`
+-- Đang đổ dữ liệu cho bảng `user_channel`
 --
 
 INSERT INTO `user_channel` (`id`, `user_id`, `channel_id`, `notifiable_id`) VALUES
@@ -1292,7 +1615,7 @@ INSERT INTO `user_channel` (`id`, `user_id`, `channel_id`, `notifiable_id`) VALU
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_room`
+-- Cấu trúc bảng cho bảng `user_room`
 --
 
 CREATE TABLE `user_room` (
@@ -1302,7 +1625,7 @@ CREATE TABLE `user_room` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `user_room`
+-- Đang đổ dữ liệu cho bảng `user_room`
 --
 
 INSERT INTO `user_room` (`id`, `user_id`, `room_id`) VALUES
@@ -1319,6 +1642,7 @@ INSERT INTO `user_room` (`id`, `user_id`, `room_id`) VALUES
 (45, 2, 25),
 (46, 2, 26),
 (59, 2, 29),
+(60, 2, 30),
 (31, 4, 16),
 (47, 4, 22),
 (48, 4, 23),
@@ -1337,14 +1661,15 @@ INSERT INTO `user_room` (`id`, `user_id`, `room_id`) VALUES
 (33, 8, 17),
 (37, 10, 19),
 (39, 11, 20),
-(41, 12, 21);
+(41, 12, 21),
+(61, 13, 30);
 
 --
--- Indexes for dumped tables
+-- Chỉ mục cho các bảng đã đổ
 --
 
 --
--- Indexes for table `channels`
+-- Chỉ mục cho bảng `channels`
 --
 ALTER TABLE `channels`
   ADD PRIMARY KEY (`id`),
@@ -1352,7 +1677,7 @@ ALTER TABLE `channels`
   ADD KEY `channels_users_foreign_key` (`admin_id`);
 
 --
--- Indexes for table `messages`
+-- Chỉ mục cho bảng `messages`
 --
 ALTER TABLE `messages`
   ADD PRIMARY KEY (`id`),
@@ -1360,14 +1685,14 @@ ALTER TABLE `messages`
   ADD KEY `messages_sender_id_foreign` (`sender_id`);
 
 --
--- Indexes for table `message_attachments`
+-- Chỉ mục cho bảng `message_attachments`
 --
 ALTER TABLE `message_attachments`
   ADD PRIMARY KEY (`id`),
   ADD KEY `message_attachments_message_id_foreign` (`message_id`);
 
 --
--- Indexes for table `message_recipients`
+-- Chỉ mục cho bảng `message_recipients`
 --
 ALTER TABLE `message_recipients`
   ADD PRIMARY KEY (`id`),
@@ -1376,20 +1701,20 @@ ALTER TABLE `message_recipients`
   ADD KEY `message_recipients_recipient_room_id_foreign` (`recipient_room_id`);
 
 --
--- Indexes for table `notifiable`
+-- Chỉ mục cho bảng `notifiable`
 --
 ALTER TABLE `notifiable`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `notifications`
+-- Chỉ mục cho bảng `notifications`
 --
 ALTER TABLE `notifications`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `notifications_unique_1` (`notifiable_id`,`type`);
 
 --
--- Indexes for table `notification_receivers`
+-- Chỉ mục cho bảng `notification_receivers`
 --
 ALTER TABLE `notification_receivers`
   ADD PRIMARY KEY (`id`),
@@ -1397,14 +1722,14 @@ ALTER TABLE `notification_receivers`
   ADD KEY `notification_receivers_ibfk_2` (`receiver_id`);
 
 --
--- Indexes for table `posts`
+-- Chỉ mục cho bảng `posts`
 --
 ALTER TABLE `posts`
   ADD PRIMARY KEY (`id`),
   ADD KEY `posts_author_id_foreign` (`author_id`);
 
 --
--- Indexes for table `post_comments`
+-- Chỉ mục cho bảng `post_comments`
 --
 ALTER TABLE `post_comments`
   ADD PRIMARY KEY (`id`),
@@ -1414,7 +1739,7 @@ ALTER TABLE `post_comments`
   ADD KEY `post_comments_ibfk_3` (`parent_comment_id`);
 
 --
--- Indexes for table `post_likes`
+-- Chỉ mục cho bảng `post_likes`
 --
 ALTER TABLE `post_likes`
   ADD PRIMARY KEY (`id`),
@@ -1422,21 +1747,21 @@ ALTER TABLE `post_likes`
   ADD KEY `post_likes_ibfk_1` (`post_id`);
 
 --
--- Indexes for table `rooms`
+-- Chỉ mục cho bảng `rooms`
 --
 ALTER TABLE `rooms`
   ADD PRIMARY KEY (`id`),
   ADD KEY `room_channel_id_foreign` (`channel_id`);
 
 --
--- Indexes for table `tags`
+-- Chỉ mục cho bảng `tags`
 --
 ALTER TABLE `tags`
   ADD PRIMARY KEY (`id`),
   ADD KEY `tags_ibfk_1` (`post_id`);
 
 --
--- Indexes for table `users`
+-- Chỉ mục cho bảng `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
@@ -1444,7 +1769,7 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `users_username_unique` (`username`);
 
 --
--- Indexes for table `user_channel`
+-- Chỉ mục cho bảng `user_channel`
 --
 ALTER TABLE `user_channel`
   ADD PRIMARY KEY (`id`),
@@ -1454,7 +1779,7 @@ ALTER TABLE `user_channel`
   ADD KEY `user_channel_ibfk_2` (`channel_id`);
 
 --
--- Indexes for table `user_room`
+-- Chỉ mục cho bảng `user_room`
 --
 ALTER TABLE `user_room`
   ADD PRIMARY KEY (`id`),
@@ -1463,124 +1788,124 @@ ALTER TABLE `user_room`
   ADD KEY `user_room_user_id_foreign` (`user_id`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT cho các bảng đã đổ
 --
 
 --
--- AUTO_INCREMENT for table `channels`
+-- AUTO_INCREMENT cho bảng `channels`
 --
 ALTER TABLE `channels`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
--- AUTO_INCREMENT for table `messages`
+-- AUTO_INCREMENT cho bảng `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=440;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=547;
 
 --
--- AUTO_INCREMENT for table `message_attachments`
+-- AUTO_INCREMENT cho bảng `message_attachments`
 --
 ALTER TABLE `message_attachments`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
--- AUTO_INCREMENT for table `message_recipients`
+-- AUTO_INCREMENT cho bảng `message_recipients`
 --
 ALTER TABLE `message_recipients`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=902;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1116;
 
 --
--- AUTO_INCREMENT for table `notifiable`
+-- AUTO_INCREMENT cho bảng `notifiable`
 --
 ALTER TABLE `notifiable`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
 
 --
--- AUTO_INCREMENT for table `notifications`
+-- AUTO_INCREMENT cho bảng `notifications`
 --
 ALTER TABLE `notifications`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
--- AUTO_INCREMENT for table `notification_receivers`
+-- AUTO_INCREMENT cho bảng `notification_receivers`
 --
 ALTER TABLE `notification_receivers`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
--- AUTO_INCREMENT for table `posts`
+-- AUTO_INCREMENT cho bảng `posts`
 --
 ALTER TABLE `posts`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
--- AUTO_INCREMENT for table `post_comments`
+-- AUTO_INCREMENT cho bảng `post_comments`
 --
 ALTER TABLE `post_comments`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 
 --
--- AUTO_INCREMENT for table `post_likes`
+-- AUTO_INCREMENT cho bảng `post_likes`
 --
 ALTER TABLE `post_likes`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=94;
 
 --
--- AUTO_INCREMENT for table `rooms`
+-- AUTO_INCREMENT cho bảng `rooms`
 --
 ALTER TABLE `rooms`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
--- AUTO_INCREMENT for table `tags`
+-- AUTO_INCREMENT cho bảng `tags`
 --
 ALTER TABLE `tags`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT for table `users`
+-- AUTO_INCREMENT cho bảng `users`
 --
 ALTER TABLE `users`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
--- AUTO_INCREMENT for table `user_channel`
+-- AUTO_INCREMENT cho bảng `user_channel`
 --
 ALTER TABLE `user_channel`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
--- AUTO_INCREMENT for table `user_room`
+-- AUTO_INCREMENT cho bảng `user_room`
 --
 ALTER TABLE `user_room`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
--- Constraints for dumped tables
+-- Các ràng buộc cho các bảng đã đổ
 --
 
 --
--- Constraints for table `channels`
+-- Các ràng buộc cho bảng `channels`
 --
 ALTER TABLE `channels`
   ADD CONSTRAINT `channels_users_foreign_key` FOREIGN KEY (`admin_id`) REFERENCES `users` (`id`);
 
 --
--- Constraints for table `messages`
+-- Các ràng buộc cho bảng `messages`
 --
 ALTER TABLE `messages`
   ADD CONSTRAINT `messages_parent_message_id_foreign` FOREIGN KEY (`parent_message_id`) REFERENCES `messages` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `messages_sender_id_foreign` FOREIGN KEY (`sender_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE;
 
 --
--- Constraints for table `message_attachments`
+-- Các ràng buộc cho bảng `message_attachments`
 --
 ALTER TABLE `message_attachments`
   ADD CONSTRAINT `message_attachments_message_id_foreign` FOREIGN KEY (`message_id`) REFERENCES `messages` (`id`) ON UPDATE CASCADE;
 
 --
--- Constraints for table `message_recipients`
+-- Các ràng buộc cho bảng `message_recipients`
 --
 ALTER TABLE `message_recipients`
   ADD CONSTRAINT `message_recipients_message_id_foreign` FOREIGN KEY (`message_id`) REFERENCES `messages` (`id`) ON UPDATE CASCADE,
@@ -1588,26 +1913,26 @@ ALTER TABLE `message_recipients`
   ADD CONSTRAINT `message_recipients_recipient_room_id_foreign` FOREIGN KEY (`recipient_room_id`) REFERENCES `user_room` (`id`) ON UPDATE CASCADE;
 
 --
--- Constraints for table `notifications`
+-- Các ràng buộc cho bảng `notifications`
 --
 ALTER TABLE `notifications`
   ADD CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`notifiable_id`) REFERENCES `notifiable` (`id`);
 
 --
--- Constraints for table `notification_receivers`
+-- Các ràng buộc cho bảng `notification_receivers`
 --
 ALTER TABLE `notification_receivers`
   ADD CONSTRAINT `notification_receivers_ibfk_1` FOREIGN KEY (`notification_id`) REFERENCES `notifications` (`id`),
   ADD CONSTRAINT `notification_receivers_ibfk_2` FOREIGN KEY (`receiver_id`) REFERENCES `users` (`id`);
 
 --
--- Constraints for table `posts`
+-- Các ràng buộc cho bảng `posts`
 --
 ALTER TABLE `posts`
   ADD CONSTRAINT `posts_author_id_foreign` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE;
 
 --
--- Constraints for table `post_comments`
+-- Các ràng buộc cho bảng `post_comments`
 --
 ALTER TABLE `post_comments`
   ADD CONSTRAINT `post_comments_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
@@ -1616,26 +1941,26 @@ ALTER TABLE `post_comments`
   ADD CONSTRAINT `post_comments_ibfk_4` FOREIGN KEY (`notifiable_id`) REFERENCES `notifiable` (`id`);
 
 --
--- Constraints for table `post_likes`
+-- Các ràng buộc cho bảng `post_likes`
 --
 ALTER TABLE `post_likes`
   ADD CONSTRAINT `post_likes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
   ADD CONSTRAINT `post_likes_ibfk_2` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`);
 
 --
--- Constraints for table `rooms`
+-- Các ràng buộc cho bảng `rooms`
 --
 ALTER TABLE `rooms`
   ADD CONSTRAINT `room_channel_id_foreign` FOREIGN KEY (`channel_id`) REFERENCES `channels` (`id`) ON UPDATE CASCADE;
 
 --
--- Constraints for table `tags`
+-- Các ràng buộc cho bảng `tags`
 --
 ALTER TABLE `tags`
   ADD CONSTRAINT `tags_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`);
 
 --
--- Constraints for table `user_channel`
+-- Các ràng buộc cho bảng `user_channel`
 --
 ALTER TABLE `user_channel`
   ADD CONSTRAINT `user_channel_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
@@ -1643,7 +1968,7 @@ ALTER TABLE `user_channel`
   ADD CONSTRAINT `user_channel_ibfk_3` FOREIGN KEY (`notifiable_id`) REFERENCES `notifiable` (`id`);
 
 --
--- Constraints for table `user_room`
+-- Các ràng buộc cho bảng `user_room`
 --
 ALTER TABLE `user_room`
   ADD CONSTRAINT `user_room_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,

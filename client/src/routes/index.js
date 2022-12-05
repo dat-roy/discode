@@ -12,9 +12,10 @@ import { ChatList, Inbox, ChatDetails } from '../pages/Chat'
 import Publish from "../pages/Posts/Publish";
 import PostView from "../pages/Posts/PostView";
 import Feed from "../pages/Posts/Feed";
-import { ChannelList, ChannelDiscover, ChannelCreator } from "../pages/Channel";
+import { ChannelList, ChannelDiscover, ChannelCreator, RoomList } from "../pages/Channel";
 import ChannelInbox from "../pages/Channel/Inside/ChannelInbox";
 import Notification from "../pages/Notification";
+import ChannelHome from "../pages/Channel/Inside/ChannelHome";
 
 const publicRoutes = [
     {
@@ -63,8 +64,8 @@ const privateRoutes = [
     {
         key: 'notification',
         path: '/notifications',
-        mainElement: <Notification />, 
-    }, 
+        mainElement: <Notification />,
+    },
     {
         key: 'chat-page',
         path: '/chat',
@@ -129,20 +130,27 @@ const privateRoutes = [
         mainElement: <PostView />,
         rightElement: null,
         layout: DefaultLayout,
-    }
+    },
+    {
+        key: 'channels-with-id',
+        path: '/channels/:id',
+        leftElement: <RoomList />,
+        mainElement: <ChannelHome />,
+        rightElement: null,
+        layout: DefaultLayout,
+    },
 ]
 
 const privateChannelRoutes = [
-    {
-
-        key: 'channels-with-id',
-        path: '/channels/:id',
-        mainElement: null,
-        layout: {
-            DefaultLayout,
-            ChannelLayout,
-        },
-    },
+    // {
+    //     key: 'channels-with-id',
+    //     path: '/channels/:id',
+    //     mainElement: null,
+    //     layout: {
+    //         DefaultLayout,
+    //         ChannelLayout,
+    //     },
+    // },
     {
 
         key: 'channels-with-id-and-room-id',

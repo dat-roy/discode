@@ -33,6 +33,12 @@ class Users extends Model {
         //     "warningStatus":
         // }
     }
+
+    async updateLastActive(params) {
+        let user_id = mysql.escape(params.user_id);
+        let sql = `UPDATE ${this.tableName} SET last_active=NOW() WHERE id=${user_id}`;
+        return await dbConnection.query(sql);
+    }
 }
 
 //Table name is passed to `constructor`

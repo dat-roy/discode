@@ -3,9 +3,10 @@ import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useStore } from "../../../../store/hooks";
 import { useSocket } from "../../../../store/hooks";
+import moment from "moment";
 
 import {
-    Box, Stack, TextField,
+    Box, Stack, TextField, Tooltip,
     Button, Typography, IconButton, InputAdornment, Avatar,
 } from "@mui/material";
 import ChatMsg from '../../../../components/ChatMsg';
@@ -15,7 +16,8 @@ import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import SentimentSatisfiedRoundedIcon from '@mui/icons-material/SentimentSatisfiedRounded';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import CircularProgress from '@mui/material/CircularProgress';
-
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import DoneIcon from '@mui/icons-material/Done';
 
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
@@ -98,6 +100,10 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
 
     //Get old messages.
     useEffect(() => {
+        if (!commonRoom?.room_id) {
+            setLoading(false);
+        }
+
         if (commonRoom?.room_id) {
             setTimeout(() => {
                 handleGetOldMessagesAPI(myID, commonRoom.room_id)
@@ -128,7 +134,7 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                     })
             }
         }
-    }, [params, commonRoom?.room_id, state.user.id, socket])
+    }, [params, commonRoom?.room_id, state.user.id, socket, allMessages.length])
 
     //Get seen status of member(s).
     useEffect(() => {
@@ -144,7 +150,7 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                     })
             }
         }
-    }, [commonRoom?.room_id, state.user.id, otherUser?.id])
+    }, [commonRoom?.room_id, state.user.id, otherUser?.id, allMessages.length])
 
     const renderAllMessages = allMessages.map((obj, index) => {
         const side = (!obj.sender_id)
@@ -259,52 +265,10 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                     bgcolor: "inherit",
                 }}
             >
-                <Stack
-                    alignItems={"center"}
-                    direction="row"
-                    justifyContent={"space-between"}
-                    sx={{
-                        width: "100%",
-                        height: "100%",
-                    }}
-                >
-                    <Stack
-                        direction={"row"}
-                        spacing={2}
-                        marginLeft={3}
-                    >
-                        <BadgeAvatar
-                            online={true}
-                            alt={otherUser.username}
-                            src={otherUser.avatar_url}
-                        />
-                        <Stack
-                            spacing={0.2}
-                        >
-                            <Typography variant="subtitle2">
-                                @{otherUser.username}
-                            </Typography>
-                            <Typography variant="caption">
-                                Online
-                            </Typography>
-                        </Stack>
-                    </Stack>
-                    <Stack
-                        direction="row"
-                        alignItems={"center"}
-                        spacing={3}
-                        marginRight={2}
-                    >
-                        <IconButton
-                            size="large" color="inherit"
-                        >
-                            <VideocamIcon />
-                        </IconButton>
-                    </Stack>
-                </Stack>
+                <BoxChatHeader />
             </Box>
             <Box
-                key="boxChatMessage"
+                key="boxChatMessages"
                 sx={{
                     width: "92%",
                     flexGrow: 1,
@@ -313,46 +277,7 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                     padding: 3,
                 }}
             >
-                {
-                    loading
-                        ? <Stack alignItems={"center"}>
-                            <CircularProgress
-                                padding={10}
-                                size={40}
-                            />
-                        </Stack>
-                        : <>
-                            <Button
-                                style={{
-                                    display: (commonRoom) ? "none" : "block"
-                                }}
-                                onClick={handleCreateNewRoom}
-                            >
-                                Start a chat
-                            </Button>
-                            {renderAllMessages}
-                            {(() => {
-                                if ((allMessages[allMessages.length - 1])?.sender_id === state.user.id) {
-                                    return seen
-                                        ? <>
-                                            Seen:
-                                            <Avatar
-                                                src={otherUser?.avatar_url}
-                                                style={{ width: 20, height: 20, }}
-                                            />
-                                        </> : <>Not seen</>
-                                }
-                            })()}
-                            <Box
-                                style={{
-                                    float: "left",
-                                    clear: "both",
-                                    marginBottom: 10,
-                                }}
-                                ref={latestMessage}
-                            />
-                        </>
-                }
+                <BoxChatMessages />
             </Box>
 
             <Box
@@ -365,6 +290,153 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
             </Box>
         </Stack>
     )
+
+    function BoxChatHeader() {
+        const [online, setOnline] = useState(false);
+        const [lastActive, setLastActive] = useState(otherUser?.last_active);
+
+        useEffect(() => {
+            socket.on("notifyOnlineInbox", user_id => {
+                if (user_id === otherUser.id) {
+                    setOnline(true);
+                }
+            })
+
+            socket.on("notifyOfflineInbox", user_id => {
+                if (user_id === otherUser.id) {
+                    setOnline(false);
+                    setLastActive(moment())
+                }
+            })
+
+            return () => {
+                socket.off("notifyOnlineInbox")
+                socket.off("notifyOfflineInbox")
+            }
+        }, [])
+
+        return (
+            <Stack
+                alignItems={"center"}
+                direction="row"
+                justifyContent={"space-between"}
+                sx={{
+                    width: "100%",
+                    height: "100%",
+                }}
+            >
+                <Stack
+                    direction={"row"}
+                    spacing={2}
+                    marginLeft={3}
+                >
+                    <BadgeAvatar
+                        online={online}
+                        alt={otherUser.username}
+                        src={otherUser.avatar_url}
+                    />
+                    <Stack
+                        spacing={0.2}
+                    >
+                        <Typography variant="subtitle2">
+                            @{otherUser.username}
+                        </Typography>
+                        <Typography variant="caption">
+                            {
+                                (online)
+                                    ? `Active now`
+                                    : (lastActive)
+                                        ? `Active ${moment(lastActive).fromNow()}`
+                                        : `Active `
+                            }
+                        </Typography>
+                    </Stack>
+                </Stack>
+                <Stack
+                    direction="row"
+                    alignItems={"center"}
+                    spacing={3}
+                    marginRight={2}
+                >
+                    <IconButton
+                        size="large" color="inherit"
+                    >
+                        <VideocamIcon />
+                    </IconButton>
+                </Stack>
+            </Stack>
+        )
+    }
+
+    function BoxChatMessages() {
+        if (loading) {
+            return (
+                <Stack alignItems={"center"}>
+                    <CircularProgress
+                        padding={10}
+                        size={40}
+                    />
+                </Stack>
+            )
+        }
+
+        return (
+            <>
+                <Button
+                    style={{
+                        display: (commonRoom) ? "none" : "block"
+                    }}
+                    onClick={handleCreateNewRoom}
+                >
+                    Start a chat
+                </Button>
+                {renderAllMessages}
+                <Stack direction={"row"} justifyContent={"flex-end"} pt={0.4}>
+                    {(() => {
+                        if ((allMessages[allMessages.length - 1])?.sender_id === state.user.id) {
+                            return (
+                                seen
+                                    ? <Tooltip placement="bottom-start" title={"Seen"}>
+                                        <Stack direction={"row"}
+                                            alignItems="center"
+                                            justifyContent={"center"}
+                                            spacing={0.4}
+                                        >
+                                            <DoneIcon
+                                                style={{
+                                                    color: "green",
+                                                    fontSize: 16,
+                                                }}
+                                            />
+                                            <Avatar
+                                                src={otherUser?.avatar_url}
+                                                style={{ width: 16, height: 16, }}
+                                            />
+                                        </Stack>
+                                    </Tooltip>
+                                    : <Tooltip placement="bottom-start" title={"Not seen"}>
+                                        <CheckCircleOutlineIcon
+                                            style={{
+                                                color: "gray",
+                                                fontSize: 16,
+                                            }}
+                                        />
+                                    </Tooltip>
+                            )
+                        }
+                    })()}
+                </Stack>
+                <Box
+                    style={{
+                        float: "left",
+                        clear: "both",
+                        marginBottom: 10,
+                    }}
+                    ref={latestMessage}
+                />
+            </>
+        )
+    }
 
     function SendBox() {
         const [emojiMartDisplay, setEmojiMartDisplay] = useState(false);

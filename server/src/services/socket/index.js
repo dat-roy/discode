@@ -2,7 +2,7 @@
  * Handle events when having any client connection.
  */
 
-// const Users = require("../../models/users.model")
+const Users = require("../../models/users.model")
 const UserRoom = require("../../models/user_room.model")
 
 let onlineUsers = []
@@ -46,6 +46,7 @@ const socketHandler = (io, socket) => {
                 for (const userRoom of res) {
                     socket.join(userRoom.room_id);
                     socket.broadcast.to(userRoom.room_id).emit("notifyOnline", userId)
+                    socket.broadcast.to(userRoom.room_id).emit("notifyOnlineInbox", userId)
                 }
             })
     })
@@ -95,6 +96,8 @@ const socketHandler = (io, socket) => {
 
         if (!userId) return;
 
+        Users.updateLastActive({ user_id: userId })
+
         //Find all room_id
         UserRoom.findAll({
             where: {
@@ -104,6 +107,7 @@ const socketHandler = (io, socket) => {
             .then((res) => {
                 for (const userRoom of res) {
                     socket.broadcast.to(userRoom.room_id).emit("notifyOffline", userId)
+                    socket.broadcast.to(userRoom.room_id).emit("notifyOfflineInbox", userId)
                 }
             })
         removeUser(socket.id);

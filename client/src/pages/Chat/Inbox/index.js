@@ -17,8 +17,6 @@ export default function Inbox() {
 
     const myID = state.user.id;
     let otherID = parseInt(params.id);
-    // console.log("My id: " + myID);
-    // console.log("Other id: " + otherID);
 
     useEffect(() => {
         setOtherUser(location.state?.partner_data);

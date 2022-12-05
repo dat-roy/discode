@@ -11,7 +11,6 @@ import Dialog from '@mui/material/Dialog';
 import Typography from '@material-ui/core/Typography';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import { CardActionArea } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
 import { Image } from 'antd';
