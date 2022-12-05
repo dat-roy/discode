@@ -103,10 +103,7 @@ export default function ChannelList() {
                                 paddingRight={0}
                                 key={index + "divider"}
                             >
-                                <Divider
-                                    variant="middle"
-                                    color={"gray"}
-                                />
+                                <Divider variant="middle" color={"gray"} />
                             </Box>
                         </Fragment>
                     ))

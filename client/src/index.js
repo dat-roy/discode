@@ -4,15 +4,18 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import { UserProvider } from './store';
 import { SocketProvider } from './store';
+import { NotiProvider } from './store';
 
 class Index extends React.Component {
   render() {
     return (
       <UserProvider>
         <SocketProvider>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
+          <NotiProvider>
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
+          </NotiProvider>
         </SocketProvider>
       </UserProvider>
     )

@@ -11,7 +11,14 @@ const SocketActionTypes = Object.freeze({
     DISCONNECT: "DISCONNECT", 
 })
 
+const NotiActionTypes = Object.freeze({
+    INCREASE: "INCREASE", 
+    DECREASE: "DECREASE", 
+    SET_SELECTED_ROOM: "SET_SELECTED_ROOM",
+})
+
 export {
     ActionTypes,
     SocketActionTypes, 
+    NotiActionTypes, 
 }

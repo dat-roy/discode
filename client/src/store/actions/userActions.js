@@ -6,7 +6,7 @@ import {
 class UserActions {
     userLoginSuccess = (payload) => ({
         type: ActionTypes.LOGIN_SUCCESS,
-        payload: payload,
+        payload,
     })
 
     userLogoutSuccess = () => ({
@@ -15,7 +15,7 @@ class UserActions {
 
     userRegisterSuccess = (payload) => ({
         type: ActionTypes.REGISTER_SUCCESS,
-        payload: payload,
+        payload,
     })
 
     userLogout = () => ({
@@ -54,13 +54,9 @@ class UserActions {
                 let action = null;
                 if (response.status === 200) {
                     action = this.userLoginSuccess(response.data);
-                } else {
+                } 
 
-                }
-
-                return [
-                    action,
-                ];
+                return [ action, ];
             } catch (err) {
                 console.error(err);
             }

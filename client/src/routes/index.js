@@ -14,6 +14,7 @@ import PostView from "../pages/Posts/PostView";
 import Feed from "../pages/Posts/Feed";
 import { ChannelList, ChannelDiscover, ChannelCreator } from "../pages/Channel";
 import ChannelInbox from "../pages/Channel/Inside/ChannelInbox";
+import Notification from "../pages/Notification";
 
 const publicRoutes = [
     {
@@ -59,6 +60,11 @@ const privateRoutes = [
         path: '/explore',
         mainElement: <Explore />,
     },
+    {
+        key: 'notification',
+        path: '/notifications',
+        mainElement: <Notification />, 
+    }, 
     {
         key: 'chat-page',
         path: '/chat',
@@ -131,10 +137,10 @@ const privateChannelRoutes = [
 
         key: 'channels-with-id',
         path: '/channels/:id',
-        mainElement: null, 
+        mainElement: null,
         layout: {
             DefaultLayout,
-            ChannelLayout, 
+            ChannelLayout,
         },
     },
     {
@@ -144,7 +150,7 @@ const privateChannelRoutes = [
         mainElement: <ChannelInbox />,
         layout: {
             DefaultLayout,
-            ChannelLayout, 
+            ChannelLayout,
         }
     },
 ]
@@ -152,5 +158,5 @@ const privateChannelRoutes = [
 export {
     publicRoutes,
     privateRoutes,
-    privateChannelRoutes, 
+    privateChannelRoutes,
 }

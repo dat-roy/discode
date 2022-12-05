@@ -5,7 +5,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { Chip, Grid, Stack } from "@mui/material";
+import { Chip, Divider, Grid, Stack } from "@mui/material";
 import CreateIcon from '@mui/icons-material/Create';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -67,12 +67,12 @@ export default function Feed() {
             sx={{
                 width: "100%",
                 height: "100vh",
-                //bgcolor: "white",
-                //color: "black"
             }}
         >
-            <Grid item xs={9} height={"100vh"} position={"relative"}
-                border={"1px solid orange"}
+            <Grid item xs={9}
+                height={"100vh"}
+                position={"relative"}
+                border={"1px dotted gray"}
             >
                 <Box
                     sx={{
@@ -82,7 +82,6 @@ export default function Feed() {
                         right: 0,
                         left: 0,
                         bottom: 0,
-                        border: "1px solid yellow"
                     }}
                 >
                     <ControlledSpeedDial
@@ -104,7 +103,6 @@ export default function Feed() {
                                 borderColor: 'divider',
                                 pl: 2,
                                 pr: 2,
-                                border: "1px solid red",
                                 position: "sticky",
                                 top: 0,
                                 bgcolor: "rgb(10, 25, 41)",
@@ -146,10 +144,13 @@ export default function Feed() {
             </Grid>
             <Grid item xs>
                 <Stack direction="column" height="100vh">
-                    <Box height="50%" sx={{ border: "1px solid red", padding: "0.6rem 1.5rem", }}>
+                    <Box height="50%" sx={{ padding: "0.6rem 1.5rem", }}>
                         <FeaturedAuthors />
                     </Box>
-                    <Box height="50%" sx={{ border: "1px solid red", padding: "0.6rem 1.5rem", }}>
+                    <Divider variant="middle" color={"gray"}
+                        sx={{ borderStyle: 'dotted', borderBottomWidth: 0.5 }}
+                    />
+                    <Box height="50%" sx={{ padding: "0.6rem 1.5rem", }}>
                         <FeaturedTopics />
                     </Box>
                 </Stack>
@@ -180,7 +181,7 @@ function FeaturedTopics() {
                 spacing={1}
                 justifyContent={"flex-start"}
                 flexWrap={"wrap"}
-                border="1px solid red"
+                //border="1px solid red"
             >
                 {['JavaScript', 'Java', 'DevOps', 'SHA256', 'GraphQL'].map((label, index) => {
                     return <Chip
@@ -190,7 +191,7 @@ function FeaturedTopics() {
                             color: "inherit",
                             borderRadius: 30,
                             height: 28,
-                            backgroundColor: "#ab5600", 
+                            backgroundColor: "#ab5600",
                             margin: 6,
                             marginTop: 0,
                             marginLeft: 0,

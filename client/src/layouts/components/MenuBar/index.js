@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react"
 import { Link, useLocation } from "react-router-dom"
 
-import { useStore } from "../../../store/hooks";
+import { useNoti, useStore } from "../../../store/hooks";
 import { useSocket } from "../../../store/hooks";
 
-//import { useTheme } from "@mui/material"
 import { Box, Stack } from '@mui/material';
 import { FormControlLabel } from '@mui/material';
 import MaterialUISwitch from "../../../components/MaterialUISwitch";
@@ -18,21 +17,16 @@ import Badge from '@mui/material/Badge';
 import IconButton from '@mui/material/IconButton';
 
 import AccountMenu from "../AccountMenu";
-import { RoomTypes } from "../../../types/db.type";
-import { handleCountAllUnreadMessagesAPI } from "../../../services"
 
 const logoLink = process.env.PUBLIC_URL + "/assets/img/logo.png";
 
 export default function MenuBar() {
-    //const theme = useTheme();
     const [state,] = useStore();
+    const [notiState,] = useNoti();
     const [socketState,] = useSocket();
     const socket = socketState.instance;
     const location = useLocation();
     const [selected, setSelected] = useState('/' + location.pathname.split('/')[1]);
-
-    const [messageBadge, setMessageBadge] = useState(0);
-    const [channelBadge, setChannelBadge] = useState(0);
 
     useEffect(() => {
         socket.emit("subscribe", state.user.id);
@@ -41,31 +35,6 @@ export default function MenuBar() {
     useEffect(() => {
         setSelected('/' + location.pathname.split('/')[1]);
     }, [location])
-
-    useEffect(() => {
-        handleCountAllUnreadMessagesAPI(state.user.id, RoomTypes.SINGLE)
-            .then(res => {
-                //console.log(res.data?.unread)
-                setMessageBadge(res.data?.unread)
-            })
-    }, [state.user.id])
-
-    useEffect(() => {
-        socket.on("receiveChatMessageAtMenuBar", (newMsg, _) => {
-            if (newMsg.sender_id !== state.user.id) {
-                setMessageBadge(old => old + 1);
-            }
-        })
-        socket.on("markAsReadToMenuBar", (userId, number) => {
-            if (userId === state.user.id) {
-                setMessageBadge(old => old - number);
-            }
-        })
-        return () => {
-            socket.off("receiveChatMessageAtMenuBar");
-            socket.off("markAsReadToMenuBar");
-        }
-    }, [socket])
 
     const NavButtons = [
         {
@@ -81,7 +50,7 @@ export default function MenuBar() {
         {
             path: "/chat",
             element: <MailIcon />,
-            badge: messageBadge,
+            badge: notiState?.badge?.message,
         },
         {
             path: "/channels",
@@ -159,6 +128,9 @@ export default function MenuBar() {
                                 component={Link} to={obj.path}
                                 sx={iconSx}
                                 onClick={() => { setSelected(obj.path) }}
+                                style={{
+                                    pointerEvents: (selected === obj.path) ? "none" : "auto",
+                                }}
                             >
                                 {obj.badge
                                     ? <Badge badgeContent={obj.badge} color="error">

@@ -7,9 +7,7 @@ import {
     handleGetLastMessageAPI,
     handleGetUnreadMessagesAPI
 } from "../../../services";
-import { useStore } from "../../../store/hooks"
-import { useSocket } from "../../../store/hooks"
-
+import { useNoti, useStore, useSocket } from "../../../store/hooks"
 import moment from "moment"
 
 import { Box, Stack } from "@mui/system";
@@ -22,10 +20,12 @@ import CreateIcon from '@mui/icons-material/Create';
 import SearchBar from "../../../components/SearchBar";
 import BadgeAvatar from "../../../components/BadgeAvatar";
 import { toast } from "react-toastify";
+import { NotiActionTypes } from "../../../store/actions/constants";
 
 export default function ChatList() {
     const location = useLocation();
     const [state,] = useStore();
+    const [notiState, notiDispatch] = useNoti();
     const [socketState,] = useSocket();
     const socket = socketState.instance;
     const [selected, setSelected] = useState(location.state?.selected_room_id || null);
@@ -46,8 +46,12 @@ export default function ChatList() {
         if (singleRooms) {
             for (const room of singleRooms) {
                 if (room.room_id === selected) {
-                    //TODO: set to menubar
-                    socket.emit("markAsReadFromChatList", state.user.id, room.unread_messages);
+                    notiDispatch({
+                        type: NotiActionTypes.DECREASE,
+                        payload: {
+                            badge: { message: room.unread_messages },
+                        }
+                    })
                     room.unread_messages = 0;
                 }
             }
@@ -115,7 +119,16 @@ export default function ChatList() {
     useEffect(() => {
         if (singleRooms) {
             socket.on("receiveChatMessageAtChatList", newMsg => {
-                newMsg.created_at = moment().format().slice(0, 19).replace('T', ' ');
+                //newMsg.created_at = moment().format().slice(0, 19).replace('T', ' ');
+                if (selected !== newMsg.room_id && state.user.id !== newMsg.sender_id) {
+                    notiDispatch({
+                        type: NotiActionTypes.INCREASE,
+                        payload: {
+                            badge: { message: 1 },
+                        },
+                    })
+                }
+                
                 const roomList = singleRooms.map(room => {
                     if (room.room_id === newMsg.room_id) {
                         room.last_message = newMsg
@@ -173,10 +186,7 @@ export default function ChatList() {
                     marginTop={3}
                     padding={1}
                 >
-                    <Divider
-                        variant="middle"
-                        color={"gray"}
-                    />
+                    <Divider variant="middle" color={"gray"} />
                 </Box>
             </Stack>
 
@@ -244,7 +254,8 @@ function ChatElement({ selected, online, room_data }) {
                 '&:hover': {
                     bgcolor: "#607d8b",
                     cursor: "pointer",
-                }
+                },
+                pointerEvents: (selected === room_id) ? "none" : "auto",
             }}
             onClick={() => {
                 navigate(`/chat/${partner_data.id}`, {

@@ -8,16 +8,11 @@ export default function AuthorItem() {
             justifyContent={"space-between"}
             spacing={1.2}
         >
-            <Box style={{
-                border: "1px solid red",
-            }}>
+            <Box>
                 <Avatar src="" sx={{ width: "3rem", height: "3rem" }} />
             </Box>
             <Stack
                 flexGrow={1}
-                style={{
-                    border: "1px solid red",
-                }}
             >
                 <Typography variant={"h6"} style={{ fontSize: "18px" }}>Username</Typography>
                 <Typography
@@ -35,11 +30,7 @@ export default function AuthorItem() {
                 >Description long long long long long long long long lllllllllllllllllllllllll
                 llllllllllllllllllllllllllllllll</Typography>
             </Stack>
-            <Box
-                style={{
-                    border: "1px solid red",
-                }}
-            >
+            <Box>
                 <Button>
                     Follow
                 </Button>
