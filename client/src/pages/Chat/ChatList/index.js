@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import {
     handleGetJoinedSingleRoomsAPI,
@@ -23,12 +23,12 @@ import { toast } from "react-toastify";
 import { NotiActionTypes } from "../../../store/actions/constants";
 
 export default function ChatList() {
-    const location = useLocation();
+    const params = useParams();
     const [state,] = useStore();
-    const [notiState, notiDispatch] = useNoti();
+    const [, notiDispatch] = useNoti();
     const [socketState,] = useSocket();
     const socket = socketState.instance;
-    const [selected, setSelected] = useState(location.state?.selected_room_id || null);
+    const [selected, setSelected] = useState(parseInt(params?.id) || null);
     const [singleRooms, setSingleRooms] = useState([])
     const [onlineUsers, setOnlineUsers] = useState([])
     const latestRoom = useRef();
@@ -38,14 +38,14 @@ export default function ChatList() {
     }
 
     useEffect(() => {
-        setSelected(location.state?.selected_room_id || null);
-    }, [location])
+        setSelected(parseInt(params?.id) || null);
+    }, [params?.id])
 
     //Set badge number to 0.
     useEffect(() => {
         if (singleRooms) {
             for (const room of singleRooms) {
-                if (room.room_id === selected) {
+                if (room.partner_data.id === selected) {
                     notiDispatch({
                         type: NotiActionTypes.DECREASE,
                         payload: {
@@ -119,8 +119,10 @@ export default function ChatList() {
     useEffect(() => {
         if (singleRooms) {
             socket.on("receiveChatMessageAtChatList", newMsg => {
-                //newMsg.created_at = moment().format().slice(0, 19).replace('T', ' ');
-                if (selected !== newMsg.room_id && state.user.id !== newMsg.sender_id) {
+                console.log(selected)
+                console.log(newMsg.sender_id)
+                console.log(selected === newMsg.sender_id)
+                if (selected !== newMsg.sender_id && state.user.id !== newMsg.sender_id) {
                     notiDispatch({
                         type: NotiActionTypes.INCREASE,
                         payload: {
@@ -149,7 +151,7 @@ export default function ChatList() {
         return () => {
             socket.off("receiveChatMessageAtChatList")
         }
-    }, [socket, singleRooms])
+    }, [socket, singleRooms, selected])
 
     return (
         <Box>
@@ -230,7 +232,7 @@ function ChatElement({ selected, online, room_data }) {
     const navigate = useNavigate();
 
     const {
-        room_id, last_message, partner_data, unread_messages,
+        last_message, partner_data, unread_messages,
     } = room_data;
 
     const last_message_time = (moment(last_message?.created_at).isSame(moment(), 'day'))
@@ -238,7 +240,7 @@ function ChatElement({ selected, online, room_data }) {
         : moment(last_message?.created_at).fromNow();
 
     let mycolor = "#263238"
-    if (selected === room_id) {
+    if (selected === partner_data.id) {
         mycolor = "#01579b"
     }
     return (
@@ -255,12 +257,11 @@ function ChatElement({ selected, online, room_data }) {
                     bgcolor: "#607d8b",
                     cursor: "pointer",
                 },
-                pointerEvents: (selected === room_id) ? "none" : "auto",
+                pointerEvents: (selected === partner_data.id) ? "none" : "auto",
             }}
             onClick={() => {
                 navigate(`/chat/${partner_data.id}`, {
                     state: {
-                        selected_room_id: room_id,
                         partner_data: partner_data,
                     }
                 })
