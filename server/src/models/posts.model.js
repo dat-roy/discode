@@ -2,6 +2,8 @@ const mysql = require('mysql2/promise');
 const dbConnection = require("../config/db/index.db");
 const Users = require('./users.model')
 const { Model } = require('./Model');
+const PostLike = require('./post_likes.model');
+
 
 class Posts extends Model {
     constructor(tableName) {
@@ -50,6 +52,32 @@ class Posts extends Model {
                     WHERE ${p}.id = ${post_id}`;
         return await dbConnection.query(sql);
     }
+
+
+    async getFeaturedAuthorsTop3() {
+        const postTable = this.tableName;
+        const postLikeTable = PostLike.tableName;
+
+        let sql = `SELECT ${postTable}.author_id, COUNT(${postTable}.id) AS numOfPost, 
+                        (SELECT COUNT(${postLikeTable}.id) 
+                        FROM ${postLikeTable} 
+                        WHERE ${postTable}.id = ${postLikeTable}.post_id)
+                        AS numOfLike
+                    FROM ${postTable} 
+                    GROUP BY ${postTable}.author_id 
+                    ORDER BY numOfLike DESC, numOfPost DESC LIMIT 3;`
+
+        return await dbConnection.query(sql);
+    }
+
+    async getHotPost() {
+        const postTable = this.tableName;
+        const postLikeTable = PostLike.tableName;
+
+        let sql = `SELECT `
+    }
+
+
 }
 
 module.exports = new Posts("posts")

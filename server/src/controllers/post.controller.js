@@ -290,6 +290,27 @@ class postController {
             })
         }
     }
+
+    // [GET] api/post/get/feature/author
+    async getFeaturedAuthors(req, res, next) {
+        try {
+            const topAuthor = await Posts.getFeaturedAuthorsTop3();
+            return res.status(200).json({
+                message: "Success",
+                comment: {
+                    author_id: topAuthor.author_id
+                    // TO DO
+                }
+            })
+            return 
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({
+                message: "Internal Server Error",
+                err: err.message,
+            })
+        }
+    }
 }
 
 module.exports = new postController();

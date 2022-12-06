@@ -28,6 +28,10 @@ class Channels extends Model {
         let sql = `DELETE FROM ${this.tableName} WHERE id=${channel_id} AND admin_id=${admin_id}`;
         return await dbConnection.query(sql);
     }
+
+    async getFeaturedChannels() {
+        
+    }
 }
 
 module.exports = new Channels("channels")
