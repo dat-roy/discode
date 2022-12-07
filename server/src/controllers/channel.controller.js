@@ -501,6 +501,28 @@ class channelController {
             })
         }
     }
+
+    // [GET] /api/channel/get/feature
+    async getFeaturedChannels(req, res, next) {
+        try {
+            const ftChans = await Channels.getFeaturedChannelsDTB();
+            return res.status(200).json({
+                message: "Success",
+                comment: {
+                    channel: ftChans.id,
+                    numOfMem: ftChans.members,
+                    // TO DO
+                }
+            })
+
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({
+                message: "Internal Server Error",
+                err: err.message,
+            })
+        }
+    }
 }
 
 module.exports = new channelController();

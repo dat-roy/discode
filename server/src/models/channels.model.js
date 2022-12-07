@@ -1,6 +1,7 @@
 const mysql = require('mysql2/promise');
 const dbConnection = require("../config/db/index.db");
 const { Model } = require('./Model');
+const UserChannels = require('./user_channel.model');
 
 class Channels extends Model {
     constructor(tableName) {
@@ -29,8 +30,14 @@ class Channels extends Model {
         return await dbConnection.query(sql);
     }
 
-    async getFeaturedChannels() {
-        
+    async getFeaturedChannelsDTB() {
+        let sql = `SELECT c.id, numOfMem.Members
+        FROM ${this.tableName} c
+        INNER JOIN (SELECT uc.channel_id, COUNT(uc.id) as Members FROM ${UserChannels.tableName} uc GROUP BY uc.channel_id) numOfMem
+        ON c.id = numofMem.channel_id
+        ORDER BY numOfMem.Members DESC LIMIT 3;`
+
+        return dbConnection.query(sql);
     }
 }
 

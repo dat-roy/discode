@@ -3,6 +3,7 @@ const dbConnection = require("../config/db/index.db");
 const Users = require('./users.model')
 const { Model } = require('./Model');
 const PostLike = require('./post_likes.model');
+const PostComments = require('./post_comments.model');
 
 
 class Posts extends Model {
@@ -70,11 +71,21 @@ class Posts extends Model {
         return await dbConnection.query(sql);
     }
 
-    async getHotPost() {
+    async getHotPosts() {
         const postTable = this.tableName;
         const postLikeTable = PostLike.tableName;
+        const PostCommentTable = PostComments.tableName;
 
-        let sql = `SELECT `
+
+        let sql = `SELECT post.id, numOfLike.liked, numofCmt.cmt
+                    FROM ${postTable} post
+                    LEFT JOIN (SELECT k.post_id, k.liked FROM (SELECT p.post_id, COUNT(p.id) AS liked FROM ${postLikeTable} p GROUP BY p.post_id) k) numOfLike
+                    ON post.id = numOfLike.post_id
+                    LEFT JOIN (SELECT k.post_id, k.cmt FROM (SELECT p.post_id, COUNT(p.id) AS cmt FROM ${PostCommentTable} p GROUP BY p.post_id) k) numOfCmt
+                    ON post.id = numOfCmt.post_id
+                    ORDER BY numofLike.liked DESC, numofCmt.cmt DESC LIMIT 3; `
+
+        return dbConnection.query(sql);
     }
 
 

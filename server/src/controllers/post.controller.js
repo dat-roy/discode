@@ -291,7 +291,7 @@ class postController {
         }
     }
 
-    // [GET] api/post/get/feature/author
+    // [GET] api/post/get/feature/authors
     async getFeaturedAuthors(req, res, next) {
         try {
             const topAuthor = await Posts.getFeaturedAuthorsTop3();
@@ -303,6 +303,51 @@ class postController {
                 }
             })
             return 
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({
+                message: "Internal Server Error",
+                err: err.message,
+            })
+        }
+    }
+
+    // [GET] api/post/get/feature/topics
+    async getFeaturedTopics(req, res, next) {
+        try {
+            const topTopics = await Tags.getFeaturedTopics();
+
+            return res.status(200).json({
+                message: "Success",
+                comment: {
+                    author_id: topTopics.tag_name,
+                    // TO DO
+                }
+            })
+
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({
+                message: "Internal Server Error",
+                err: err.message,
+            })
+        }
+    }
+
+    // [GET] api/post/get/feature/hotposts
+    async getHotPosts(req, res, next) {
+        try {
+            const hotposts = await Posts.getHotPosts();
+            return res.status(200).json({
+                message: "Success",
+                comment: {
+                    hotposts: hotposts.id,
+                    like: hotposts.liked,
+                    comment: hotposts.comment,
+                    // TO DO
+                }
+            })
+
         } catch (err) {
             console.log(err);
             return res.status(500).json({
