@@ -13,4 +13,8 @@ router.post('/toggle/like', postController.toggleLiked);
 router.get('/comment/get/:id', postController.getComments);
 router.post('/comment/save', postController.saveNewComment);
 
+router.get('/get/feature/authors', postController.getFeaturedAuthors);
+router.get('/get/feature/topics', postController.getFeaturedTopics);
+router.get('/get/feature/hotposts', postController.getHotPosts);
+
 module.exports = router;
