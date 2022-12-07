@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react"
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import { Box, Stack, Avatar, Typography, IconButton, Divider } from "@mui/material"
+import { Box, Stack, Avatar, Typography, IconButton } from "@mui/material"
 import CallIcon from '@mui/icons-material/Call';
 import VideocamIcon from '@mui/icons-material/Videocam';
-import { Accordion, AccordionDetails, AccordionSummary } from '../../../components/Accordion'
+import { Accordion, AccordionDetails, AccordionSummary } from '../../../components/Accordion';
+import ImageList from '@mui/material/ImageList';
+import ImageListItem from '@mui/material/ImageListItem';
 
 import { handleGetUserByIdAPI } from "../../../services";
 
@@ -44,82 +46,98 @@ export default function ChatDetails() {
             spacing={1}
             p={4}
             style={{
-                border: "1px solid red",
                 maxHeight: "95vh",
                 overflowX: "hidden",
                 overflowY: "scroll",
                 marginBottom: 2,
             }}
         >
-            <Box style={{ width: "100%", border: "1px solid red" }}>
+
+            <Stack
+                width={"100%"}
+                alignItems={"center"}
+                justifyContent={"space-between"}
+                spacing={0.9}
+                pt={2} pb={2}
+                //border="1px solid gray"
+                borderRadius={2}
+                bgcolor={"rgb(91 177 214 / 10%)"}
+            >
+
                 <Typography
-                    variant={"subtitle1"}
+                    variant={"h6"}
+                    pb={2}
                     style={{ fontWeight: 600 }}
                 >
                     Contact Info:
                 </Typography>
-            </Box>
-            <Stack
-                alignItems={"center"}
-                justifyContent={"space-between"}
-                spacing={1}
-                style={{ border: "1px solid red" }}
-            >
-                <Avatar
-                    src={otherUser?.avatar_url}
-                    style={{
-                        width: 80,
-                        height: 80,
-                    }}
-                />
-                <Typography variant={"h6"}>
-                    <Link to={`/profile/?username=${otherUser?.username}`}
-                        style={{
-                            textDecoration: "none",
-                            color: "#ffee33",
-                        }}
-                    >
-                        @{otherUser?.username}
-                    </Link>
-                </Typography>
-                <Typography
-                    style={{
-                        color: "orange"
-                    }}
-                >
-                    <i>{otherUser?.email}</i>
-                </Typography>
+
                 <Stack
-                    direction={"row"}
+                    width={"75%"}
                     alignItems={"center"}
                     justifyContent={"space-between"}
-                    spacing={5}
+                    spacing={0.9}
                 >
-                    <Stack alignItems={"center"}>
-                        <IconButton
-                            style={{ color: "white" }}
+                    <Avatar
+                        src={otherUser?.avatar_url}
+                        style={{
+                            width: 80,
+                            height: 80,
+                        }}
+                    />
+                    <Typography variant={"h6"}>
+                        <Link to={`/profile/?username=${otherUser?.username}`}
+                            style={{
+                                textDecoration: "none",
+                                color: "#ffee33",
+                            }}
                         >
-                            <CallIcon />
-                        </IconButton>
-                        <Typography>Call</Typography>
-                    </Stack>
-                    <Stack alignItems={"center"}>
-                        <IconButton
-                            style={{ color: "white" }}
-                        >
-                            <VideocamIcon />
-                        </IconButton>
-                        <Typography>Video</Typography>
+                            @{otherUser?.username}
+                        </Link>
+                    </Typography>
+                    <Typography
+                        style={{
+                            color: "orange"
+                        }}
+                    >
+                        <i>{otherUser?.email}</i>
+                    </Typography>
+                    <Stack
+                        direction={"row"}
+                        alignItems={"center"}
+                        justifyContent={"space-between"}
+                        spacing={5}
+                    >
+                        <Stack alignItems={"center"}>
+                            <IconButton
+                                style={{ color: "white" }}
+                            >
+                                <CallIcon />
+                            </IconButton>
+                            <Typography>Call</Typography>
+                        </Stack>
+                        <Stack alignItems={"center"}>
+                            <IconButton
+                                style={{ color: "white" }}
+                            >
+                                <VideocamIcon />
+                            </IconButton>
+                            <Typography>Video</Typography>
+                        </Stack>
                     </Stack>
                 </Stack>
-                <Stack>
+                <Stack
+                    style={{
+                        maxWidth: "90%",
+                        wordWrap: "break-word",
+                        marginTop: 30,
+                    }}
+                >
                     <Typography>About: a simple person.</Typography>
-                    <Typography>Work: NodeJs Developer</Typography>
+                    <Typography>Work: Lottery seller.</Typography>
                     <Typography>Working at: University of Engineering and Technology</Typography>
                 </Stack>
             </Stack>
-            {/* <Divider variant="middle" color={"gray"}
-                style={{ width: "100%" }} /> */}
             <CustomizedAccordions />
         </Stack >
     )
@@ -135,12 +153,14 @@ function CustomizedAccordions() {
         <Box
             style={{
                 width: "100%",
+                border: "none",
             }}
         >
             <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}
-                style={{ 
-                    backgroundColor: "inherit", 
-                    color: "inherit", 
+                style={{
+                    backgroundColor: "inherit",
+                    color: "inherit",
+                    border: "none",
                 }}
             >
                 <AccordionSummary
@@ -149,26 +169,36 @@ function CustomizedAccordions() {
                     style={{ backgroundColor: "inherit" }}
                     IconProps={{
                         style: {
-                            color: "white", 
+                            color: "white",
+                            border: "none",
                         }
                     }}
                 >
                     <Typography >Shared Media</Typography>
                 </AccordionSummary>
-                <AccordionDetails>
-                    <Typography>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                        malesuada lacus ex, sit amet blandit leo lobortis eget. Lorem ipsum dolor
-                        sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-                        sit amet blandit leo lobortis eget.
-                    </Typography>
+                <AccordionDetails
+                    sx={{
+                        borderTop: "none", p: 2, pt: 0, 
+                    }}
+                >
+                    <ImageList cols={3} rowHeight={80}>
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item, index) => (
+                            <ImageListItem key={index}>
+                                <img
+                                    src={`https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c`}
+                                    loading={"lazy"}
+                                />
+                            </ImageListItem>
+                        ))}
+                    </ImageList>
                 </AccordionDetails>
             </Accordion>
 
             <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}
-                style={{ 
-                    backgroundColor: "inherit", 
-                    color: "inherit", 
+                style={{
+                    backgroundColor: "inherit",
+                    color: "inherit",
+                    border: "none",
                 }}
             >
                 <AccordionSummary
@@ -177,13 +207,18 @@ function CustomizedAccordions() {
                     style={{ backgroundColor: "inherit" }}
                     IconProps={{
                         style: {
-                            color: "white", 
+                            color: "white",
+                            border: "none",
                         }
                     }}
                 >
-                    <Typography >Collapsible Group Item #2</Typography>
+                    <Typography>Privacy & Support</Typography>
                 </AccordionSummary>
-                <AccordionDetails>
+                <AccordionDetails
+                    sx={{
+                        borderTop: "none",
+                    }}
+                >
                     <Typography>
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
                         malesuada lacus ex, sit amet blandit leo lobortis eget. Lorem ipsum dolor

@@ -42,13 +42,12 @@ export default function PostView() {
             sx={{
                 width: "100%",
                 height: "100vh",
-                //bgcolor: "white",
-                //color: "black"
+                border: "1px solid #3E4042",
             }}
         >
             <Grid item xs
                 style={{
-                    backgroundColor: "rgba(19, 47, 76, 0.4)"
+                    //backgroundColor: "rgba(19, 47, 76, 0.4)"
                 }}
             >
                 <PostLeft
@@ -58,7 +57,7 @@ export default function PostView() {
             <Grid item xs={7}
                 sx={{
                     height: "100vh",
-                    overflowY: "scroll",
+                    overflowY: "auto",
                 }}
             >
                 <PostContent
@@ -67,7 +66,7 @@ export default function PostView() {
             </Grid>
             <Grid item xs
                 style={{
-                    backgroundColor: "rgba(19, 47, 76, 0.4)"
+                    //backgroundColor: "rgba(19, 47, 76, 0.4)"
                 }}
             >
                 <PostRight

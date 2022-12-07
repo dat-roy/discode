@@ -13,7 +13,8 @@ class Notifications extends Model{
         
         let sql = `INSERT IGNORE INTO ${this.tableName}(notifiable_id, type)\
                     VALUES(${notifiable_id}, ${type});
-                SELECT id AS insertId FROM ${this.tableName} WHERE notifiable_id=${notifiable_id} AND type=${type}`;
+                SELECT id AS insertId FROM ${this.tableName}\
+                    WHERE notifiable_id=${notifiable_id} AND type=${type}`;
         return (await dbConnection.query(sql))[1][0];
     }
 }

@@ -19,6 +19,7 @@ export default function AuthorItem() {
                     variant={"caption"}
                     align={'left'}
                     style={{
+                        color: "lightgray",
                         wordWrap: "break-word",
                         whiteSpace: 'pre-line',
                         overflow: "hidden",
@@ -27,8 +28,7 @@ export default function AuthorItem() {
                         WebkitLineClamp: "2",
                         WebkitBoxOrient: "vertical",
                     }}
-                >Description long long long long long long long long lllllllllllllllllllllllll
-                llllllllllllllllllllllllllllllll</Typography>
+                >Description long long long long long long long long</Typography>
             </Stack>
             <Box>
                 <Button>

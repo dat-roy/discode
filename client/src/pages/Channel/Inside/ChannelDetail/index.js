@@ -4,7 +4,8 @@ import { useParams } from "react-router-dom";
 import { useStore } from "../../../../store/hooks";
 import { useSocket } from "../../../../store/hooks";
 import { Button, ButtonBase } from "@mui/material";
-import { Avatar, Box, Stack, Typography } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material";
+import BadgeAvatar from "../../../../components/BadgeAvatar"
 import SettingsIcon from '@mui/icons-material/Settings';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { IconButton } from "@mui/material";
@@ -100,6 +101,7 @@ export default function ChannelDetail() {
             </Stack>
 
             <Stack
+                spacing={3}
                 style={{
                     flexGrow: 1,
                     paddingLeft: 22,
@@ -109,27 +111,41 @@ export default function ChannelDetail() {
                 }}
             >
                 <Stack direction="row" alignItems={"center"} justifyContent={"space-between"}>
-                    <Typography>Members ({members.length}): </Typography>
+                    <Typography
+                        variant={"subtitle2"}
+                        sx={{
+                            textTransform: "uppercase",
+                            color: "#ff5722", 
+                        }}
+                    >Members ({members.length}): </Typography>
                     <InvitePeopleModal
                         channel_id={channel_id}
                     />
                 </Stack>
-                <Stack
-                    style={{
-                        border: "1px solid red",
-                    }}
-                >
-                    <Typography>Admin</Typography>
+                <Stack>
+                    <Typography
+                        variant={"subtitle2"}
+                        sx={{
+                            textTransform: "uppercase",
+                            pl: 1.3,
+                            color: "#ff8a65",
+                            fontWeight: 700,
+                        }}
+                    >Admin</Typography>
                     <Member
                         member={(members.find(member => member.user_id === adminId))}
+                        online={true}
                     />
                 </Stack>
-                <Stack
-                    style={{
-                        border: "1px solid red",
-                    }}
-                >
-                    <Typography>
+                <Stack>
+                    <Typography
+                        variant={"subtitle2"}
+                        sx={{
+                            textTransform: "uppercase",
+                            pl: 1.3,
+                            color: "#81c784",
+                        }}
+                    >
                         Online
                         ({onlineId.filter(memberId => memberId !== adminId).length})
                     </Typography>
@@ -141,16 +157,20 @@ export default function ChannelDetail() {
                                 return <Member
                                     key={index}
                                     member={member}
+                                    online={true}
                                 />
                             })
                     }
                 </Stack>
-                <Stack
-                    style={{
-                        border: "1px solid red",
-                    }}
-                >
-                    <Typography>
+                <Stack>
+                    <Typography
+                        variant={"subtitle2"}
+                        sx={{
+                            textTransform: "uppercase",
+                            pl: 1.3,
+                            color: "#b2a852",
+                        }}
+                    >
                         Offline
                         ({members.filter(member => !onlineId.includes(member.user_id)).length})
                     </Typography>
@@ -161,6 +181,7 @@ export default function ChannelDetail() {
                                 return <Member
                                     key={index}
                                     member={member}
+                                    online={false}
                                 />
                             })
                     }
@@ -180,16 +201,18 @@ export default function ChannelDetail() {
     )
 }
 
-function Member({ member }) {
+function Member({ member, online }) {
     return (
         <Box
             component={ButtonBase}
             underline="none"
             sx={{
                 '&:hover': {
-                    backgroundColor: "white",
-                    color: "red",
-                }
+                    backgroundColor: "rgb(91 177 214 / 10%)",
+                    borderRadius: 2,
+                    filter: "brightness(100%)",
+                },
+                ...(!online && { filter: "brightness(50%)" }),
             }}
         >
             <Stack
@@ -199,17 +222,18 @@ function Member({ member }) {
                 spacing={2}
                 sx={{
                     width: "100%",
-                    padding: 1.2,
+                    p: 1, pl: 1.2, pr: 1.2,
                 }}
             >
-                <Avatar
+                <BadgeAvatar
                     src={member?.avatar_url}
+                    online={online}
                 />
                 <Stack
                     alignItems={"flex-start"}
                 >
-                    <Typography variant="subtitle1"><strong>{member?.username}</strong></Typography>
-                    <Typography variant="caption">Last visit: 20:10</Typography>
+                    <Typography variant="subtitle1" sx={{ color: "#ffeb3b" }}><strong>@{member?.username}</strong></Typography>
+                    <Typography variant="caption" sx={{ color: "lightgray" }}>Last visit: 20:10</Typography>
                 </Stack>
             </Stack>
         </Box>

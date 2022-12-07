@@ -166,7 +166,6 @@ class channelController {
                 sender_id, receiver_id, channel_id,
                 noti_type: ChannelNotificationTypes.CHANNEL_INVITE,
             })
-            //return res.json({invitationExists});
             if (invitationExists) {
                 return res.status(200).json({
                     exist: true,
@@ -185,7 +184,7 @@ class channelController {
                 const notification_id =
                     (await Notifications.create({
                         notifiable_id,
-                        type: ChannelNotificationTypes.CHANNEL_INVITE, 
+                        type: ChannelNotificationTypes.CHANNEL_INVITE,
                     })).insertId;
 
                 const noti_receiver_id =
@@ -201,6 +200,101 @@ class channelController {
         } catch (err) {
             console.log(err);
             return res.status(err.message);
+        }
+    }
+
+    //[POST] /api/channel/invite/reply
+    async replyInvitation(req, res, next) {
+        const { user_id, channel_id, noti_id, accept } = req.body;
+
+        try {
+            const marked = await NotificationReceivers.markOneAsRead({
+                user_id, noti_id,
+            })
+            if (marked) {
+                if (accept) {
+                    //Add new member.
+                    await UserChannel.create({
+                        user_id, channel_id,
+                    })
+                    //Create an accepted notifications...
+                    const admin_id =
+                        (await Channels.findOne({
+                            attributes: [`admin_id`],
+                            where: { id: channel_id },
+                        }))?.admin_id;
+
+                    const notifiable_id =
+                        (await UserChannel.findOne({
+                            attributes: [`notifiable_id`],
+                            where: {
+                                user_id: admin_id,
+                                channel_id,
+                            }
+                        }))?.notifiable_id;
+
+                    const new_noti = await Notifications.create({
+                        notifiable_id,
+                        type: ChannelNotificationTypes.CHANNEL_ACCEPTED,
+                    })
+                    return res.status(200).json({
+                        message: "Success",
+                        new_noti, 
+                    })
+                } else {
+                    return res.status(200).json({
+                        message: "Success",
+                    })
+                }
+            }
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({
+                message: "Internal Server Error",
+                error: err.message,
+            })
+        }
+    }
+
+    //[POST] /api/channel/request/reply
+    async replyJoiningRequest(req, res, next) {
+        const { admin_id, user_id, channel_id, accepted } = req.body;
+        try {
+            if (accepted) {
+                //Add a new member.
+                await UserChannel.create({
+                    user_id, channel_id,
+                })
+                //Create an accepted notifications...
+
+                return res.status(200).json({
+                    message: "Add new member successfully",
+                })
+            } else {
+                //Create a declined notifications...
+                const notifiable_id =
+                    (await UserChannel.findOne({
+                        attributes: [`notifiable_id`],
+                        where: {
+                            user_id: admin_id,
+                            channel_id,
+                        }
+                    }))?.notifiable_id;
+                const noti_id = await Notifications.create({
+                    notifiable_id,
+                    type: ChannelNotificationTypes.CHANNEL_DECLINED,
+                })
+                return res.status(200).json({
+                    message: "Sent declined noti successfully",
+                    noti_id,
+                })
+            }
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({
+                message: "Internal Server Error",
+                error: err.message,
+            })
         }
     }
 

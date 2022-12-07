@@ -58,7 +58,8 @@ export default function ChannelList() {
             <ListSubheader
                 key={title}
                 sx={{
-                    bgcolor: "#1a237e",
+                    bgcolor: "#182d51",
+                    borderRadius: 1,
                     color: "white",
                     fontSize: 18,
                     fontWeight: 'medium',
@@ -84,6 +85,9 @@ export default function ChannelList() {
                             <ListItem
                                 key={index}
                                 disablePadding
+                                style={{
+                                    borderBottom: "1px dotted gray"
+                                }}
                             >
                                 <ListItemButton
                                     component="a"
@@ -98,13 +102,6 @@ export default function ChannelList() {
                                 </ListItemButton>
 
                             </ListItem>
-                            <Box
-                                paddingLeft={0}
-                                paddingRight={0}
-                                key={index + "divider"}
-                            >
-                                <Divider variant="middle" color={"gray"} />
-                            </Box>
                         </Fragment>
                     ))
             }

@@ -72,7 +72,8 @@ export default function Feed() {
             <Grid item xs={9}
                 height={"100vh"}
                 position={"relative"}
-                border={"1px dotted gray"}
+                borderLeft={"1px solid #3E4042"}
+                borderRight={"1px solid #3E4042"}
             >
                 <Box
                     sx={{
@@ -114,9 +115,21 @@ export default function Feed() {
                                     setValue(newValue);
                                 }}
                             >
-                                <Tab label="Hot" />
-                                <Tab label="Following" />
-                                <Tab label="For you" />
+                                <Tab label="Hot"
+                                    style={{
+                                        ...(value !== 0 && {color: "lightblue"}) 
+                                    }}
+                                />
+                                <Tab label="Following" 
+                                    style={{
+                                        ...(value !== 1 && {color: "lightblue"}) 
+                                    }}
+                                />
+                                <Tab label="For you" 
+                                    style={{
+                                        ...(value !== 2 && {color: "lightblue"}) 
+                                    }}
+                                />
                             </Tabs>
                         </Box>
                         <TabPanel value={value} index={0}>
@@ -161,19 +174,21 @@ export default function Feed() {
 
 function FeaturedAuthors() {
     return (
-        <>
-            <Typography>Featured Authors</Typography>
-            {[1, 2, 3].map((obj, index) => {
-                return <AuthorItem key={index} />
-            })}
-        </>
+        <Stack spacing={1.5}>
+            <Typography variant={"h6"}>Featured Authors</Typography>
+            <Stack spacing={1.8}>
+                {[1, 2, 3].map((obj, index) => {
+                    return <AuthorItem key={index} />
+                })}
+            </Stack>
+        </Stack>
     )
 }
 
 function FeaturedTopics() {
     return (
-        <>
-            <Typography>Featured Topics</Typography>
+        <Stack spacing={1.5}>
+            <Typography variant={"h6"}>Featured Topics</Typography>
             <Stack
                 direction="row"
                 flex={"1 1 30%"}
@@ -181,7 +196,7 @@ function FeaturedTopics() {
                 spacing={1}
                 justifyContent={"flex-start"}
                 flexWrap={"wrap"}
-                //border="1px solid red"
+            //border="1px solid red"
             >
                 {['JavaScript', 'Java', 'DevOps', 'SHA256', 'GraphQL'].map((label, index) => {
                     return <Chip
@@ -197,9 +212,8 @@ function FeaturedTopics() {
                             marginLeft: 0,
                         }}
                     />
-                })
-                }
+                })}
             </Stack>
-        </>
+        </Stack>
     )
 }

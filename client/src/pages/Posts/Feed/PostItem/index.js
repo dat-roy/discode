@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from "react-router-dom"
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { Avatar, Card, CardHeader } from "@mui/material";
+import { Chip, Avatar, Card, CardHeader } from "@mui/material";
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import ModeCommentOutlinedIcon from '@mui/icons-material/ModeCommentOutlined';
@@ -25,7 +25,7 @@ export default function PostItem() {
                 // action={
                 // }
                 title={
-                    <Typography variant="subtitle1" sx={{ color: "NavajoWhite", fontWeight: 500}}>
+                    <Typography variant="subtitle1" sx={{ color: "NavajoWhite", fontWeight: 500 }}>
                         Title...
                     </Typography>
                 }
@@ -36,11 +36,11 @@ export default function PostItem() {
                         }}
                         spacing={0.5}
                     >
-                        <Typography 
-                            variant="subtitle2" 
-                        >   
+                        <Typography
+                            variant="subtitle2"
+                        >
                             By @author
-                            </Typography>
+                        </Typography>
                         <Typography variant="caption">September 14, 2016</Typography>
 
                         <Stack direction={"row"} spacing={2}>
@@ -50,12 +50,31 @@ export default function PostItem() {
                             </Stack>
                             <Stack direction={"row"} spacing={0.3} alignItems={"center"}>
                                 <VisibilityOutlinedIcon style={{ color: "lightblue", fontSize: 18 }} />
-                                <Typography variant="caption">1K</Typography>
+                                <Typography variant="caption">10232123</Typography>
                             </Stack>
                             <Stack direction={"row"} spacing={0.3} alignItems={"center"}>
                                 <ModeCommentOutlinedIcon style={{ color: "lightgreen", fontSize: 18 }} />
                                 <Typography variant="caption">12</Typography>
                             </Stack>
+                        </Stack>
+                        <Stack direction={"row"} pt={0.5} justifyContent={"flex-start"}> 
+                            {['JavaScript', 'Java', 'DevOps'].map((label, index) => {
+                                return <Chip
+                                    key={index}
+                                    label={label}
+                                    style={{
+                                        fontSize: 10,
+                                        padding: 0,
+                                        color: "inherit",
+                                        borderRadius: 30,
+                                        height: 20,
+                                        backgroundColor: "#006983",
+                                        marginRight: 6,
+                                        marginTop: 0,
+                                        marginLeft: 0,
+                                    }}
+                                />
+                            })}
                         </Stack>
                     </Stack>
                 }

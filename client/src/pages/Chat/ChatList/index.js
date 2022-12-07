@@ -239,7 +239,7 @@ function ChatElement({ selected, online, room_data }) {
         ? last_message?.created_at?.split(' ')[1]?.substr(0, 5)
         : moment(last_message?.created_at).fromNow();
 
-    let mycolor = "#263238"
+    let mycolor = "rgb(91 177 214 / 10%)"
     if (selected === partner_data.id) {
         mycolor = "#01579b"
     }
@@ -249,12 +249,12 @@ function ChatElement({ selected, online, room_data }) {
             underline="none"
             color="inherit"
             sx={{
-                paddingLeft: 3,
-                paddingRight: 3,
-                borderRadius: 5,
+                pl: 3,
+                pr: 3,
+                borderRadius: 3,
                 bgcolor: mycolor,
                 '&:hover': {
-                    bgcolor: "#607d8b",
+                    bgcolor: "rgb(91 177 214 / 25%)",
                     cursor: "pointer",
                 },
                 pointerEvents: (selected === partner_data.id) ? "none" : "auto",

@@ -171,7 +171,6 @@ export default function ChannelInbox() {
                 style={{
                     height: 60,
                     width: "100%",
-                    backgroundColor: "#121858",
                 }}
             >
                 <Stack
@@ -181,6 +180,7 @@ export default function ChannelInbox() {
                     sx={{
                         width: "100%",
                         height: "100%",
+                        bgcolor: "rgb(16 44 125 / 10%)",
                     }}
                 >
                     <Stack

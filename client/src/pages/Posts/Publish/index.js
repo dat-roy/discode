@@ -119,8 +119,8 @@ export default function Publish() {
                 <Tags
                     tags={tags}
                     setTags={setTags}
-                    maxSelections={4}
-                    placeholder={"Add up to 4 tags..."}
+                    maxSelections={3}
+                    placeholder={"Add up to 3 tags..."}
                 />
                 <TextEditor
                     placeholder={"Write something..."}

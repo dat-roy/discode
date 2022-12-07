@@ -329,6 +329,7 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                     direction={"row"}
                     spacing={2}
                     marginLeft={3}
+                    alignItems={"center"}
                 >
                     <BadgeAvatar
                         online={online}
@@ -338,10 +339,10 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                     <Stack
                         spacing={0.2}
                     >
-                        <Typography variant="subtitle2">
+                        <Typography variant="subtitle1" color={"yellow"}>
                             @{otherUser.username}
                         </Typography>
-                        <Typography variant="caption">
+                        <Typography variant="caption" color={"LightGoldenRodYellow"}>
                             {
                                 (online)
                                     ? `Active now`

@@ -5,7 +5,7 @@ const chatRouter = require('./chat.route')
 const channelRouter = require('./channel.route')
 const messageRouter = require('./message.route')
 const postRouter = require('./post.route')
-const notifyRouter = require('./notification.route')
+const notiRouter = require('./notification.route')
 
 const testRouter = require('./test.route')
 
@@ -16,7 +16,7 @@ function initRoutes(app) {
     app.use('/api/channel', channelRouter)
     app.use('/api/message', messageRouter)
     app.use('/api/post', postRouter)
-    app.use('/api/noti', notifyRouter)
+    app.use('/api/notification', notiRouter)
 
     app.use('/api/test', testRouter)
     app.use('/', siteRouter)

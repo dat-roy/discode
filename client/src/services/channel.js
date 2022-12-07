@@ -49,8 +49,21 @@ const handleCreateNewChannelRoomAPI = (channel_id, admin_id, room_name) => {
 }
 
 const handleInvitePeopleAPI = (sender_id, receiver_id, channel_id) => {
-    return axios.post(`api/channel/invite`, {
+    return axios.post(`/api/channel/invite`, {
         sender_id, receiver_id, channel_id, 
+    })
+}
+
+const handleReplyInvitationAPI = (user_id, channel_id, noti_id, accept) => {
+    return axios.post(`/api/channel/invite/reply`, {
+        user_id, channel_id, noti_id, accept, 
+    })
+}
+
+//Only for admins
+const handleReplyRequestAPI = (admin_id, user_id, channel_id, accepted) => {
+    return axios.post(`/api/channel/request/reply`, {
+        admin_id, user_id, channel_id, accepted, 
     })
 }
 
@@ -64,4 +77,6 @@ export {
     handleGetGroupRoomByIdAPI,
     handleCreateNewChannelRoomAPI,
     handleInvitePeopleAPI,
+    handleReplyInvitationAPI, 
+    handleReplyRequestAPI, 
 }

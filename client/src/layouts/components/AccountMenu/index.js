@@ -88,11 +88,13 @@ export default function AccountMenu() {
                             left: -5,
                             width: 20,
                             height: 20,
-                            bgcolor: 'background.paper',
-                            //bgcolor: "red",
+                            //bgcolor: 'background.paper',
+                            bgcolor: 'rgb(3 42 69)',
                             transform: 'translateY(-50%) rotate(45deg)',
                             zIndex: 0,
                         },
+                        bgcolor: 'rgb(3 42 69)',
+                        color: 'lightyellow',
                     },
                 }}
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
@@ -108,7 +110,7 @@ export default function AccountMenu() {
                 <Divider />
                 <MenuItem>
                     <ListItemIcon>
-                        <Settings fontSize="small" />
+                        <Settings fontSize="small" sx={{ color: "lightyellow" }} />
                     </ListItemIcon>
                     Settings
                 </MenuItem>
@@ -118,7 +120,7 @@ export default function AccountMenu() {
                     }}
                 >
                     <ListItemIcon>
-                        <Logout fontSize="small" />
+                        <Logout fontSize="small" sx={{ color: "lightyellow" }} />
                     </ListItemIcon>
                     Logout
                 </MenuItem>

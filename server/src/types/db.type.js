@@ -25,6 +25,8 @@ const PostNotificationTypes = Object.freeze({
 const ChannelNotificationTypes = Object.freeze({
     CHANNEL_INVITE: 1, 
     CHANNEL_REQUEST: 2, 
+    CHANNEL_DECLINED: 3, 
+    CHANNEL_ACCEPTED: 4,     //welcome
 })
 
 module.exports = {

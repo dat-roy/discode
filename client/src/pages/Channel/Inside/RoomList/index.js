@@ -250,14 +250,14 @@ export default function RoomList() {
                     }
                 </List>
             </Stack>
-            <Stack
+            {/* <Stack
                 style={{
                     border: "1px solid red",
                     height: "100%",
                 }}
             >
                 <Avatar src={state.user.avatar_url} />
-            </Stack>
+            </Stack> */}
         </Box >
     )
 
