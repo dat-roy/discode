@@ -157,7 +157,8 @@ export default function RoomList() {
                             borderRadius: 0,
                             bgcolor: "inherit",
                             boxShadow: "none",
-                        }}>
+                        }}
+                    >
                         <CardMedia
                             component="img"
                             height="140"

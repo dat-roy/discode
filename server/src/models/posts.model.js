@@ -85,10 +85,8 @@ class Posts extends Model {
                     ON post.id = numOfCmt.post_id
                     ORDER BY numofLike.liked DESC, numofCmt.cmt DESC LIMIT 3; `
 
-        return dbConnection.query(sql);
+        return await dbConnection.query(sql);
     }
-
-
 }
 
 module.exports = new Posts("posts")

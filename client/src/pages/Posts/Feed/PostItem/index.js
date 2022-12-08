@@ -11,7 +11,18 @@ import { Stack } from '@mui/system';
 
 export default function PostItem() {
     return (
-        <Card sx={{ width: 300, marginBottom: 4, borderRadius: 3 }}>
+        <Card
+            sx={{
+                width: 300, 
+                marginBottom: 4, 
+                borderRadius: 3,
+                boxShadow: "4px 4px 11px rgba(33,33,33,.2)",
+                "&:hover": {
+                    cursor: "pointer", 
+                    boxShadow: "4px 4px 11px rgba(33,33,33,.2)",
+                }
+            }}
+        >
             <CardMedia
                 component="img"
                 height="280"
@@ -57,7 +68,7 @@ export default function PostItem() {
                                 <Typography variant="caption">12</Typography>
                             </Stack>
                         </Stack>
-                        <Stack direction={"row"} pt={0.5} justifyContent={"flex-start"}> 
+                        <Stack direction={"row"} pt={0.5} justifyContent={"flex-start"}>
                             {['JavaScript', 'Java', 'DevOps'].map((label, index) => {
                                 return <Chip
                                     key={index}

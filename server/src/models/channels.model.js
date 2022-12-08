@@ -31,13 +31,13 @@ class Channels extends Model {
     }
 
     async getFeaturedChannelsDTB() {
-        let sql = `SELECT c.id, numOfMem.Members
-        FROM ${this.tableName} c
-        INNER JOIN (SELECT uc.channel_id, COUNT(uc.id) as Members FROM ${UserChannels.tableName} uc GROUP BY uc.channel_id) numOfMem
-        ON c.id = numofMem.channel_id
+        let sql = `SELECT c.id, numOfMem.Members\
+        FROM ${this.tableName} c\
+        INNER JOIN (SELECT uc.channel_id, COUNT(uc.id) as Members FROM ${UserChannels.tableName} uc GROUP BY uc.channel_id) numOfMem\
+        ON c.id = numofMem.channel_id\
         ORDER BY numOfMem.Members DESC LIMIT 3;`
 
-        return dbConnection.query(sql);
+        return await dbConnection.query(sql);
     }
 }
 

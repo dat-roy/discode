@@ -1,8 +1,7 @@
-const { Model } = require('./Model');
-const Users = require('./users.model');
-const Channels = require('./channels.model');
 const mysql = require('mysql2/promise');
 const dbConnection = require("../config/db/index.db");
+const { Model } = require('./Model');
+const Users = require('./users.model');
 
 class UserChannel extends Model {
     constructor(tableName) {
@@ -68,7 +67,7 @@ class UserChannel extends Model {
         let member_id = mysql.escape(params.member_id);
 
         const uc = this.tableName;
-        const c = Channels.tableName;
+        const c = "channels";
 
         let sql = `SELECT * FROM ${uc}\
                 INNER JOIN ${c}\
