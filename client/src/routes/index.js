@@ -16,6 +16,7 @@ import { ChannelList, ChannelDiscover, ChannelCreator, RoomList } from "../pages
 import ChannelInbox from "../pages/Channel/Inside/ChannelInbox";
 import Notification from "../pages/Notification";
 import ChannelHome from "../pages/Channel/Inside/ChannelHome";
+import ChannelSearch from "../pages/Channel/Main/ChannelSearch";
 
 const publicRoutes = [
     {
@@ -83,7 +84,6 @@ const privateRoutes = [
         layout: DefaultLayout,
     },
     {
-
         key: 'channels',
         path: '/channels',
         leftElement: <ChannelList />,
@@ -91,6 +91,14 @@ const privateRoutes = [
         rightElement: null,
         layout: DefaultLayout,
     },
+    {
+        key: 'channels-search',
+        path: '/channels/search', 
+        leftElement: null, 
+        mainElement: <ChannelSearch />, 
+        rightElement: null, 
+        layout: DefaultLayout, 
+    }, 
     {
         key: 'create-channel',
         path: '/channels/create',

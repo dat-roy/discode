@@ -18,9 +18,14 @@ const handleSearchUserNotInChannelByTextAPI = (sender_id, channel_id, text) => {
     })
 }
 
+const handleSearchChannelAPI = (text) => {
+    return axios.get(`/api/search/channel/${text}`);
+}
+
 export {
     handleGetUserByIdAPI,
     handleGetUserByUsernameAPI, 
     handleSearchUserByTextAPI,
     handleSearchUserNotInChannelByTextAPI, 
+    handleSearchChannelAPI, 
 }

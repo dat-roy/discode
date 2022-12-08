@@ -1,9 +1,27 @@
+import React, { useState, useEffect, useRef } from "react";
 import { Box, Card, CardMedia, CardContent, Stack, Typography, Avatar, Grid } from "@mui/material";
 import PeopleIcon from '@mui/icons-material/People';
 import SearchBar from "../../../../components/SearchBar"
 import TravelExploreIcon from '@mui/icons-material/TravelExplore';
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { handleGetFeaturedChannelsAPI } from "../../../../services";
 
 export default function Discover() {
+    const searchTextRef = useRef();
+    const navigate = useNavigate();
+    const [featuredChannels, setFeaturedChannels] = useState([]);
+
+    useEffect(() => {
+        handleGetFeaturedChannelsAPI()
+            .then(res => {
+                setFeaturedChannels(res.data?.channels);
+            })
+            .catch(err => {
+                return toast.error(err.message);
+            })
+    }, [])
+
     return (
         <Box
             sx={{
@@ -36,7 +54,6 @@ export default function Discover() {
                             backgroundImage: `url(${process.env.PUBLIC_URL + "assets/img/discover.png"})`,
                             backgroundRepeat: "no-repeat",
                             backgroundSize: "cover",
-                            //backgroundPositionX: "-12px",
                             backgroundPositionY: "0.1rem",
                             opacity: 0.8,
                             zIndex: -10,
@@ -51,9 +68,15 @@ export default function Discover() {
                         From gaming, to music, to learning, there's a place for you.
                     </Typography>
                     <SearchBar
-                        placeholder={"Explore channels"}
-                        autoFocus={true}
                         id={"search-bar"}
+                        placeholder={"Explore channels"}
+                        inputRef={searchTextRef}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' && searchTextRef.current.value !== '') {
+                                navigate(`/channels/search?q=${searchTextRef.current.value}`);
+                                searchTextRef.current.value = '';
+                            }
+                        }}
                     />
                 </Stack>
                 <Stack>
@@ -63,9 +86,12 @@ export default function Discover() {
                         rowGap={1}
                         spacing={1.5}
                     >
-                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].map((i, index) => {
+                        {featuredChannels?.map((channel, index) => {
                             return <Grid item>
-                                <FeaturedChannelItem key={index} />
+                                <FeaturedChannelItem
+                                    key={index}
+                                    channel={channel}
+                                />
                             </Grid>
                         })}
                     </Grid>
@@ -97,7 +123,7 @@ export default function Discover() {
     )
 }
 
-function FeaturedChannelItem() {
+function FeaturedChannelItem({ channel }) {
     return (
         <Card
             sx={{
@@ -114,14 +140,14 @@ function FeaturedChannelItem() {
             <CardMedia
                 component="img"
                 height={130}
-                image={"https://kinhnghiemlaptrinh.com/wp-content/uploads/2019/09/image1-2-768x432.jpg"}
+                image={channel?.background_url}
             />
             <Box
                 key={"wrapper"}
                 position={"relative"}
             >
                 <Avatar
-                    src={"https://fullstack.edu.vn/static/media/f8-icon.18cd71cfcfa33566a22b.png"}
+                    src={channel?.avatar_url}
                     key={"channel-logo"}
                     style={{
                         position: "absolute",
@@ -152,13 +178,13 @@ function FeaturedChannelItem() {
                         letterSpacing={1}
                         color={"yellow"}
                     >
-                        FullstackOverflow
+                        {channel?.title}
                     </Typography>
                     <Typography
                         variant={"caption"}
                         color={"lightgray"}
                     >
-                        Description goes here
+                        {channel?.description}
                     </Typography>
                 </Stack>
                 <Stack
@@ -173,7 +199,7 @@ function FeaturedChannelItem() {
                     <Typography
                         variant={"caption"}
                     >
-                        1,232,323 Members
+                        {channel?.members} Members
                     </Typography>
                 </Stack>
             </CardContent>

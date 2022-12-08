@@ -1,4 +1,3 @@
-const url = require('node:url');
 const path = require('path')
 const Channels = require('../models/channels.model')
 const Users = require('../models/users.model');
@@ -7,11 +6,8 @@ const UserRoom = require('../models/user_room.model')
 const Rooms = require('../models/rooms.model')
 const Notifications = require('../models/notifications.model')
 const NotificationReceivers = require('../models/notification_receivers.model')
-const { isValidHttpUrl } = require('../utils/is-valid-http-url')
-const dotenv = require('dotenv');
 const { RoomTypes, ChannelNotificationTypes } = require('../types/db.type');
-dotenv.config();
-const backendHostname = process.env.BACKEND_HOST;
+const { formatMediaURL } = require('../utils/formatters/url-formatter');
 
 class channelController {
     //[GET] /api/channel/:id?user_id=
@@ -30,13 +26,8 @@ class channelController {
                     where:
                         `user_id=${user_id} AND channel_id=${channel_id}`,
                 })
-
-            if (!isValidHttpUrl(channelData.avatar_url)) {
-                channelData.avatar_url = url.parse(backendHostname + '/' + channelData.avatar_url).href
-            }
-            if (!isValidHttpUrl(channelData.background_url)) {
-                channelData.background_url = url.parse(backendHostname + '/' + channelData.background_url).href
-            }
+            channelData.avatar_url = formatMediaURL(channelData.avatar_url);
+            channelData.background_url = formatMediaURL(channelData.background_url);
 
             return res.status(200).json({
                 message: "Get channel successfully",
@@ -239,7 +230,7 @@ class channelController {
                     })
                     return res.status(200).json({
                         message: "Success",
-                        new_noti, 
+                        new_noti,
                     })
                 } else {
                     return res.status(200).json({
@@ -596,19 +587,18 @@ class channelController {
         }
     }
 
-    // [GET] /api/channel/get/feature
+    //[GET] /api/channel/get/featured
     async getFeaturedChannels(req, res, next) {
         try {
-            const ftChans = await Channels.getFeaturedChannelsDTB();
-            return res.status(200).json({
+            const channels = await Channels.getFeaturedChannelsDTB();
+            for (const channel of channels) {
+                channel.avatar_url = formatMediaURL(channel.avatar_url);
+                channel.background_url = formatMediaURL(channel.background_url);
+            }
+            res.status(200).json({
                 message: "Success",
-                comment: {
-                    channel: ftChans.id,
-                    numOfMem: ftChans.members,
-                    // TO DO
-                }
+                channels,  
             })
-
         } catch (err) {
             console.log(err);
             return res.status(500).json({

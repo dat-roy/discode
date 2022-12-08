@@ -74,6 +74,13 @@ class UserChannel extends Model {
                 WHERE (${uc}.user_id = ${member_id}) AND (${uc}.channel_id = ${c}.id)`;
         return await dbConnection.query(sql);
     }
+
+    async countMembersNumber(params) {
+        let channel_id = mysql.escape(params.channel_id);
+
+        let sql = `SELECT COUNt(*) AS number FROM ${this.tableName} WHERE channel_id=${channel_id}`;
+        return (await dbConnection.query(sql))[0]?.number;
+    }
 }
 
 //Table name is passed to `constructor`

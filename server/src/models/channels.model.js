@@ -31,12 +31,17 @@ class Channels extends Model {
     }
 
     async getFeaturedChannelsDTB() {
-        let sql = `SELECT c.id, numOfMem.Members\
-        FROM ${this.tableName} c\
-        INNER JOIN (SELECT uc.channel_id, COUNT(uc.id) as Members FROM ${UserChannels.tableName} uc GROUP BY uc.channel_id) numOfMem\
-        ON c.id = numofMem.channel_id\
-        ORDER BY numOfMem.Members DESC LIMIT 3;`
-
+        const c = this.tableName;
+        const uc = UserChannels.tableName;
+        let sql = `SELECT ${c}.id, ${c}.admin_id, ${c}.title, ${c}.description,\
+                        ${c}.avatar_url, ${c}.background_url, ${c}.created_at,\
+                        numOfMem.members\
+                FROM ${c}\
+                INNER JOIN (SELECT ${uc}.channel_id,\
+                        COUNT(${uc}.id) AS members\
+                        FROM ${uc} GROUP BY ${uc}.channel_id) numOfMem\
+                    ON ${c}.id = numofMem.channel_id\
+                ORDER BY numOfMem.members DESC LIMIT 16`;
         return await dbConnection.query(sql);
     }
 }
