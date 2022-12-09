@@ -5,16 +5,16 @@ import { styled } from "@mui/material/styles";
 
 const Autocomplete = styled(MuiAutocomplete)({
     "& .MuiAutocomplete-inputRoot": {
-        color: "orange",
+        color: "lightyellow",
         "&:before": {
             borderBottomColor: "inherit"
         },
         "&:hover:not(.Mui-focused):before": {
-            borderBottomColor: "orange"
+            borderBottomColor: "lightyellow"
         },
         "&:after": {
             // focused
-            borderBottomColor: "orange"
+            borderBottomColor: "lightyellow"
         },
     },
 })
@@ -45,7 +45,11 @@ export default function Tags(props) {
                             variant="standard"
                             placeholder={placeholder}
                             helperText={
-                                tags.length === maxSelections && `Only ${maxSelections} selections allowed`
+                                <span style={{ color: "darkgray" }}>
+                                    {
+                                        tags.length === maxSelections && `Only ${maxSelections} selections allowed`
+                                    }
+                                </span>
                             }
                         />
                     )
@@ -60,7 +64,7 @@ export default function Tags(props) {
                     style: {
                         borderRadius: 30,
                         height: 28,
-                        backgroundColor: "#b26a00",
+                        backgroundColor: "#286b32",
                         color: "#fff391"
                     }
                 }}

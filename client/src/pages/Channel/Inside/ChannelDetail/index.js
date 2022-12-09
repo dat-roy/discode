@@ -110,12 +110,20 @@ export default function ChannelDetail() {
                     overflowY: "scroll",
                 }}
             >
-                <Stack direction="row" alignItems={"center"} justifyContent={"space-between"}>
+                <Stack direction="row" alignItems={"center"} justifyContent={"space-between"}
+                    style={{
+                        backgroundColor: "rgb(91 177 214 / 10%)",
+                        paddingLeft: 10,
+                        paddingRight: 10,
+                        borderRadius: 5,
+                    }}
+                >
                     <Typography
-                        variant={"subtitle2"}
-                        sx={{
+                        variant={"body1"}
+                        style={{
                             textTransform: "uppercase",
-                            color: "#ff5722", 
+                            color: "#00b9ca",
+                            fontWeight: 600,
                         }}
                     >Members ({members.length}): </Typography>
                     <InvitePeopleModal
@@ -123,32 +131,44 @@ export default function ChannelDetail() {
                     />
                 </Stack>
                 <Stack>
-                    <Typography
-                        variant={"subtitle2"}
-                        sx={{
-                            textTransform: "uppercase",
-                            pl: 1.3,
-                            color: "#ff8a65",
-                            fontWeight: 700,
+                    <Box
+                        style={{
+                            borderBottom: "1px solid #ff8a65"
                         }}
-                    >Admin</Typography>
+                    >
+                        <Typography
+                            variant={"subtitle2"}
+                            sx={{
+                                textTransform: "uppercase",
+                                pl: 1.3,
+                                color: "#ff8a65",
+                                fontWeight: 700,
+                            }}
+                        >Admin</Typography>
+                    </Box>
                     <Member
                         member={(members.find(member => member.user_id === adminId))}
                         online={true}
                     />
                 </Stack>
                 <Stack>
-                    <Typography
-                        variant={"subtitle2"}
-                        sx={{
-                            textTransform: "uppercase",
-                            pl: 1.3,
-                            color: "#81c784",
+                    <Box
+                        style={{
+                            borderBottom: "1px solid #81c784"
                         }}
                     >
-                        Online
-                        ({onlineId.filter(memberId => memberId !== adminId).length})
-                    </Typography>
+                        <Typography
+                            variant={"subtitle2"}
+                            sx={{
+                                textTransform: "uppercase",
+                                pl: 1.3,
+                                color: "#81c784",
+                            }}
+                        >
+                            Online
+                            ({onlineId.filter(memberId => memberId !== adminId).length})
+                        </Typography>
+                    </Box>
                     {
                         onlineId
                             .filter(memberId => memberId !== adminId)
@@ -163,17 +183,23 @@ export default function ChannelDetail() {
                     }
                 </Stack>
                 <Stack>
-                    <Typography
-                        variant={"subtitle2"}
-                        sx={{
-                            textTransform: "uppercase",
-                            pl: 1.3,
-                            color: "#b2a852",
+                    <Box
+                        style={{
+                            borderBottom: "1px solid #b2a852"
                         }}
                     >
-                        Offline
-                        ({members.filter(member => !onlineId.includes(member.user_id)).length})
-                    </Typography>
+                        <Typography
+                            variant={"subtitle2"}
+                            sx={{
+                                textTransform: "uppercase",
+                                pl: 1.3,
+                                color: "#b2a852",
+                            }}
+                        >
+                            Offline
+                            ({members.filter(member => !onlineId.includes(member.user_id)).length})
+                        </Typography>
+                    </Box>
                     {
                         members
                             .filter(member => !onlineId.includes(member.user_id))
@@ -195,7 +221,7 @@ export default function ChannelDetail() {
                     height: 75,
                 }}
             >
-                <Button>Leave Channel</Button>
+                <Button color={"error"}>Leave Channel</Button>
             </Stack>
         </Stack>
     )

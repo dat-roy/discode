@@ -55,11 +55,6 @@ class postController {
         const post_id = parseInt(req.params.id);
         try {
             const result = await Posts.fetchPostWithAuthor({ post_id })
-            if (!result) {
-                return res.status(404).json({
-                    message: "Post id not found",
-                })
-            }
             const tags = await Tags.findAll({
                 attributes: [`tag_name`],
                 where: { post_id },
@@ -68,9 +63,10 @@ class postController {
             return res.status(200).json({
                 message: "Get a post successfully",
                 post: {
-                    ...result[0],
+                    ...result[0][0],
                     tags,
-                }
+                },
+                author: result[1][0],
             })
         } catch (err) {
             console.log(err);

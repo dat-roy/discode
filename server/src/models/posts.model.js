@@ -47,10 +47,9 @@ class Posts extends Model {
         const p = this.tableName;
         const u = Users.tableName;
 
-        let sql = `SELECT ${p}.id, ${p}.author_id, ${p}.title, ${p}.content, ${p}.created_at,\
-                        ${u}.email, ${u}.username, ${u}.avatar_url\
-                    FROM ${p} INNER JOIN ${u} ON ${p}.author_id = ${u}.id\
-                    WHERE ${p}.id = ${post_id}`;
+        let sql = `SELECT * FROM ${p} WHERE ${p}.id = ${post_id};\
+                SELECT id, email, username, avatar_url, description FROM ${u} WHERE ${u}.id = (\
+                    SELECT author_id FROM ${p} WHERE ${p}.id = ${post_id})`;
         return await dbConnection.query(sql);
     }
 

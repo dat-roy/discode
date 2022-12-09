@@ -6,6 +6,7 @@ import TravelExploreIcon from '@mui/icons-material/TravelExplore';
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { handleGetFeaturedChannelsAPI } from "../../../../services";
+import ChannelModal from "../../../../components/ChannelModal";
 
 export default function Discover() {
     const searchTextRef = useRef();
@@ -15,6 +16,7 @@ export default function Discover() {
     useEffect(() => {
         handleGetFeaturedChannelsAPI()
             .then(res => {
+                console.log(res.data?.channels);
                 setFeaturedChannels(res.data?.channels);
             })
             .catch(err => {
@@ -87,7 +89,7 @@ export default function Discover() {
                         spacing={1.5}
                     >
                         {featuredChannels?.map((channel, index) => {
-                            return <Grid item>
+                            return <Grid item key={index}>
                                 <FeaturedChannelItem
                                     key={index}
                                     channel={channel}
@@ -124,8 +126,13 @@ export default function Discover() {
 }
 
 function FeaturedChannelItem({ channel }) {
+    const [openModal, setOpenModal] = useState(false);
+    const handleClickItem = () => {
+        setOpenModal(true);
+    }
     return (
         <Card
+            onClick={handleClickItem}
             sx={{
                 width: 245,
                 borderRadius: 2,
@@ -167,11 +174,11 @@ function FeaturedChannelItem({ channel }) {
                 sx={{
                     bgcolor: "rgba(19, 47, 76, 0.4)",
                     pl: 2.4, pr: 2.4,
-                    pt: 5,
+                    pt: 4,
                     height: 100,
                 }}
             >
-                <Stack width={"100%"} height={"95%"}>
+                <Stack width={"100%"} height={"100%"}>
                     <Typography
                         variant={"subtitle2"}
                         fontWeight={600}
@@ -183,6 +190,11 @@ function FeaturedChannelItem({ channel }) {
                     <Typography
                         variant={"caption"}
                         color={"lightgray"}
+                        style={{
+                            wordWrap: "break-word",
+                            whiteSpace: 'pre-line',
+                            overflow: "hidden", 
+                        }}
                     >
                         {channel?.description}
                     </Typography>
@@ -203,6 +215,22 @@ function FeaturedChannelItem({ channel }) {
                     </Typography>
                 </Stack>
             </CardContent>
+
+            <ChannelModal
+                channel={channel}
+                openModal={openModal}
+                handleClose={e => {
+                    e.stopPropagation();
+                    setOpenModal(false);
+                }}
+                okText={"Join channel"}
+                onOk={null}
+                cancelText={"Cancel"}
+                onCancel={(e) => {
+                    e.stopPropagation();
+                    setOpenModal(false);
+                }}
+            />
         </Card>
     )
 }

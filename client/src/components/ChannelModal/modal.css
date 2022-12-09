@@ -1,0 +1,7 @@
+:where(.css-dev-only-do-not-override-1s3dcof).ant-modal .ant-modal-content {
+    background-color: #011339;
+}
+
+:where(.css-dev-only-do-not-override-1s3dcof).ant-modal .ant-modal-close {
+    color: gray;
+}

@@ -17,12 +17,13 @@ class Users extends Model {
         let password = mysql.escape(params.password);
         let gender = mysql.escape(formatGender(params.gender));
         let avatar_url = mysql.escape(params.avatar_url);
+        let description = mysql.escape(params.description);
         let nation = mysql.escape(params.nation);
 
         let sql = `INSERT INTO ${this.tableName}(email, username, birthday, password,\ 
-                                gender, avatar_url, nation, joined_date)\
+                                gender, avatar_url, description, nation, joined_date)\
                 VALUES(${email}, ${username}, ${birthday}, ${password},\ 
-                        ${gender}, ${avatar_url}, ${nation}, NOW())`;
+                        ${gender}, ${avatar_url}, ${description}, ${nation}, NOW())`;
         return await dbConnection.query(sql);
         //Return: {
         //     "fieldCount":,

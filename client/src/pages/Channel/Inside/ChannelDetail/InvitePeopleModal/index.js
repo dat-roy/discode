@@ -3,10 +3,11 @@ import { useState, useRef } from "react";
 import { useStore } from "../../../../../store/hooks";
 import { Box, Button, Stack } from "@mui/material";
 import { Typography, TextField } from "@mui/material"
-import { Modal, Spin } from "antd";
+import { Avatar, Modal, Spin } from "antd";
 import { List, ListItem } from "@mui/material"
 import LoadingButton from '@mui/lab/LoadingButton';
 import AddIcon from '@mui/icons-material/Add';
+import NoData from "../../../../../components/NoData"
 import {
     handleInvitePeopleAPI,
     handleSearchUserNotInChannelByTextAPI,
@@ -30,7 +31,7 @@ export default function InvitePeopleModal(props) {
     }
 
     const handleChangeInput = () => {
-        if (usernameRef.current.value) {
+        if (usernameRef.current.value && usernameRef.current.value !== '') {
             setSearchLoading(true);
             setTimeout(() => {
                 handleSearchUserNotInChannelByTextAPI(
@@ -55,78 +56,102 @@ export default function InvitePeopleModal(props) {
         <>
             <Button onClick={() => setOpenModal(true)}>Invite People</Button>
             <Modal
-                title={
-                    <>
-                        <Typography variant={"h5"} color={"white"}>
-                            Invite people to our channel
-                        </Typography>
-                        <Typography variant={"body2"} color={"gray"}>
-                            The more the merrier, right? 😗
-                        </Typography>
-                    </>
-                }
                 centered
                 open={openModal}
                 onCancel={handleCancel}
                 footer={null}
                 className={"createRoomModal"}
             >
-                <Typography variant="subtitle1">
-                    Username
-                </Typography>
-                <TextField
-                    inputRef={usernameRef}
-                    variant="filled"
-                    placeholder="Search for username or email"
-                    onChange={handleChangeInput}
-                    inputProps={{
-                        style: {
-                            color: "white",
-                        }
-                    }}
-                    style={{
-                        width: "100%",
-                    }}
-                />
-                <Box
-                    minHeight={"40vh"}
-                    maxHeight={"40vh"}
-                    style={{
-                        overflowY: "scroll",
-                    }}
-                >
-                    {
-                        (searchLoading)
-                            ? <Stack paddingTop={2}>
-                                <Spin tip="Loading" />
-                            </Stack>
-                            : <List>
-                                {
-                                    userList?.map((user, index) => {
-                                        return (
-                                            <ListItem
-                                                key={index}
-                                                disableGutters
-                                                secondaryAction={
-                                                    <InviteButton
-                                                        user={user}
-                                                        setUserList={setUserList}
-                                                        channel_id={channel_id}
-                                                    />
-                                                }
-                                                style={{
-                                                    border: "1px solid red",
-                                                }}
-                                            >
-                                                {user.username} - {user.email}
+                <Stack key={"title"} pt={1}>
+                    <Typography variant={"h5"} color={"orange"}
+                        style={{
+                            fontWeight: 500,
+                        }}
+                    >
+                        Invite people to our channel
+                    </Typography>
+                    <Typography variant={"caption"} color={"lightgray"}>
+                        The more the merrier 😗
+                    </Typography>
+                </Stack>
 
-                                            </ListItem>
-                                        )
-                                    })
-                                }
-                            </List>
-                    }
-                </Box>
+                <Stack pt={3}>
+                    <Typography variant="body2" style={{
+                        color: "darkgray",
+                        marginLeft: 11,
+                        marginBottom: 5,
+                    }}>Explore people around you:</Typography>
+                    <TextField
+                        inputRef={usernameRef}
+                        variant="filled"
+                        placeholder="Search for username or email"
+                        onChange={handleChangeInput}
+                        inputProps={{
+                            style: {
+                                color: "white",
+                            }
+                        }}
+                        style={{
+                            width: "100%",
+                        }}
+                    />
+                    <Box
+                        minHeight={"40vh"}
+                        maxHeight={"40vh"}
+                        style={{
+                            overflowY: "scroll",
+                        }}
+                    >
+                        {
+                            (searchLoading)
+                                ? <Stack paddingTop={2}>
+                                    <Spin tip="Loading" />
+                                </Stack>
+                                : (userList?.length === 0)
+                                    ? <NoData />
+                                    : <List>
+                                        {
+                                            userList?.map((user, index) => {
+                                                return (
+                                                    <ListItem
+                                                        key={index}
+                                                        disableGutters
+                                                        secondaryAction={
+                                                            <InviteButton
+                                                                user={user}
+                                                                setUserList={setUserList}
+                                                                channel_id={channel_id}
+                                                            />
+                                                        }
+                                                    >
+                                                        <Stack direction={"row"} alignItems={"center"}
+                                                            justifyContent={"space-between"}
+                                                            spacing={2}
+                                                        >
+                                                            <Avatar
+                                                                src={user?.avatar_url}
+                                                                style={{ width: 32, height: 32, }}
+                                                            />
+                                                            <Stack>
+                                                                <Typography title={"username"}
+                                                                    variant={"subtitle2"}
+                                                                    style={{
+                                                                        color: "yellow",
+                                                                    }}
+                                                                >@{user?.username}</Typography>
+                                                                <Typography title={"email"}
+                                                                    variant={"caption"}
+                                                                >{user?.email}</Typography>
+                                                            </Stack>
+                                                        </Stack>
+                                                    </ListItem>
+                                                )
+                                            })
+                                        }
+                                    </List>
+                        }
+                    </Box>
+                </Stack>
             </Modal>
         </>
     )
@@ -188,11 +213,11 @@ function InviteButton(props) {
             loadingPosition="start"
             sx={{
                 "&.Mui-disabled": {
-                    color: "#bbdefb", 
+                    color: "#bbdefb",
                     backgroundColor: "#1565c0",
-                }, 
+                },
             }}
-            //disabled
+        //disabled
         >
             Invite
         </LoadingButton>

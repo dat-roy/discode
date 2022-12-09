@@ -9,19 +9,7 @@ import { toast } from "react-toastify";
 import { handleGetGlobalNotisAPI, handleMarkOneNotiAsReadAPI, handleReplyInvitationAPI } from "../../services";
 import { useStore } from "../../store/hooks";
 import moment from "moment";
-
-const NoData = () => {
-    return (
-        <Stack alignItems={"center"} marginTop={2}>
-            <Typography
-                variant={"subtitle1"}
-                color={"rgba(200, 200, 200, 0.4)"}
-            >
-                <i>----- No data -----</i>
-            </Typography>
-        </Stack>
-    )
-}
+import NoData from "../../components/NoData";
 
 export default function Notification() {
     const [state,] = useStore();

@@ -271,11 +271,14 @@ export default function RoomList() {
             if (!roomNameRef.current?.value) {
                 return toast.error("Room name can not be empty")
             }
+            if (roomNameRef.current?.value[0] === ' ') {
+                return toast.error("Room name can not be started by spaces");
+            }
             setConfirmLoading(true);
             handleCreateNewChannelRoomAPI(
                 channel_id,
                 state.user.id,
-                roomNameRef.current.value
+                (roomNameRef.current.value).trim()
             )
                 .then(res => {
                     if (res.data?.exist) {
@@ -302,7 +305,6 @@ export default function RoomList() {
         return (<>
             <Button onClick={() => setOpenModal(true)}>Create new room</Button>
             <Modal
-                title={<Typography variant={"h5"} color={"white"}>Create new room</Typography>}
                 centered
                 open={openModal}
                 onOk={handleOk}
@@ -311,19 +313,23 @@ export default function RoomList() {
                 confirmLoading={confirmLoading}
                 className={"createRoomModal"}
             >
-                <Typography variant="subtitle1">
-                    Room name:
-                </Typography>
-                <TextField
-                    inputRef={roomNameRef}
-                    variant="filled"
-                    placeholder="Enter here"
-                    inputProps={{
-                        style: {
-                            color: "white",
-                        }
-                    }}
-                />
+                <Stack spacing={2} justifyContent={"space-around"}>
+                    <Typography variant={"h5"} color={"#00b4ef"}>Create a new room</Typography>
+                    <TextField
+                        inputRef={roomNameRef}
+                        variant="filled"
+                        label="Enter room name"
+                        style={{
+                            width: "100%",
+                            paddingBottom: 20, 
+                        }}
+                        inputProps={{
+                            style: {
+                                color: "white",
+                            }
+                        }}
+                    />
+                </Stack>
             </Modal>
         </>)
     }

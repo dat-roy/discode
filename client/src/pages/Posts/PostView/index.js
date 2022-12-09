@@ -22,12 +22,13 @@ export default function PostView() {
     const [state,] = useStore();
 
     const [postData, setPostData] = useState({});
+    const [author, setAuthor] = useState({});
 
     useEffect(() => {
         handleGetPostByIdAPI(post_id)
             .then(res => {
-                //console.log(res.data?.post);
                 setPostData(res.data?.post);
+                setAuthor(res.data?.author);
             })
     }, [params, post_id, state.user.id])
 
@@ -52,6 +53,7 @@ export default function PostView() {
             >
                 <PostLeft
                     postData={postData}
+                    author={author}
                 />
             </Grid>
             <Grid item xs={7}
@@ -62,6 +64,7 @@ export default function PostView() {
             >
                 <PostContent
                     postData={postData}
+                    author={author}
                 />
             </Grid>
             <Grid item xs
@@ -70,7 +73,7 @@ export default function PostView() {
                 }}
             >
                 <PostRight
-                    postData={postData}
+                    author={author}
                 />
             </Grid>
         </Grid>

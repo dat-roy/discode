@@ -86,7 +86,7 @@ export default function ChannelList() {
                                 key={index}
                                 disablePadding
                                 style={{
-                                    borderBottom: "1px dotted gray"
+                                    borderBottom: "1px dotted #3E4042"
                                 }}
                             >
                                 <ListItemButton

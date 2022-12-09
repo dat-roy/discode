@@ -30,7 +30,7 @@ export default function Publish() {
         if (editorHtml === '' || editorHtml === '<p><br></p>') {
             return toast.error("Content can not be empty")
         }
-        console.log(tags);
+        //console.log(tags);
         //console.log(editorHtml);
         handlePublishNewPostAPI({
             author_id: state.user.id,
@@ -81,7 +81,7 @@ export default function Publish() {
                     }}
                     inputProps={{
                         style: {
-                            color: "orange",
+                            color: "lightblue",
                             fontSize: 36,
                             paddingTop: 10,
                             paddingRight: 10,
@@ -95,13 +95,13 @@ export default function Publish() {
                             borderBottom: "none",
                         },
                         '& .MuiInput-underline:before': {
-                            borderBottom: '1px solid orange',
+                            borderBottom: '1px solid lightblue',
                         },
                         '& .MuiInput-underline:hover:before': {
-                            borderBottom: '1px dotted orange',
+                            borderBottom: '1px dotted lightblue',
                         },
                         '& .MuiInput-underline:after': {
-                            borderBottomColor: 'orange',
+                            borderBottomColor: 'lightblue',
                         },
     
                         '& .MuiInput-underline:hover:after': {
@@ -131,6 +131,7 @@ export default function Publish() {
                 <Button
                     onClick={handlePublishNewPost}
                     variant={"contained"}
+                    color={"success"}
                     style={{
                         width: "50%",
                         margin: "auto",

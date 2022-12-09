@@ -47,7 +47,7 @@ class searchController {
         try {
             const users = await Users.findAll({
                 attributes: [
-                    "id", "username", "email",
+                    "id", "username", "email", "avatar_url", 
                 ],
                 where:
                     `username LIKE '%${text}%' `

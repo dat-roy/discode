@@ -20,7 +20,7 @@ import { toast } from 'react-toastify';
 
 export default function PostLeft(props) {
     const {
-        postData,
+        postData, author, 
     } = props;
 
     const post_id = postData.id;
@@ -43,8 +43,10 @@ export default function PostLeft(props) {
                 })
             handleGetCommentsAPI(post_id)
                 .then(res => {
-                    //console.log(res.data);
                     setCommentList(res.data?.comments)
+                })
+                .catch(err => {
+                    return toast.error(err.message)
                 })
         }
     }, [post_id, state.user.id])
@@ -78,14 +80,14 @@ export default function PostLeft(props) {
                 <Typography variant={"h5"}>
                     Author:
                 </Typography>
-                <Link to={`/profile?username=${postData?.username}`}>
+                <Link to={`/profile?username=${author?.username}`}>
                     <Avatar
-                        alt={postData?.username}
-                        src={postData?.avatar_url}
+                        alt={author?.username}
+                        src={author?.avatar_url}
                     />
                 </Link>
                 {
-                    (state.user.id === postData.author_id) ? null
+                    (state.user.id === author?.id) ? null
                         : <Button
                             variant="contained"
                         >
@@ -93,7 +95,7 @@ export default function PostLeft(props) {
                         </Button>
                 }
                 <Typography>
-                    (Description) A simple person
+                    {author?.description}
                 </Typography>
                 <br />
                 <Stack direction={"row"} spacing={1}>
@@ -124,7 +126,7 @@ export default function PostLeft(props) {
                         <IconButton onClick={handleToggleLikeButton}>
                             {
                                 (liked) ? <FavoriteIcon sx={{ color: "red" }} />
-                                    : <FavoriteBorderIcon />
+                                    : <FavoriteBorderIcon sx={{ color: "pink" }} />
                             }
                         </IconButton>
                         <Typography>

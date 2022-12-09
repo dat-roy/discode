@@ -53,7 +53,7 @@ export default function TextEditor(props) {
     
     return (
         <ReactQuill
-            theme={"bubble"}
+            theme={"snow"}
             style={{
                 height: "60vh",
                 marginBottom: 20,

@@ -1,1 +1,1 @@
-# Discord-clone
+# Discode
