@@ -26,7 +26,7 @@ class userController {
             const email = (await getGooglePayload(req.body.credential)).email;
             const results = await Users.findAll({
                 attributes: [
-                    'id', 'username', 'email', 'gender', 'birthday', 'avatar_url',
+                    'id', 'username', 'email', 'gender', 'avatar_url',
                 ],
                 where: {
                     email: email,
@@ -76,12 +76,10 @@ class userController {
          * * username, 
          * * password,
          * * gender, 
-         * * birthday,
-         * * nation
          * * credential,
          */
 
-        let { email, username, password, gender, birthday, nation, credential } = req.body;
+        let { email, username, password, gender, credential } = req.body;
         try {
             const emailExists = await Users.checkExistence({ where: { email: email } });
             const usernameExists = await Users.checkExistence({ where: { username: username } });
@@ -97,44 +95,31 @@ class userController {
                 const avatar_url = (await getGooglePayload(credential)).picture;
 
                 const result = await Users.create({
-                    email: email,
-                    username: username,
-                    birthday: birthday,
+                    email, username,
                     password: hashedPwd,
-                    gender: gender,
-                    avatar_url: avatar_url,
-                    nation: nation,
+                    gender, avatar_url,
                 });
-                if (!result) {
-                    throw new Error("Error when inserting into `users` table");
-                }
                 const userRecord = await Users.findOne({ where: { id: result.insertId } });
-                if (!userRecord) {
-                    throw new Error("Error when searching from `users` table");
-                }
-                const user_data = pick(userRecord, "id", "email", "username", "birthday", "gender", "avatar_url");
+                const user_data = pick(userRecord, "id", "email", "username", "gender", "avatar_url");
                 //JWT sign
                 const token = jwt.sign({ email: email }, JWTPrivateKey, { expiresIn: '3h' });
                 return res.status(200).json({
                     validInfo: true,
                     saved: true,
-                    emailExists: emailExists,
-                    usernameExists: usernameExists,
-                    user_data: user_data,
-                    token: token,
+                    emailExists, usernameExists,
+                    user_data, token,
                 })
             }
 
             return res.status(200).json({
                 validInfo: false,
                 saved: false,
-                emailExists: emailExists,
-                usernameExists: usernameExists,
+                emailExists, usernameExists,
                 user_data: null,
                 token: null,
             })
         } catch (err) {
-            console.error(err.message);
+            console.error(err);
             res.status(500).json({
                 message: "An internal error from server",
             })
@@ -165,7 +150,7 @@ class userController {
             }
             const result = await Users.findOne({
                 attributes: [
-                    "id", "username", "email", "birthday", "avatar_url", "last_active",
+                    "id", "username", "email", "avatar_url", "last_active",
                 ],
                 where: whereClause,
             })

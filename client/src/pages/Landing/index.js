@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Box, Stack, Typography, Button } from "@mui/material"
 import Typed from "typed.js"
 import { useStore } from "../../store/hooks";
+import "./index.css";
 
 export default function Landing() {
     const [state,] = useStore();
@@ -28,7 +29,8 @@ export default function Landing() {
     useEffect(() => {
         const options = {
             strings: [
-                '<span style="color: lightblue; font-weight: 600;">Discode</span>',
+                //'<span style="color: lightblue; font-weight: 600;">Discode</span>',
+                '<span class="mainTitle">Discode</span>',
             ],
             typeSpeed: 100,
             backSpeed: 60,

@@ -13,17 +13,15 @@ class Users extends Model {
     async create(params) {
         let email = mysql.escape(params.email);
         let username = mysql.escape(params.username);
-        let birthday = formatDate(params.birthday);
         let password = mysql.escape(params.password);
         let gender = mysql.escape(formatGender(params.gender));
         let avatar_url = mysql.escape(params.avatar_url);
         let description = mysql.escape(params.description);
-        let nation = mysql.escape(params.nation);
 
-        let sql = `INSERT INTO ${this.tableName}(email, username, birthday, password,\ 
-                                gender, avatar_url, description, nation, joined_date)\
-                VALUES(${email}, ${username}, ${birthday}, ${password},\ 
-                        ${gender}, ${avatar_url}, ${description}, ${nation}, NOW())`;
+        let sql = `INSERT INTO ${this.tableName}(email, username, password,\ 
+                                gender, avatar_url, description, joined_date, last_active)\
+                VALUES(${email}, ${username}, ${password},\ 
+                        ${gender}, ${avatar_url}, ${description}, NOW(), NOW())`;
         return await dbConnection.query(sql);
         //Return: {
         //     "fieldCount":,

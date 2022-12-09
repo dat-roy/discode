@@ -37,8 +37,7 @@ class Messages extends Model {
         const u = Users.tableName;
         let sql = `SELECT ${m}.id, ${m}.content, ${m}.message_type,\
                         ${m}.parent_message_id, ${m}.created_at, ${m}.deleted_at,\
-                        ${m}.sender_id, ${u}.avatar_url, ${u}.username, ${u}.gender,\ 
-                        ${u}.nation, ${u}.email\
+                        ${m}.sender_id, ${u}.avatar_url, ${u}.username, ${u}.gender, ${u}.email\
                     FROM ${m} INNER JOIN ${u} ON ${m}.sender_id = ${u}.id\
                     WHERE ${m}.id = ${msg_id}`;
         return (await dbConnection.query(sql))[0];

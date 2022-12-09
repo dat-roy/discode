@@ -56,7 +56,7 @@ class UserActions {
                     action = this.userLoginSuccess(response.data);
                 } 
 
-                return [ action, ];
+                return action;
             } catch (err) {
                 console.error(err);
             }
