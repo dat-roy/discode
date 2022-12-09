@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { Modal } from "antd";
-import { Stack, Button, Typography, Avatar } from "@mui/material";
+import { Stack, Button, Typography, Avatar, CircularProgress } from "@mui/material";
 import { handleGetUserByIdAPI } from "../../services";
 import { useStore } from "../../store/hooks"
 import { toast } from "react-toastify";
@@ -13,6 +13,7 @@ export default function ChannelModal(props) {
         onOk, onCancel,
         okText, cancelText,
         channel,
+        buttonLoading,
     } = props;
     const [state,] = useStore();
     const [loading, setLoading] = useState(true);
@@ -44,52 +45,56 @@ export default function ChannelModal(props) {
                     color: "lightgray"
                 }}
             >
-                <Stack
-                    alignItems={"center"}
-                    justifyContent={"space-between"}
-                    spacing={1}
-                >
-                    <Avatar
-                        src={channel?.avatar_url}
-                        style={{
-                            borderRadius: 10,
-                            width: 60, height: 60,
-                        }}
-                    />
-                    <Typography variant="h6" style={{ color: "lightblue" }}>
-                        Welcome to <span style={{ color: "orange" }}>{channel?.title}</span>
-                    </Typography>
-                    <Typography>
-                        {channel?.description}
-                    </Typography>
-                </Stack>
-                <Stack direction={"row"} alignItems={"center"} spacing={1}>
-                    <Avatar src={admin?.avatar_url} style={{ width: 30, height: 30, }} />
-                    <Typography variant="subtitle2" style={{ fontSize: 16, color: "greenyellow" }}>
-                        Admin: @{admin?.username}
-                    </Typography>
-                </Stack>
-                <Typography>Created at: {channel?.created_at}</Typography>
-                <Typography>{channel?.members} Members</Typography>
-                <Stack direction={"row"} alignItems={"center"} justifyContent={"center"}
-                    spacing={2}
-                >
-                    <Button
-                        onClick={onOk}
-                        variant={"contained"}
-                        color={"success"}
-                        disabled={(state.user.id === admin?.id) ? true : false}
-                    >
-                        {okText}
-                    </Button>
-                    <Button
-                        onClick={onCancel}
-                        variant={"contained"}
-                        color={"error"}
-                    >
-                        {cancelText}
-                    </Button>
-                </Stack>
+                {(loading)
+                    ? <CircularProgress />
+                    : <>
+                        <Stack
+                            alignItems={"center"}
+                            justifyContent={"space-between"}
+                            spacing={1}
+                        >
+                            <Avatar
+                                src={channel?.avatar_url}
+                                style={{
+                                    borderRadius: 10,
+                                    width: 60, height: 60,
+                                }}
+                            />
+                            <Typography variant="h6" style={{ color: "lightblue" }}>
+                                Welcome to <span style={{ color: "orange" }}>{channel?.title}</span>
+                            </Typography>
+                            <Typography>
+                                {channel?.description}
+                            </Typography>
+                        </Stack>
+                        <Stack direction={"row"} alignItems={"center"} spacing={1}>
+                            <Avatar src={admin?.avatar_url} style={{ width: 30, height: 30, }} />
+                            <Typography variant="subtitle2" style={{ fontSize: 16, color: "greenyellow" }}>
+                                Admin: @{admin?.username}
+                            </Typography>
+                        </Stack>
+                        <Typography>Created at: {channel?.created_at}</Typography>
+                        <Typography>{channel?.members} Members</Typography>
+                        <Stack direction={"row"} alignItems={"center"} justifyContent={"center"}
+                            spacing={2}
+                        >
+                            <Button
+                                onClick={onOk}
+                                variant={"contained"}
+                                color={"success"}
+                                disabled={(state.user.id === admin?.id) ? true : (buttonLoading ? true : false)}
+                            >
+                                {okText}
+                            </Button>
+                            <Button
+                                onClick={onCancel}
+                                variant={"contained"}
+                                color={"error"}
+                            >
+                                {cancelText}
+                            </Button>
+                        </Stack>
+                    </>}
             </Modal>
         </>
     )

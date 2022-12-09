@@ -1,7 +1,8 @@
 const mysql = require('mysql2/promise');
 const dbConnection = require("../config/db/index.db");
 const { Model } = require('./Model');
-const UserChannel = require('./user_channel.model')
+const UserChannel = require('./user_channel.model');
+const ChannelRequests = require('./channel_requests.model')
 const Notifications = require('./notifications.model');
 const Notifiable = require('./notifiable.model');
 const PostComments = require('./post_comments.model')
@@ -59,7 +60,7 @@ class NotificationReceivers extends Model {
         const noti = Notifications.tableName;
         const pc = PostComments.tableName;
 
-        
+
         const offset_str = ((isNaN(offset)) ? `` : `AND ${noti_r}.id < ${offset} `);
 
         const sql = `SELECT ${noti_r}.id, ${noti_r}.receiver_id, ${noti_r}.status, ${noti_r}.created_at,\
@@ -70,8 +71,8 @@ class NotificationReceivers extends Model {
                     INNER JOIN ${noti_i} ON ${noti}.notifiable_id = ${noti_i}.id\
                     WHERE ${noti_r}.receiver_id = ${receiver_id}\
                         AND ${noti_i}.source_type = 'post' `
-                        + offset_str + 
-                        `ORDER BY ${noti_r}.id LIMIT 10`;
+            + offset_str +
+            `ORDER BY ${noti_r}.id LIMIT 10`;
         return await dbConnection.query(sql);
     }
 
@@ -95,8 +96,8 @@ class NotificationReceivers extends Model {
                     WHERE ${noti_r}.receiver_id = ${receiver_id}\
                         AND ${noti_i}.source_type = 'channel'\
                         AND ${noti}.type IN (${ChannelNotificationTypes.CHANNEL_INVITE}, ${ChannelNotificationTypes.CHANNEL_DECLINED}) `
-                        + offset_str + 
-                        `ORDER BY ${noti_r}.id LIMIT 10`;
+            + offset_str +
+            `ORDER BY ${noti_r}.id LIMIT 10`;
         return await dbConnection.query(sql);
     }
 
@@ -115,9 +116,9 @@ class NotificationReceivers extends Model {
                 INNER JOIN ${noti_i} ON ${noti}.notifiable_id = ${noti_i}.id\
                 WHERE ${noti_r}.receiver_id = ${admin_id}\
                     AND ${noti}.type = ${ChannelNotificationTypes.CHANNEL_REQUEST}\
-                    AND ${noti_i}.source_type = 'channel' ` + 
-                    ((offset) ? `AND ${noti_r}.id < ${offset} ` : ``) +
-                    `AND (\
+                    AND ${noti_i}.source_type = 'channel' ` +
+            ((offset) ? `AND ${noti_r}.id < ${offset} ` : ``) +
+            `AND (\
                         SELECT channel_id FROM ${uc}\
                         WHERE ${uc}.user_id = ${admin_id} AND ${uc}.notifiable_id = ${noti_i}.id\
                     ) = ${channel_id}\
@@ -141,28 +142,56 @@ class NotificationReceivers extends Model {
         return await dbConnection.query(sql);
     }
 
-    async checkChannelNotiSent(params) {
+    async checkChannelInvitationSent(params) {
         const sender_id = mysql.escape(params.sender_id);
         const receiver_id = mysql.escape(params.receiver_id);
         const channel_id = mysql.escape(params.channel_id);
-        const noti_type = mysql.escape(params.noti_type);
 
         const uc = UserChannel.tableName;
         const noti = Notifications.tableName;
         const noti_r = this.tableName;
-        const sql = `SELECT EXISTS (\
-                        SELECT ${noti_r}.receiver_id FROM ${noti_r}\
-                        WHERE receiver_id = ${receiver_id}\
-                            AND (\
-                                SELECT COUNT(*) FROM ${uc}\
-                                WHERE (\
-                                    SELECT notifiable_id FROM ${noti}\
-                                    WHERE ${noti}.id = ${noti_r}.notification_id\
-                                        AND ${noti}.type = ${noti_type}\
-                                ) = ${uc}.notifiable_id AND user_id = ${sender_id}\
-                                    AND channel_id = ${channel_id}\
-                            ) > 0\
-                    ) AS existence`;
+
+        const sql
+            = `SELECT EXISTS (\
+                SELECT ${noti_r}.receiver_id FROM ${noti_r}\
+                WHERE receiver_id = ${receiver_id}\
+                    AND (\
+                        SELECT COUNT(*) FROM ${uc}\
+                        WHERE (\
+                            SELECT notifiable_id FROM ${noti}\
+                            WHERE ${noti}.id = ${noti_r}.notification_id\
+                                AND ${noti}.type = '${ChannelNotificationTypes.CHANNEL_INVITE}'\
+                        ) = ${uc}.notifiable_id\
+                            AND user_id = ${sender_id} AND channel_id = ${channel_id}\
+                    ) > 0\
+            ) AS existence`;
+
+        return (await dbConnection.query(sql))[0].existence;
+    }
+
+    async checkChannelRequestSent(params) {
+        const sender_id = mysql.escape(params.sender_id);
+        const receiver_id = mysql.escape(params.receiver_id);
+        const channel_id = mysql.escape(params.channel_id);
+
+        const cr = ChannelRequests.tableName;
+        const noti = Notifications.tableName;
+        const noti_r = this.tableName;
+
+        const sql
+            = `SELECT EXISTS (\
+                SELECT ${noti_r}.receiver_id FROM ${noti_r}\
+                WHERE receiver_id = ${receiver_id}\
+                    AND (\
+                        SELECT COUNT(*) FROM ${cr}\
+                        WHERE (\
+                            SELECT notifiable_id FROM ${noti}\
+                            WHERE ${noti}.id = ${noti_r}.notification_id\
+                                AND ${noti}.type = '${ChannelNotificationTypes.CHANNEL_REQUEST}'\    
+                        ) = ${cr}.notifiable_id\
+                            AND user_id = ${sender_id} AND channel_id = ${channel_id}\
+                    ) > 0\
+            ) AS existence`;
 
         return (await dbConnection.query(sql))[0].existence;
     }

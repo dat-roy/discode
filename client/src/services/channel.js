@@ -64,6 +64,12 @@ const handleReplyInvitationAPI = (user_id, channel_id, noti_id, accept) => {
     })
 }
 
+const handleRequestJoiningAPI = (sender_id, receiver_id, channel_id) => {
+    return axios.post(`/api/channel/request`, {
+        sender_id, receiver_id, channel_id, 
+    })
+}
+
 //Only for admins
 const handleReplyRequestAPI = (admin_id, user_id, channel_id, accepted) => {
     return axios.post(`/api/channel/request/reply`, {
@@ -83,5 +89,6 @@ export {
     handleCreateNewChannelRoomAPI,
     handleInvitePeopleAPI,
     handleReplyInvitationAPI, 
+    handleRequestJoiningAPI, 
     handleReplyRequestAPI, 
 }

@@ -68,10 +68,10 @@ export default function Landing() {
                 </Typography>
                 <Box>
                     {(state?.isLogged)
-                        ? <>
-                            <Typography variant="subtitle2">You are already logged in</Typography>
-                            <Button>Just click here</Button>
-                        </>
+                        ? <Stack alignItems={"center"} justifyContent={"center"} spacing={1}>
+                            <Typography variant="subtitle1" style={{color: "lightblue"}}>You are already logged in</Typography>
+                            <Button variant={"outlined"} onClick={() => navigate('/home')}>Just click here</Button>
+                        </Stack>
                         : <>
                             <Button variant="outlined"
                                 style={{

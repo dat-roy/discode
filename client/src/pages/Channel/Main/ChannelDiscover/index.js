@@ -5,8 +5,9 @@ import SearchBar from "../../../../components/SearchBar"
 import TravelExploreIcon from '@mui/icons-material/TravelExplore';
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { handleGetFeaturedChannelsAPI } from "../../../../services";
+import { handleGetFeaturedChannelsAPI, handleRequestJoiningAPI } from "../../../../services";
 import ChannelModal from "../../../../components/ChannelModal";
+import { useStore } from "../../../../store/hooks";
 
 export default function Discover() {
     const searchTextRef = useRef();
@@ -127,8 +128,32 @@ export default function Discover() {
 
 function FeaturedChannelItem({ channel }) {
     const [openModal, setOpenModal] = useState(false);
+    const [state, ] = useStore();
+    const [buttonLoading, setButtonLoading] = useState(false);
     const handleClickItem = () => {
         setOpenModal(true);
+    }
+    const handleSendJoinRequest = (e) => {
+        e.stopPropagation();
+        setButtonLoading(true);
+        handleRequestJoiningAPI(state.user.id, channel?.admin_id, channel?.id)
+            .then(res => {
+                if (res.data?.joined) {
+                    throw new Error("You have already joined this channel!")
+                }
+                if (res.data?.exist) {
+                    throw new Error("You have already sent a request before!")
+                }
+                toast.success("Your request sent successfully");
+            })
+            .catch(err => {
+                return toast.error(err.message);
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    setButtonLoading(false);
+                }, 1000)
+            })
     }
     return (
         <Card
@@ -193,7 +218,7 @@ function FeaturedChannelItem({ channel }) {
                         style={{
                             wordWrap: "break-word",
                             whiteSpace: 'pre-line',
-                            overflow: "hidden", 
+                            overflow: "hidden",
                         }}
                     >
                         {channel?.description}
@@ -224,12 +249,13 @@ function FeaturedChannelItem({ channel }) {
                     setOpenModal(false);
                 }}
                 okText={"Join channel"}
-                onOk={null}
+                onOk={handleSendJoinRequest}
                 cancelText={"Cancel"}
                 onCancel={(e) => {
                     e.stopPropagation();
                     setOpenModal(false);
                 }}
+                buttonLoading={buttonLoading}
             />
         </Card>
     )

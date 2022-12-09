@@ -6,7 +6,7 @@ import VideocamIcon from '@mui/icons-material/Videocam';
 import { Accordion, AccordionDetails, AccordionSummary } from '../../../components/Accordion';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
-
+import { toast } from "react-toastify";
 import { handleGetUserByIdAPI } from "../../../services";
 
 export default function ChatDetails() {
@@ -23,13 +23,11 @@ export default function ChatDetails() {
         } else {
             if (!otherUser && otherID) {
                 handleGetUserByIdAPI(otherID)
-                    .then(response => {
-                        //console.log(response)
-                        if (!response.data.user_data) {
-
-                        } else {
-                            setOtherUser(response.data.user_data);
-                        }
+                    .then(res => {
+                        setOtherUser(res.data?.user_data);
+                    })
+                    .catch(err => {
+                        return toast.error(err.message);
                     })
             }
         }
@@ -59,7 +57,6 @@ export default function ChatDetails() {
                 justifyContent={"space-between"}
                 spacing={0.9}
                 pt={2} pb={2}
-                //border="1px solid gray"
                 borderRadius={2}
                 bgcolor={"rgb(91 177 214 / 10%)"}
             >
@@ -178,7 +175,7 @@ function CustomizedAccordions() {
                 </AccordionSummary>
                 <AccordionDetails
                     sx={{
-                        borderTop: "none", p: 2, pt: 0, 
+                        borderTop: "none", p: 2, pt: 0,
                     }}
                 >
                     <ImageList cols={3} rowHeight={80}>
@@ -217,13 +214,11 @@ function CustomizedAccordions() {
                 <AccordionDetails
                     sx={{
                         borderTop: "none",
+                        textAlign: "center",
                     }}
                 >
-                    <Typography>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                        malesuada lacus ex, sit amet blandit leo lobortis eget. Lorem ipsum dolor
-                        sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-                        sit amet blandit leo lobortis eget.
+                    <Typography variant="caption">
+                        Nothing here :))
                     </Typography>
                 </AccordionDetails>
             </Accordion>

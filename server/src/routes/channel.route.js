@@ -15,9 +15,10 @@ router.post('/create',
     ]),
     channelController.createChannel);
 router.post('/remove', channelController.deleteChannel);
-router.post('/invite', channelController.inviteMember);
 router.post('/invite/reply', channelController.replyInvitation);
+router.post('/invite', channelController.inviteMember);
 router.post('/request/reply', channelController.replyJoiningRequest);
+router.post('/request', channelController.requestJoining);
 router.post('/add-member', channelController.addMember);
 router.post('/remove-member', channelController.deleteMember);
 router.post('/get/members', channelController.getMembers);

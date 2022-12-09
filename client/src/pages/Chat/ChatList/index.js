@@ -16,9 +16,11 @@ import { Badge } from "@mui/material";
 import { IconButton } from "@mui/material";
 import { Link } from "@mui/material";
 import { Divider } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 import CreateIcon from '@mui/icons-material/Create';
 import SearchBar from "../../../components/SearchBar";
 import BadgeAvatar from "../../../components/BadgeAvatar";
+import NoData from "../../../components/NoData"
 import { toast } from "react-toastify";
 import { NotiActionTypes } from "../../../store/actions/constants";
 
@@ -32,6 +34,7 @@ export default function ChatList() {
     const [singleRooms, setSingleRooms] = useState([])
     const [onlineUsers, setOnlineUsers] = useState([])
     const latestRoom = useRef();
+    const [loading, setLoading] = useState(true)
 
     const scrollToTop = () => {
         latestRoom.current.scrollIntoView({ behavior: "smooth" });
@@ -43,6 +46,7 @@ export default function ChatList() {
 
     //Set badge number to 0.
     useEffect(() => {
+        if (loading) return;
         if (singleRooms) {
             for (const room of singleRooms) {
                 if (room.partner_data.id === selected) {
@@ -56,7 +60,7 @@ export default function ChatList() {
                 }
             }
         }
-    }, [selected, singleRooms])
+    }, [selected, singleRooms, loading])
 
     useEffect(() => {
         async function fetchData() {
@@ -72,16 +76,22 @@ export default function ChatList() {
 
             //Sort roomList:
             roomList.sort((a, b) => {
-                return new Date(b.last_message.created_at) - new Date(a.last_message.created_at);
+                return new Date(b?.last_message?.created_at) - new Date(a?.last_message?.created_at);
             })
             scrollToTop();
 
             setSingleRooms(roomList);
         }
-        fetchData()
-            .catch(err => {
-                toast.error(err.message);
-            });
+        try {
+            setLoading(true);
+            fetchData()
+        } catch (err) {
+            toast.error(err.message);
+        } finally {
+            setTimeout(() => {
+                setLoading(false);
+            }, 500)
+        }
     }, [state.user.id])
 
     useEffect(() => {
@@ -117,6 +127,7 @@ export default function ChatList() {
     }, [socket])
 
     useEffect(() => {
+        if (loading) return;
         if (singleRooms) {
             socket.on("receiveChatMessageAtChatList", newMsg => {
                 console.log(selected)
@@ -130,7 +141,7 @@ export default function ChatList() {
                         },
                     })
                 }
-                
+
                 const roomList = singleRooms.map(room => {
                     if (room.room_id === newMsg.room_id) {
                         room.last_message = newMsg
@@ -142,7 +153,7 @@ export default function ChatList() {
                 })
                 //Sort roomList:
                 roomList.sort((a, b) => {
-                    return new Date(b.last_message.created_at) - new Date(a.last_message.created_at);
+                    return new Date(b?.last_message?.created_at) - new Date(a?.last_message?.created_at);
                 })
                 setSingleRooms(roomList)
                 scrollToTop();
@@ -151,7 +162,7 @@ export default function ChatList() {
         return () => {
             socket.off("receiveChatMessageAtChatList")
         }
-    }, [socket, singleRooms, selected])
+    }, [socket, singleRooms, selected, loading])
 
     return (
         <Box>
@@ -211,16 +222,25 @@ export default function ChatList() {
                     ref={latestRoom}
                 />
                 {
-                    singleRooms.map((obj, index) => {
-                        return (
-                            <ChatElement
-                                key={index}
-                                selected={selected}
-                                online={(onlineUsers.includes(obj.partner_data.id)) ? true : false}
-                                room_data={obj}
+                    (loading)
+                        ? <Stack alignItems={"center"}>
+                            <CircularProgress
+                                padding={10}
+                                size={30}
                             />
-                        )
-                    })
+                        </Stack>
+                        : (singleRooms?.length === 0)
+                            ? <NoData />
+                            : singleRooms.map((obj, index) => {
+                                return (
+                                    <ChatElement
+                                        key={index}
+                                        selected={selected}
+                                        online={(onlineUsers.includes(obj.partner_data.id)) ? true : false}
+                                        room_data={obj}
+                                    />
+                                )
+                            })
                 }
             </Stack>
         </Box>

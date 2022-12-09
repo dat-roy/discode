@@ -1,5 +1,6 @@
 const path = require('path')
-const Channels = require('../models/channels.model')
+const Channels = require('../models/channels.model');
+const ChannelRequests = require('../models/channel_requests.model');
 const Users = require('../models/users.model');
 const UserChannel = require('../models/user_channel.model');
 const UserRoom = require('../models/user_room.model')
@@ -151,9 +152,9 @@ class channelController {
         try {
             //TODO: check sender_id, receiver_id existence & joined channel or not.
 
-            //if already invite -> nothing to do.
+            //if already invited -> nothing to do.
             //else: create a noti.
-            const invitationExists = await NotificationReceivers.checkChannelNotiSent({
+            const invitationExists = await NotificationReceivers.checkChannelInvitationSent({
                 sender_id, receiver_id, channel_id,
                 noti_type: ChannelNotificationTypes.CHANNEL_INVITE,
             })
@@ -238,6 +239,74 @@ class channelController {
                     })
                 }
             }
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({
+                message: "Internal Server Error",
+                error: err.message,
+            })
+        }
+    }
+
+    //[POST] /api/channel/request
+    async requestJoining(req, res, next) {
+        //receiver_id === admin_id
+        //const { sender_id, receiver_id, channel_id } = req.body;
+        const sender_id = parseInt(req.body.sender_id);
+        const receiver_id = parseInt(req.body.receiver_id);
+        const channel_id = parseInt(req.body.channel_id);
+        try {
+            //TODO: 
+            //  + check sender_id, receiver_id, channel_id existence. 
+            //  + check admin_id role?
+
+            const joined = await UserChannel.checkExistence({
+                where:
+                    `user_id=${parseInt(sender_id)} AND channel_id=${parseInt(channel_id)}`,
+            })
+            if (joined) {
+                return res.status(200).json({
+                    message: "Already joined",
+                    joined: true,
+                })
+            }
+
+            //if already requested -> nothing to do.
+            //else: create a noti.
+            const requestExists = await NotificationReceivers.checkChannelRequestSent({
+                sender_id, receiver_id, channel_id,
+            })
+
+            if (requestExists) {
+                return res.status(200).json({
+                    exist: "true",
+                    message: "Pending",
+                })
+            } else {
+                const notifiable_id =
+                    (await ChannelRequests.create({
+                        user_id: sender_id,
+                        channel_id,
+                    })).notifiable_id;
+
+                const notification_id =
+                    (await Notifications.create({
+                        notifiable_id,
+                        type: ChannelNotificationTypes.CHANNEL_REQUEST,
+                    })).insertId;
+                    
+                const noti_receiver_id =
+                    (await NotificationReceivers.create({
+                        notification_id, receiver_id,
+                    })).insertId;
+
+                return res.status(200).json({
+                    exist: false,
+                    message: "Request sent",
+                    noti_receiver_id,
+                })
+            }
+
         } catch (err) {
             console.log(err);
             return res.status(500).json({
@@ -597,7 +666,7 @@ class channelController {
             }
             res.status(200).json({
                 message: "Success",
-                channels,  
+                channels,
             })
         } catch (err) {
             console.log(err);

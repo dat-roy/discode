@@ -17,6 +17,12 @@ const MessageTypes = Object.freeze({
     AUDIO: "audio",
 })
 
+const NotiSourceTypes = Object.freeze({
+    POST: 'post', 
+    CHANNEL: 'channel', 
+    USER: 'user', 
+})
+
 const PostNotificationTypes = Object.freeze({
     POST_LIKES: 1, 
     POST_COMMENTS: 2, 
@@ -33,6 +39,7 @@ module.exports = {
     GenderTypes,
     RoomTypes,
     MessageTypes,
+    NotiSourceTypes, 
     PostNotificationTypes, 
     ChannelNotificationTypes, 
 }
