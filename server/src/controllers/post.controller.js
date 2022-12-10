@@ -1,3 +1,4 @@
+const Users = require("../models/users.model");
 const Posts = require("../models/posts.model");
 const Tags = require('../models/tags.model')
 const PostLikes = require('../models/post_likes.model')
@@ -238,7 +239,7 @@ class postController {
                     }))?.sender_id;
 
             const notiSaving =
-                (author_id == sender_id && 
+                (author_id == sender_id &&
                     (!parent_comment_id || parent_comment_sender_id == author_id))
                     ? null
                     : (await Notifications.create({
@@ -287,18 +288,14 @@ class postController {
         }
     }
 
-    // [GET] api/post/get/feature/authors
+    // [GET] api/post/get/featured/authors
     async getFeaturedAuthors(req, res, next) {
         try {
-            const topAuthor = await Posts.getFeaturedAuthorsTop3();
+            const authors = await Posts.getFeaturedAuthorsTop3();
             return res.status(200).json({
                 message: "Success",
-                comment: {
-                    author_id: topAuthor.author_id
-                    // TO DO
-                }
+                authors,
             })
-            return 
         } catch (err) {
             console.log(err);
             return res.status(500).json({
@@ -308,17 +305,13 @@ class postController {
         }
     }
 
-    // [GET] api/post/get/feature/topics
+    // [GET] api/post/get/featured/topics
     async getFeaturedTopics(req, res, next) {
         try {
-            const topTopics = await Tags.getFeaturedTopics();
-
+            const tags = await Tags.getFeaturedTopics();
             return res.status(200).json({
                 message: "Success",
-                comment: {
-                    author_id: topTopics.tag_name,
-                    // TO DO
-                }
+                tags, 
             })
 
         } catch (err) {
@@ -330,18 +323,25 @@ class postController {
         }
     }
 
-    // [GET] api/post/get/feature/hotposts
+    // [GET] api/post/get/featured/posts
     async getHotPosts(req, res, next) {
         try {
-            const hotposts = await Posts.getHotPosts();
+            const posts = await Posts.getHotPosts();
+            for (const post of posts) {
+                const authorData = await Users.findOne({
+                    attributes: [`id`, `username`, `avatar_url`],
+                    where: { id: post.author_id }
+                })
+
+                const tags = await Tags.findAll({
+                    where: { post_id: post.id }
+                })
+                post.author = authorData;
+                post.tags = tags;
+            }
             return res.status(200).json({
                 message: "Success",
-                comment: {
-                    hotposts: hotposts.id,
-                    like: hotposts.liked,
-                    comment: hotposts.comment,
-                    // TO DO
-                }
+                posts,
             })
 
         } catch (err) {

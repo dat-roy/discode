@@ -1,43 +1,56 @@
 import React from 'react';
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import { Chip, Avatar, Card, CardHeader } from "@mui/material";
+import { Stack, Chip, Avatar, Card, CardHeader } from "@mui/material";
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import ModeCommentOutlinedIcon from '@mui/icons-material/ModeCommentOutlined';
 import CardMedia from '@mui/material/CardMedia';
-import { Stack } from '@mui/system';
+import moment from "moment";
 
-export default function PostItem() {
+const getRandInt = (min, max) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+export default function PostItem({ post }) {
+    const author = post?.author;
+    const navigate = useNavigate();
     return (
         <Card
+            onClick={() => navigate(`/posts/view/${post?.id}`)}
             sx={{
-                width: 300, 
-                marginBottom: 4, 
+                width: 300,
+                marginBottom: 4,
                 borderRadius: 3,
                 boxShadow: "4px 4px 11px rgba(33,33,33,.2)",
                 "&:hover": {
-                    cursor: "pointer", 
+                    cursor: "pointer",
                     boxShadow: "4px 4px 11px rgba(33,33,33,.2)",
                 }
             }}
         >
             <CardMedia
                 component="img"
-                height="280"
-                image="https://scontent.fhan14-1.fna.fbcdn.net/v/t39.30808-6/312561179_5153575181415769_1610658677941805954_n.jpg?stp=cp6_dst-jpg&_nc_cat=101&ccb=1-7&_nc_sid=8bfeb9&_nc_ohc=Nid8_BgyTMgAX-FAaU3&_nc_ht=scontent.fhan14-1.fna&oh=00_AfD0EnRA90kSVLTvpplSQXR8KxvzDuFy0eQtdGtWwOiT6w&oe=639289FB"
+                height="200rem"
+                image="https://scontent.fhan2-5.fna.fbcdn.net/v/t1.15752-9/317148613_1325253711560506_7042031332465161735_n.png?_nc_cat=107&ccb=1-7&_nc_sid=ae9488&_nc_ohc=kPpGdud764sAX-L-sKQ&tn=9CcJtFlzIttL4SQ0&_nc_ht=scontent.fhan2-5.fna&oh=03_AdRtsfjfCpHEcDVOjSHlL4yQmY1sFyrzXP6yQsxEyYGSQA&oe=63BBB739"
                 alt="post image"
             />
             <CardHeader
                 avatar={
-                    <Avatar src="" />
+                    <Avatar src={author?.avatar_url}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/profile?username=${author?.username}`)
+                        }}
+                    />
                 }
-                // action={
-                // }
                 title={
-                    <Typography variant="subtitle1" sx={{ color: "NavajoWhite", fontWeight: 500 }}>
-                        Title...
+                    <Typography variant="subtitle1"
+                        sx={{ color: "NavajoWhite", fontWeight: 500, width: "12rem" }}
+                        noWrap
+                        title={post?.title}
+                    >
+                        {post?.title}
                     </Typography>
                 }
                 subheader={
@@ -46,40 +59,43 @@ export default function PostItem() {
                             color: "lightgray",
                         }}
                         spacing={0.5}
+                        height={"6rem"}
                     >
                         <Typography
                             variant="subtitle2"
                         >
-                            By @author
+                            By @{author?.username}
                         </Typography>
-                        <Typography variant="caption">September 14, 2016</Typography>
+                        <Typography variant="caption">
+                            {moment(post?.created_at).format('MMMM Do YYYY, h:mm:ss a')}
+                        </Typography>
 
                         <Stack direction={"row"} spacing={2}>
                             <Stack direction={"row"} spacing={0.3} alignItems={"center"}>
                                 <FavoriteBorderIcon style={{ color: "pink", fontSize: 18 }} />
-                                <Typography variant="caption">432</Typography>
+                                <Typography variant="caption">{post?.likes}</Typography>
                             </Stack>
                             <Stack direction={"row"} spacing={0.3} alignItems={"center"}>
                                 <VisibilityOutlinedIcon style={{ color: "lightblue", fontSize: 18 }} />
-                                <Typography variant="caption">10232123</Typography>
+                                <Typography variant="caption">{getRandInt(50, 1111).toLocaleString('en-US')}</Typography>
                             </Stack>
                             <Stack direction={"row"} spacing={0.3} alignItems={"center"}>
                                 <ModeCommentOutlinedIcon style={{ color: "lightgreen", fontSize: 18 }} />
-                                <Typography variant="caption">12</Typography>
+                                <Typography variant="caption">{post?.comments}</Typography>
                             </Stack>
                         </Stack>
                         <Stack direction={"row"} pt={0.5} justifyContent={"flex-start"}>
-                            {['JavaScript', 'Java', 'DevOps'].map((label, index) => {
+                            {(post?.tags)?.map((tag, index) => {
                                 return <Chip
                                     key={index}
-                                    label={label}
+                                    label={tag?.tag_name}
                                     style={{
                                         fontSize: 10,
                                         padding: 0,
                                         color: "inherit",
                                         borderRadius: 30,
                                         height: 20,
-                                        backgroundColor: "#006983",
+                                        backgroundColor: "#999000",
                                         marginRight: 6,
                                         marginTop: 0,
                                         marginLeft: 0,

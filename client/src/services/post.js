@@ -14,6 +14,18 @@ const handleGetPostsByAuthorIdAPI = (author_id) => {
     return axios.get(`/api/post/get/by-author/${author_id}`);
 }
 
+const handleGetHotPostsAPI = () => {
+    return axios.get(`/api/post/get/featured/posts`);
+}
+
+const handleGetFeaturedAuthorAPI = () => {
+    return axios.get(`/api/post/get/featured/authors`);
+}
+
+const handleGetFeaturedTopicsAPI = () => {
+    return axios.get(`/api/post/get/featured/topics`);
+}
+
 const handleGetLikesNumberAPI = (post_id) => {
     return axios.get(`/api/post/count/likes/${post_id}`);
 }
@@ -44,6 +56,9 @@ export {
     handlePublishNewPostAPI, 
     handleGetPostByIdAPI, 
     handleGetPostsByAuthorIdAPI,
+    handleGetHotPostsAPI, 
+    handleGetFeaturedAuthorAPI, 
+    handleGetFeaturedTopicsAPI, 
     handleGetLikesNumberAPI,
     handleCheckLikedAPI, 
     handleToggleLikeButtonAPI, 

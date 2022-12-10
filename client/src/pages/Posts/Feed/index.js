@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from "react-router-dom"
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
@@ -14,6 +15,9 @@ import AuthorItem from './AuthorItem';
 import AutoStoriesOutlinedIcon from '@mui/icons-material/AutoStoriesOutlined';
 import ControlledSpeedDial from "../../../components/ControlledSpeedDial"
 import PostItem from './PostItem';
+import { handleGetFeaturedAuthorAPI, handleGetFeaturedTopicsAPI, handleGetHotPostsAPI } from '../../../services/post';
+import { toast } from "react-toastify";
+import NoData from "../../../components/NoData";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -42,7 +46,19 @@ TabPanel.propTypes = {
 
 export default function Feed() {
     const navigate = useNavigate();
-    const [value, setValue] = React.useState(0);
+    const [value, setValue] = useState(0);
+    const [hotPosts, setHotPosts] = useState([])
+
+    useEffect(() => {
+        handleGetHotPostsAPI()
+            .then(res => {
+                //console.log(res);
+                setHotPosts(res.data?.posts);
+            })
+            .catch(err => {
+                return toast.error(err.message);
+            })
+    }, [])
 
     const speedDialActions = [
         {
@@ -117,17 +133,17 @@ export default function Feed() {
                             >
                                 <Tab label="Hot"
                                     style={{
-                                        ...(value !== 0 && {color: "lightblue"}) 
+                                        ...(value !== 0 && { color: "lightblue" })
                                     }}
                                 />
-                                <Tab label="Following" 
+                                <Tab label="Following"
                                     style={{
-                                        ...(value !== 1 && {color: "lightblue"}) 
+                                        ...(value !== 1 && { color: "lightblue" })
                                     }}
                                 />
-                                <Tab label="For you" 
+                                <Tab label="For you"
                                     style={{
-                                        ...(value !== 2 && {color: "lightblue"}) 
+                                        ...(value !== 2 && { color: "lightblue" })
                                     }}
                                 />
                             </Tabs>
@@ -140,16 +156,21 @@ export default function Feed() {
                                 justifyContent={"space-between"}
                                 flexWrap={"wrap"}
                             >
-                                {[1, 2, 3, 4, 5, 6].map((i, index) => {
-                                    return <PostItem key={index} />
-                                })}
+                                {(hotPosts?.length)
+                                    ? hotPosts.map((post, index) => {
+                                        return <PostItem key={index}
+                                            post={post}
+                                        />
+                                    })
+                                    : <NoData />
+                                }
                             </Stack>
                         </TabPanel>
                         <TabPanel value={value} index={1}>
-                            <span style={{color: "gray"}}>Comming soon...</span>
+                            <span style={{ color: "gray" }}>Comming soon...</span>
                         </TabPanel>
                         <TabPanel value={value} index={2}>
-                            <span style={{color: "gray"}}>Comming soon...</span>
+                            <span style={{ color: "gray" }}>Comming soon...</span>
                         </TabPanel>
                     </Box>
                 </Box>
@@ -173,12 +194,23 @@ export default function Feed() {
 }
 
 function FeaturedAuthors() {
+    const [authors, setAuthors] = useState([]);
+    useEffect(() => {
+        handleGetFeaturedAuthorAPI()
+            .then(res => {
+                //console.log(res);
+                setAuthors(res.data?.authors)
+            })
+            .catch(err => {
+                return toast.error(err.message);
+            })
+    }, [])
     return (
-        <Stack spacing={1.5}>
-            <Typography variant={"h6"}>Featured Authors</Typography>
+        <Stack spacing={1.5} mt={1.5}>
+            <Typography variant={"h6"} style={{ fontSize: 18 }}>Featured Authors</Typography>
             <Stack spacing={1.8}>
-                {[1, 2, 3].map((obj, index) => {
-                    return <AuthorItem key={index} />
+                {authors?.map((author, index) => {
+                    return <AuthorItem key={index} author={author} rank={index + 1} />
                 })}
             </Stack>
         </Stack>
@@ -186,9 +218,20 @@ function FeaturedAuthors() {
 }
 
 function FeaturedTopics() {
+    const [tags, setTags] = useState([])
+    useEffect(() => {
+        handleGetFeaturedTopicsAPI()
+            .then(res => {
+                //console.log(res);
+                setTags(res.data?.tags);
+            })
+            .catch(err => {
+                return toast.error(err.message);
+            })
+    }, [])
     return (
-        <Stack spacing={1.5}>
-            <Typography variant={"h6"}>Featured Topics</Typography>
+        <Stack spacing={1.5} mt={1.5}>
+            <Typography variant={"h6"} style={{ fontSize: 18 }}>Featured Topics</Typography>
             <Stack
                 direction="row"
                 flex={"1 1 30%"}
@@ -196,12 +239,11 @@ function FeaturedTopics() {
                 spacing={1}
                 justifyContent={"flex-start"}
                 flexWrap={"wrap"}
-            //border="1px solid red"
             >
-                {['JavaScript', 'Java', 'DevOps', 'SHA256', 'GraphQL'].map((label, index) => {
+                {tags?.map((tag, index) => {
                     return <Chip
                         key={index}
-                        label={label}
+                        label={tag?.tag_name}
                         style={{
                             color: "inherit",
                             borderRadius: 30,

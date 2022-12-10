@@ -375,7 +375,7 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                 <Stack alignItems={"center"}>
                     <CircularProgress
                         padding={10}
-                        size={40}
+                        size={35}
                     />
                 </Stack>
             )

@@ -55,35 +55,30 @@ class Posts extends Model {
 
 
     async getFeaturedAuthorsTop3() {
-        const postTable = this.tableName;
-        const postLikeTable = PostLike.tableName;
+        const p = this.tableName;
+        const u = Users.tableName;
+        const pl = PostLike.tableName;
 
-        let sql = `SELECT ${postTable}.author_id, COUNT(${postTable}.id) AS numOfPost, 
-                        (SELECT COUNT(${postLikeTable}.id) 
-                        FROM ${postLikeTable} 
-                        WHERE ${postTable}.id = ${postLikeTable}.post_id)
-                        AS numOfLike
-                    FROM ${postTable} 
-                    GROUP BY ${postTable}.author_id 
-                    ORDER BY numOfLike DESC, numOfPost DESC LIMIT 3;`
-
+        let sql = `SELECT ${u}.id, ${u}.username, ${u}.avatar_url, ${u}.description, \
+                        COUNT(${p}.id) AS sum_posts,\
+                        (SELECT COUNT(${pl}.id) FROM ${pl} WHERE ${p}.id = ${pl}.post_id)\
+                            AS sum_likes\
+                    FROM ${p} INNER JOIN ${u} ON ${u}.id = ${p}.author_id\
+                    GROUP BY ${p}.author_id\
+                    ORDER BY sum_likes DESC, sum_posts DESC LIMIT 3;`
         return await dbConnection.query(sql);
     }
 
     async getHotPosts() {
-        const postTable = this.tableName;
-        const postLikeTable = PostLike.tableName;
-        const PostCommentTable = PostComments.tableName;
+        const p = this.tableName;
+        const pl = PostLike.tableName;
+        const pc = PostComments.tableName;
 
-
-        let sql = `SELECT post.id, numOfLike.liked, numofCmt.cmt
-                    FROM ${postTable} post
-                    LEFT JOIN (SELECT k.post_id, k.liked FROM (SELECT p.post_id, COUNT(p.id) AS liked FROM ${postLikeTable} p GROUP BY p.post_id) k) numOfLike
-                    ON post.id = numOfLike.post_id
-                    LEFT JOIN (SELECT k.post_id, k.cmt FROM (SELECT p.post_id, COUNT(p.id) AS cmt FROM ${PostCommentTable} p GROUP BY p.post_id) k) numOfCmt
-                    ON post.id = numOfCmt.post_id
-                    ORDER BY numofLike.liked DESC, numofCmt.cmt DESC LIMIT 3; `
-
+        let sql = `SELECT id, author_id, title, content, created_at,\
+                        (SELECT COUNT(*) FROM ${pl} WHERE post_id=${p}.id) likes,\
+                        (SELECT COUNT(*) FROM ${pc} WHERE post_id=${p}.id) comments\
+                    FROM ${p}\
+                    ORDER BY likes DESC, comments DESC LIMIT 12`;
         return await dbConnection.query(sql);
     }
 }

@@ -17,7 +17,6 @@ export default function Discover() {
     useEffect(() => {
         handleGetFeaturedChannelsAPI()
             .then(res => {
-                //console.log(res.data?.channels);
                 setFeaturedChannels(res.data?.channels);
             })
             .catch(err => {
@@ -54,7 +53,7 @@ export default function Discover() {
                             bottom: 0,
                             width: "100%",
                             height: "100%",
-                            backgroundImage: `url(${process.env.PUBLIC_URL + "assets/img/discover.png"})`,
+                            backgroundImage: `url(${process.env.PUBLIC_URL + "/assets/img/discover.png"})`,
                             backgroundRepeat: "no-repeat",
                             backgroundSize: "cover",
                             backgroundPositionY: "0.1rem",

@@ -160,7 +160,7 @@ export default function ChannelList() {
                 subheader={<li />}
             >
                 {(loading)
-                    ? <Stack alignItems={"center"} pt={2}><CircularProgress /></Stack>
+                    ? <Stack alignItems={"center"} pt={2}><CircularProgress size={30} /></Stack>
                     : <>
                         <li key={`section-1`}>
                             <ul>
