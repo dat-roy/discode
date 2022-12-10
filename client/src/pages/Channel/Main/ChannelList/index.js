@@ -134,7 +134,7 @@ export default function ChannelList() {
                     <ChannelCreator />
                 </Stack>
 
-                <Stack>
+                <Stack p={3} pt={0} pb={0}>
                     <SearchBar placeholder={"Search..."} />
                 </Stack>
 

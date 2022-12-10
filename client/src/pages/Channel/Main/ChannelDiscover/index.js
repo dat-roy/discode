@@ -127,7 +127,7 @@ export default function Discover() {
 
 function FeaturedChannelItem({ channel }) {
     const [openModal, setOpenModal] = useState(false);
-    const [state, ] = useStore();
+    const [state,] = useStore();
     const [buttonLoading, setButtonLoading] = useState(false);
     const handleClickItem = () => {
         setOpenModal(true);

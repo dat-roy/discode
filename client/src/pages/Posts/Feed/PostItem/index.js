@@ -20,7 +20,7 @@ export default function PostItem({ post }) {
             onClick={() => navigate(`/posts/view/${post?.id}`)}
             sx={{
                 width: 300,
-                marginBottom: 4,
+                //marginBottom: 4,
                 borderRadius: 3,
                 boxShadow: "4px 4px 11px rgba(33,33,33,.2)",
                 "&:hover": {
@@ -67,7 +67,7 @@ export default function PostItem({ post }) {
                             By @{author?.username}
                         </Typography>
                         <Typography variant="caption">
-                            {moment(post?.created_at).format('MMMM Do YYYY, h:mm:ss a')}
+                            {moment(post?.created_at).format("HH:mm (YYYY-MM-DD)")}
                         </Typography>
 
                         <Stack direction={"row"} spacing={2}>

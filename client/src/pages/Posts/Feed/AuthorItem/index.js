@@ -36,9 +36,9 @@ export default function AuthorItem({ author, rank }) {
             spacing={1.3}
             mt={1.8}
             sx={{
-                bgcolor: "#1c2b40", 
-                p: 2, 
-                pt: 1, pb: 1, 
+                bgcolor: "#1c2b40",
+                p: 2,
+                pt: 1, pb: 1,
                 borderRadius: 5,
             }}
         >
@@ -73,12 +73,18 @@ export default function AuthorItem({ author, rank }) {
                         wordWrap: "break-word",
                         whiteSpace: 'pre-line',
                         overflow: "hidden",
+                        width: "155px",
                         textOverflow: "ellipsis",
                         display: "-webkit-box",
                         WebkitLineClamp: "2",
                         WebkitBoxOrient: "vertical",
                     }}
-                >{author?.description ? author?.description : '...'}</Typography>
+                    title={author?.description ? author?.description : '_'}
+                >
+                    {author?.description
+                        ? author?.description
+                        : <span style={{ color: "transparent" }}>_</span>}
+                </Typography>
             </Stack>
             <Stack spacing={1} mt={1}>
                 <Stack direction={"row"} spacing={0.3} alignItems={"center"}>

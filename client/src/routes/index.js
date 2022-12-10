@@ -17,6 +17,7 @@ import ChannelInbox from "../pages/Channel/Inside/ChannelInbox";
 import Notification from "../pages/Notification";
 import ChannelHome from "../pages/Channel/Inside/ChannelHome";
 import ChannelSearch from "../pages/Channel/Main/ChannelSearch";
+import PostSearch from "../pages/Posts/PostSearch";
 
 const publicRoutes = [
     {
@@ -93,12 +94,12 @@ const privateRoutes = [
     },
     {
         key: 'channels-search',
-        path: '/channels/search', 
-        leftElement: null, 
-        mainElement: <ChannelSearch />, 
-        rightElement: null, 
-        layout: DefaultLayout, 
-    }, 
+        path: '/channels/search',
+        leftElement: null,
+        mainElement: <ChannelSearch />,
+        rightElement: null,
+        layout: DefaultLayout,
+    },
     {
         key: 'create-channel',
         path: '/channels/create',
@@ -120,6 +121,14 @@ const privateRoutes = [
         path: '/posts/view',
         leftElement: null,
         mainElement: <Feed />,
+        rightElement: null,
+        layout: DefaultLayout,
+    },
+    {
+        key: 'new-feed-override',
+        path: '/posts/search',
+        leftElement: null,
+        mainElement: <PostSearch />,
         rightElement: null,
         layout: DefaultLayout,
     },

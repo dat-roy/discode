@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from "react-router-dom"
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { Chip, Divider, Grid, Stack } from "@mui/material";
+import { Chip, CircularProgress, Divider, Grid, Stack } from "@mui/material";
 import CreateIcon from '@mui/icons-material/Create';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -18,6 +18,7 @@ import PostItem from './PostItem';
 import { handleGetFeaturedAuthorAPI, handleGetFeaturedTopicsAPI, handleGetHotPostsAPI } from '../../../services/post';
 import { toast } from "react-toastify";
 import NoData from "../../../components/NoData";
+import SearchBar from "../../../components/SearchBar";
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -48,15 +49,21 @@ export default function Feed() {
     const navigate = useNavigate();
     const [value, setValue] = useState(0);
     const [hotPosts, setHotPosts] = useState([])
+    const [loadingTab, setLoadingTab] = useState(true);
+    const searchTextRef = useRef();
 
     useEffect(() => {
         handleGetHotPostsAPI()
             .then(res => {
-                //console.log(res);
                 setHotPosts(res.data?.posts);
             })
             .catch(err => {
                 return toast.error(err.message);
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    setLoadingTab(false);
+                }, 300)
             })
     }, [])
 
@@ -113,8 +120,11 @@ export default function Feed() {
                             pr: 6,
                             height: "100vh",
                             overflowY: "scroll",
-                        }}>
-                        <Box
+                        }}
+                    >
+                        <Stack
+                            direction={"row"}
+                            justifyContent={"space-between"}
                             sx={{
                                 borderBottom: 1,
                                 borderColor: 'divider',
@@ -122,7 +132,8 @@ export default function Feed() {
                                 pr: 2,
                                 position: "sticky",
                                 top: 0,
-                                bgcolor: "rgb(10, 25, 41)",
+                                bgcolor: "rgba(10, 25, 41, 0.8)",
+                                backdropFilter: "blur(8px)",
                             }}
                         >
                             <Tabs
@@ -147,24 +158,40 @@ export default function Feed() {
                                     }}
                                 />
                             </Tabs>
-                        </Box>
-                        <TabPanel value={value} index={0}>
-                            <Stack
-                                direction={"row"}
-                                flex={"1 1 30%"}
-                                alignItems={"center"}
-                                justifyContent={"space-between"}
-                                flexWrap={"wrap"}
-                            >
-                                {(hotPosts?.length)
-                                    ? hotPosts.map((post, index) => {
-                                        return <PostItem key={index}
-                                            post={post}
-                                        />
-                                    })
-                                    : <NoData />
-                                }
+
+                            <Stack alignItems={"center"} justifyContent={"center"} p={1} pt={0} pb={0}>
+                                <SearchBar
+                                    inputRef={searchTextRef}
+                                    placeholder={"Search posts..."}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' && searchTextRef.current.value !== '') {
+                                            navigate(`/posts/search?q=${searchTextRef.current.value}`);
+                                            searchTextRef.current.value = '';
+                                        }
+                                    }}
+                                />
                             </Stack>
+                        </Stack>
+
+                        <TabPanel value={value} index={0}>
+                            {
+                                loadingTab
+                                    ? <Stack alignItems={"center"} mt={2}><CircularProgress size={30} /></Stack>
+                                    : <Grid container
+                                        rowGap={1}
+                                        spacing={1.5}
+                                        pb={4}
+                                    >
+                                        {(hotPosts?.length)
+                                            ? hotPosts.map((post, index) => {
+                                                return <Grid item key={index}>
+                                                    <PostItem post={post} />
+                                                </Grid>
+                                            })
+                                            : <NoData />
+                                        }
+                                    </Grid>
+                            }
                         </TabPanel>
                         <TabPanel value={value} index={1}>
                             <span style={{ color: "gray" }}>Comming soon...</span>
@@ -195,24 +222,33 @@ export default function Feed() {
 
 function FeaturedAuthors() {
     const [authors, setAuthors] = useState([]);
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
         handleGetFeaturedAuthorAPI()
             .then(res => {
-                //console.log(res);
                 setAuthors(res.data?.authors)
             })
             .catch(err => {
                 return toast.error(err.message);
             })
+            .finally(() => {
+                setTimeout(() => {
+                    setLoading(false);
+                }, 300)
+            })
     }, [])
     return (
         <Stack spacing={1.5} mt={1.5}>
             <Typography variant={"h6"} style={{ fontSize: 18 }}>Featured Authors</Typography>
-            <Stack spacing={1.8}>
-                {authors?.map((author, index) => {
-                    return <AuthorItem key={index} author={author} rank={index + 1} />
-                })}
-            </Stack>
+            {
+                loading
+                    ? <Stack alignItems={"center"} mt={2}><CircularProgress size={30} /></Stack>
+                    : <Stack spacing={1.8}>
+                        {authors?.map((author, index) => {
+                            return <AuthorItem key={index} author={author} rank={index + 1} />
+                        })}
+                    </Stack>
+            }
         </Stack>
     )
 }
@@ -222,7 +258,6 @@ function FeaturedTopics() {
     useEffect(() => {
         handleGetFeaturedTopicsAPI()
             .then(res => {
-                //console.log(res);
                 setTags(res.data?.tags);
             })
             .catch(err => {

@@ -22,10 +22,15 @@ const handleSearchChannelAPI = (text) => {
     return axios.get(`/api/search/channel/${text}`);
 }
 
+const handleSearchPostsAPI = (text) => {
+    return axios.get(`/api/search/post/${text}`);
+}
+
 export {
     handleGetUserByIdAPI,
     handleGetUserByUsernameAPI, 
     handleSearchUserByTextAPI,
     handleSearchUserNotInChannelByTextAPI, 
     handleSearchChannelAPI, 
+    handleSearchPostsAPI, 
 }

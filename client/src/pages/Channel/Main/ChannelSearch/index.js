@@ -4,8 +4,11 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import PeopleIcon from '@mui/icons-material/People';
-import { handleSearchChannelAPI } from "../../../../services";
+import { useStore } from "../../../../store/hooks";
+import { handleSearchChannelAPI, handleRequestJoiningAPI } from "../../../../services";
+import ChannelModal from "../../../../components/ChannelModal";
 import SearchBar from "../../../../components/SearchBar";
+import moment from "moment";
 
 export default function ChannelSearch() {
     const [hasHighlight, setHasHighlight] = useState(false);
@@ -31,13 +34,15 @@ export default function ChannelSearch() {
             height={"100vh"}
             alignItems={"center"}
             style={{
-                overflowY: "scroll", 
+                overflowY: "scroll",
             }}
+            pt={2}
         >
-            <Stack width={"60%"}>
+            <Stack width={"45%"} spacing={2}>
                 <Stack
                     direction={"row"}
                     alignItems={"center"}
+                    spacing={2}
                 >
                     <IconButton
                         style={{ color: "inherit" }}
@@ -45,12 +50,12 @@ export default function ChannelSearch() {
                             navigate('/channels');
                         }}
                     >
-                        <ArrowBackIcon style={{ color: "inherit" }} />
+                        <ArrowBackIcon style={{ color: "inherit", fontSize: 28, }} />
                     </IconButton>
-                    <Typography>
+                    <Typography variant="h5" style={{ fontWeight: 500 }}>
                         {
                             searchParams?.get('q')
-                                ? (`1000 channels for "${searchParams?.get('q')}"`)
+                                ? (`${channels?.length || 0} channels for "${searchParams?.get('q')}"`)
                                 : (`Let's search for your favourite channels.`)
                         }
                     </Typography>
@@ -69,12 +74,13 @@ export default function ChannelSearch() {
                     />
                 </Stack>
 
-                <Stack width={"200px"}>
-                    <Button onClick={() => setHasHighlight(old => !old)}>Toggle highlight</Button>
-                </Stack>
-
-                <Stack>
-                    {channels.map((channel, index) => {
+                <Stack pt={1} pb={7} spacing={1.5}>
+                    <Stack width={"200px"}>
+                        <Button onClick={() => setHasHighlight(old => !old)}
+                            style={{ color: "yellow" }}
+                        >Toggle highlight</Button>
+                    </Stack>
+                    {channels?.map((channel, index) => {
                         return <ChannelResultElem
                             key={index}
                             channel={channel}
@@ -102,23 +108,59 @@ function getHighlightedText(text, highlight) {
 }
 
 function ChannelResultElem({ channel, searchText, hasHighlight }) {
+    const [openModal, setOpenModal] = useState(false);
     const highlightTitle = getHighlightedText(channel?.title, searchText);
     const highlightDescription = getHighlightedText(channel?.description, searchText);
+    const [state,] = useStore();
+    const [buttonLoading, setButtonLoading] = useState(false);
+    const handleClickItem = () => {
+        setOpenModal(true);
+    }
+    const handleSendJoinRequest = (e) => {
+        e.stopPropagation();
+        setButtonLoading(true);
+        handleRequestJoiningAPI(state.user.id, channel?.admin_id, channel?.id)
+            .then(res => {
+                if (res.data?.joined) {
+                    throw new Error("You have already joined this channel!")
+                }
+                if (res.data?.exist) {
+                    throw new Error("You have already sent a request before!")
+                }
+                toast.success("Your request sent successfully");
+            })
+            .catch(err => {
+                return toast.error(err.message);
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    setButtonLoading(false);
+                }, 1000)
+            })
+    }
 
     return (
-        <Stack direction={"row"}>
-            <Stack width={280} height={120} border={"1px solid red"}>
-                <img
-                    src={channel?.background_url}
-                    style={{
-                        maxHeight: "100%",
-                        maxWidth: "100%",
-                        objectFit: "cover",
-                    }}
-                    alt="channel-background"
-                />
-            </Stack>
-            <Stack>
+        <Stack direction={"row"} spacing={1}
+            height={160}
+            style={{
+                backgroundColor: "rgb(91 177 214 / 10%)",
+                borderRadius: 10,
+                cursor: "pointer",
+            }}
+            onClick={handleClickItem}
+        >
+            <img
+                src={channel?.background_url}
+                style={{
+                    objectFit: "cover",
+                    width: 250,
+                    //height: "100%",
+                    borderRadius: 16,
+                    padding: 10,
+                }}
+                alt="channel-background"
+            />
+            <Stack flexGrow={1} padding={2}>
                 <Avatar
                     src={channel?.avatar_url}
                     key={"channel-logo"}
@@ -140,9 +182,26 @@ function ChannelResultElem({ channel, searchText, hasHighlight }) {
                 <Typography
                     variant={"caption"}
                     color={"lightgray"}
+                    align={'left'}
+                    style={{
+                        wordWrap: "break-word",
+                        whiteSpace: 'pre-line',
+                        overflow: "hidden",
+                        width: "300px",
+                        textOverflow: "ellipsis",
+                        display: "-webkit-box",
+                        WebkitLineClamp: "1",
+                        WebkitBoxOrient: "vertical",
+                    }}
+                    title={channel?.description}
                 >
                     {hasHighlight ? highlightDescription : channel?.description}
                 </Typography>
+                <Stack color={"gray"}>
+                    <Typography variant="caption">
+                        Created at: {moment(channel?.created_at).format('DD/MM/YYYY')}
+                    </Typography>
+                </Stack>
                 <Stack
                     direction={"row"}
                     alignItems={"center"}
@@ -158,12 +217,23 @@ function ChannelResultElem({ channel, searchText, hasHighlight }) {
                         {channel?.members_number} Members
                     </Typography>
                 </Stack>
-                <Stack color={"lightgray"}>
-                    <Typography variant="caption">
-                        Created at: 11/09/2003
-                    </Typography>
-                </Stack>
             </Stack>
+            <ChannelModal
+                channel={channel}
+                openModal={openModal}
+                handleClose={e => {
+                    e.stopPropagation();
+                    setOpenModal(false);
+                }}
+                okText={"Join channel"}
+                onOk={handleSendJoinRequest}
+                cancelText={"Cancel"}
+                onCancel={(e) => {
+                    e.stopPropagation();
+                    setOpenModal(false);
+                }}
+                buttonLoading={buttonLoading}
+            />
         </Stack>
     )
 }
