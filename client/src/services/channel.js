@@ -19,6 +19,12 @@ const handleCreateNewChannelAPI = (formData) => {
     })
 }
 
+const handleAddMemberAPI = (user_id, channel_id) => {
+    return axios.post(`/api/channel/add-member`, {
+        user_id, channel_id, 
+    })
+}
+
 const handleGetFeaturedChannelsAPI = () => {
     return axios.get(`/api/channel/get/featured`);
 }
@@ -81,6 +87,7 @@ export {
     handleGetChannelByIdAPI,
     handleCheckChannelExistenceAPI,
     handleCreateNewChannelAPI,
+    handleAddMemberAPI, 
     handleGetFeaturedChannelsAPI, 
     handleGetChannelMembersAPI,
     handleGetJoinedChannelsAPI,

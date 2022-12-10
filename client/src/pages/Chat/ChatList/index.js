@@ -130,9 +130,6 @@ export default function ChatList() {
         if (loading) return;
         if (singleRooms) {
             socket.on("receiveChatMessageAtChatList", newMsg => {
-                console.log(selected)
-                console.log(newMsg.sender_id)
-                console.log(selected === newMsg.sender_id)
                 if (selected !== newMsg.sender_id && state.user.id !== newMsg.sender_id) {
                     notiDispatch({
                         type: NotiActionTypes.INCREASE,

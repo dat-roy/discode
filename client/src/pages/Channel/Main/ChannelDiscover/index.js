@@ -17,7 +17,7 @@ export default function Discover() {
     useEffect(() => {
         handleGetFeaturedChannelsAPI()
             .then(res => {
-                console.log(res.data?.channels);
+                //console.log(res.data?.channels);
                 setFeaturedChannels(res.data?.channels);
             })
             .catch(err => {

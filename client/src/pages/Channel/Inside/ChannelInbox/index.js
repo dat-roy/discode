@@ -355,7 +355,6 @@ export default function ChannelInbox() {
                                         <Picker
                                             data={data}
                                             onEmojiSelect={(e) => {
-                                                console.log(e);
                                                 message.current.value += e.native;
                                             }}
                                             emojiButtonSize={30}

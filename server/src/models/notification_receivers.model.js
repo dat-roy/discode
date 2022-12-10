@@ -6,7 +6,7 @@ const ChannelRequests = require('./channel_requests.model')
 const Notifications = require('./notifications.model');
 const Notifiable = require('./notifiable.model');
 const PostComments = require('./post_comments.model')
-const { ChannelNotificationTypes } = require('../types/db.type');
+const { ChannelNotificationTypes, NotiSourceTypes } = require('../types/db.type');
 
 class NotificationReceivers extends Model {
     constructor(tablename) {
@@ -94,7 +94,7 @@ class NotificationReceivers extends Model {
                     INNER JOIN ${noti} ON ${noti}.id = ${noti_r}.notification_id\
                     INNER JOIN ${noti_i} ON ${noti}.notifiable_id = ${noti_i}.id\
                     WHERE ${noti_r}.receiver_id = ${receiver_id}\
-                        AND ${noti_i}.source_type = 'channel'\
+                        AND ${noti_i}.source_type = '${NotiSourceTypes.CHANNEL}'\
                         AND ${noti}.type IN (${ChannelNotificationTypes.CHANNEL_INVITE}, ${ChannelNotificationTypes.CHANNEL_DECLINED}) `
             + offset_str +
             `ORDER BY ${noti_r}.id LIMIT 10`;
@@ -107,20 +107,22 @@ class NotificationReceivers extends Model {
         const offset = mysql.escape(params.offset);
 
         const noti_r = this.tableName;
-        const noti_i = NotificationReceivers.tableName;
+        const noti_i = Notifiable.tableName;
         const noti = Notifications.tableName;
-        const uc = UserChannel.tableName;
+        const cr = ChannelRequests.tableName;
+
+        const offset_str = ((isNaN(offset)) ? `` : `AND ${noti_r}.id < ${offset} `);
 
         const sql = `SELECT * FROM ${noti_r}\
                 INNER JOIN ${noti} ON ${noti}.id = ${noti_r}.notification_id\
                 INNER JOIN ${noti_i} ON ${noti}.notifiable_id = ${noti_i}.id\
                 WHERE ${noti_r}.receiver_id = ${admin_id}\
                     AND ${noti}.type = ${ChannelNotificationTypes.CHANNEL_REQUEST}\
-                    AND ${noti_i}.source_type = 'channel' ` +
-            ((offset) ? `AND ${noti_r}.id < ${offset} ` : ``) +
-            `AND (\
-                        SELECT channel_id FROM ${uc}\
-                        WHERE ${uc}.user_id = ${admin_id} AND ${uc}.notifiable_id = ${noti_i}.id\
+                    AND ${noti_i}.source_type = '${NotiSourceTypes.USER}' `
+                    + offset_str +
+                    `AND (\
+                        SELECT channel_id FROM ${cr}\
+                        WHERE ${cr}.notifiable_id = ${noti_i}.id\
                     ) = ${channel_id}\
                     ORDER BY ${noti_r}.id LIMIT 10`;
         return await dbConnection.query(sql);

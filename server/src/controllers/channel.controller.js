@@ -371,21 +371,6 @@ class channelController {
         let { user_id, channel_id } = req.body;
 
         try {
-            const checkUserIdExists = await Users.checkExistence({ where: { id: user_id } });
-            const checkChannelIdExists = await Channels.checkExistence({ where: { id: channel_id } });
-
-            // check valid
-            if (!checkUserIdExists) {
-                return res.status(404).json({
-                    message: "Can not detect User ID"
-                })
-            }
-            if (!checkChannelIdExists) {
-                return res.status(404).json({
-                    message: "Can not detect Channel ID"
-                })
-            }
-
             //Check if user is already in channel or not.
             const userExists = await UserChannel.checkExistence({
                 where:
@@ -393,25 +378,23 @@ class channelController {
             })
 
             if (userExists) {
-                return res.status(404).json({
-                    message: "Request ID is already in this channel",
+                return res.status(200).json({
+                    exist: true, 
+                    message: "Existed", 
                 })
             } else {
                 //Add member to channel
                 const result = await UserChannel.create({
                     user_id, channel_id,
                 });
-
-                if (result.affectedRows === 0) {
-                    throw new Error("Database server error")
+                if (result) {
+                    return res.status(200).json({
+                        message: "Add member successfully",
+                    })
                 }
-                return res.status(200).json({
-                    message: "Add member successfully",
-                    result: result,
-                })
             }
         } catch (error) {
-            console.log(error.message);
+            console.log(error);
             return res.status(500).json({
                 message: "Internal Server Error",
                 error: error.message,

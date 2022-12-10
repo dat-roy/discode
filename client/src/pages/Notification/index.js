@@ -22,14 +22,14 @@ export default function Notification() {
             handleGetGlobalNotisAPI(state.user.id, 'channel'),
         ])
             .then(results => {
-                console.log(results);
+                //console.log(results);
                 setPostNotis([...results[0].data?.notis, ...results[0].data?.notis, ...results[0].data?.notis, ...results[0].data?.notis]);
                 setChannelNotis(results[1].data?.notis);
             })
             .catch(err => {
                 toast.error(err.message);
             })
-    }, [])
+    }, [state.user.id])
 
     return (
         <Stack
@@ -115,7 +115,7 @@ export default function Notification() {
     )
 }
 
-function NotiElemWrapper({ children, onClick, notiId, isRead }) {
+function NotiElemWrapper({ children, onClick, isRead }) {
     //const [state,] = useStore();
     const [read, setRead] = useState(isRead);
     return (
@@ -228,7 +228,7 @@ function ChannelNotiElem({ noti }) {
     const handleAcceptJoining = () => {
         handleReplyInvitationAPI(state.user.id, channel.id, noti.id, true)
             .then(res => {
-                console.log(res);
+                //console.log(res);
             })
             .catch(err => {
                 return toast.error(err.message);
@@ -237,7 +237,7 @@ function ChannelNotiElem({ noti }) {
     const handleDeclineJoining = () => {
         handleReplyInvitationAPI(state.user.id, channel.id, noti.id, false)
             .then(res => {
-                console.log(res);
+                //console.log(res);
             })
             .catch(err => {
                 return toast.error(err.message);

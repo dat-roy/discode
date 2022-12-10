@@ -12,12 +12,11 @@ class testController {
     //[POST] /api/test/post
     //Used for testing purpose only.
     async testPost(req, res, next) {
-        const {a, b, c, d} = req.body;
-        const aaa = await NotificationReceivers.checkChannelNotiSent({
+        const {a, b, c,} = req.body;
+        const aaa = await NotificationReceivers.checkChannelInvitationSent({
             sender_id: a, 
             receiver_id: b, 
             channel_id: c, 
-            noti_type: d, 
         })
         return res.json({
             aaa, 

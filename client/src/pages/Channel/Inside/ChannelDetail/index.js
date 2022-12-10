@@ -7,7 +7,6 @@ import { Button, ButtonBase } from "@mui/material";
 import { Box, Stack, Typography } from "@mui/material";
 import BadgeAvatar from "../../../../components/BadgeAvatar"
 import SettingsIcon from '@mui/icons-material/Settings';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import { IconButton } from "@mui/material";
 import SearchBar from "../../../../components/SearchBar"
 import {
@@ -16,6 +15,7 @@ import {
 } from "../../../../services";
 import "../../../../styles/modal.css"
 import InvitePeopleModal from "./InvitePeopleModal";
+import ChannelNoti from "./ChannelNoti";
 
 export default function ChannelDetail() {
     const params = useParams();
@@ -87,11 +87,10 @@ export default function ChannelDetail() {
                 <Stack
                     direction="row"
                 >
-                    <IconButton
-                        size="large" color="inherit"
-                    >
-                        <NotificationsIcon />
-                    </IconButton>
+                    <ChannelNoti
+                        channel_id={channel_id}
+                        admin_id={adminId}
+                    />
                     <IconButton
                         size="large" color="inherit"
                     >

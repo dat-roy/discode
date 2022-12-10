@@ -93,8 +93,6 @@ function HorizontalLinearStepper() {
     })
 
     const handleNext = () => {
-        console.log("Next")
-        console.log(info);
         if (activeStep !== steps.length - 1) {
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
         } else {
@@ -110,7 +108,6 @@ function HorizontalLinearStepper() {
             }
             handleCreateNewChannelAPI(formData)
                 .then(res => {
-                    console.log(res);
                     if (res.status !== 200) {
                         throw new Error(res.message);
                     }

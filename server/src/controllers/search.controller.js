@@ -64,11 +64,10 @@ class searchController {
             })
             const notInChannel = users.filter(user => !members.some(mem => mem.user_id == user.id));
             for (const user of notInChannel) {
-                const invitationExists = await NotificationReceivers.checkChannelNotiSent({
+                const invitationExists = await NotificationReceivers.checkChannelInvitationSent({
                     sender_id,
                     receiver_id: user.id,
                     channel_id,
-                    noti_type: ChannelNotificationTypes.CHANNEL_INVITE,
                 })
                 user.invited = invitationExists;
             }

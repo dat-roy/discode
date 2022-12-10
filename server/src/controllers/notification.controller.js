@@ -3,6 +3,7 @@ const Notifications = require('../models/notifications.model');
 const PostLikes = require('../models/post_likes.model');
 const PostComments = require('../models/post_comments.model');
 const Channels = require('../models/channels.model');
+const ChannelRequests = require('../models/channel_requests.model');
 const Posts = require('../models/posts.model');
 const Users = require('../models/users.model');
 const UserChannels = require('../models/user_channel.model')
@@ -242,19 +243,19 @@ class notificationController {
                         where: { id: userChannel.channel_id }
                     })
                     const thisSender = await Users.findOne({
-                        attributes: [`id`, `username`, `avatar_url`], 
-                        where: {id: userChannel.user_id}
+                        attributes: [`id`, `username`, `avatar_url`],
+                        where: { id: userChannel.user_id }
                     })
                     noti.channel_data = thisChannel;
                     noti.sender_data = thisSender;
                 }
                 return res.status(200).json({
-                    message: "Success", 
-                    notis, 
+                    message: "Success",
+                    notis,
                 })
             } else {
                 return res.status(400).json({
-                    message: "Invalid source type", 
+                    message: "Invalid source type",
                 })
             }
         } catch (err) {
@@ -270,12 +271,29 @@ class notificationController {
     async getChannelRequests(req, res, next) {
         const { admin_id, channel_id, offset } = req.body;
         try {
-            const result = await NotificationReceivers.getChannelRequests({
+            const notis = await NotificationReceivers.getChannelRequests({
                 admin_id, channel_id, offset,
             })
+            for (const noti of notis) {
+                const sender_id =
+                    (await ChannelRequests.findOne({
+                        attributes: [`user_id`],
+                        where:
+                            `notifiable_id=${noti.notifiable_id} AND channel_id=${channel_id}`,
+                    })).user_id;
+                
+                const sender = await Users.findOne({
+                    attributes: [`id`, `username`, `email`, `avatar_url`], 
+                    where: {
+                        id: sender_id, 
+                    }
+                })
+                noti.sender = sender;
+            }
+
             return res.status(200).json({
                 message: "Success",
-                result,
+                notis,
             })
         } catch (err) {
             console.log(err);

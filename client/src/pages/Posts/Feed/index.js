@@ -146,10 +146,10 @@ export default function Feed() {
                             </Stack>
                         </TabPanel>
                         <TabPanel value={value} index={1}>
-                            Following
+                            <span style={{color: "gray"}}>Comming soon...</span>
                         </TabPanel>
                         <TabPanel value={value} index={2}>
-                            For you
+                            <span style={{color: "gray"}}>Comming soon...</span>
                         </TabPanel>
                     </Box>
                 </Box>

@@ -20,24 +20,25 @@ export default function InvitePeopleModal(props) {
     const {
         channel_id,
     } = props;
-    const usernameRef = useRef();
+    const textRef = useRef();
     const [openModal, setOpenModal] = useState(false);
     const [searchLoading, setSearchLoading] = useState(false);
     const [userList, setUserList] = useState([]);
 
     const handleCancel = () => {
+        textRef.current.value = '';
         setOpenModal(false);
         setUserList([]);
     }
 
     const handleChangeInput = () => {
-        if (usernameRef.current.value && usernameRef.current.value !== '') {
+        if (textRef.current.value && textRef.current.value !== '') {
             setSearchLoading(true);
             setTimeout(() => {
                 handleSearchUserNotInChannelByTextAPI(
                     state.user.id,
                     channel_id,
-                    usernameRef.current.value,
+                    textRef.current.value,
                 )
                     .then(res => {
                         setUserList(res.data?.results)
@@ -48,7 +49,7 @@ export default function InvitePeopleModal(props) {
                     .finally(() => {
                         setSearchLoading(false);
                     })
-            }, 300)
+            }, 200)
         }
     }
 
@@ -82,7 +83,7 @@ export default function InvitePeopleModal(props) {
                         marginBottom: 5,
                     }}>Explore people around you:</Typography>
                     <TextField
-                        inputRef={usernameRef}
+                        inputRef={textRef}
                         variant="filled"
                         placeholder="Search for username or email"
                         onChange={handleChangeInput}

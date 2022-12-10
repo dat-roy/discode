@@ -94,7 +94,6 @@ export default function RoomList() {
     const [selected, setSelected] = useState(parseInt(params.room_id));
 
     const navigate = useNavigate();
-    console.log(rooms);
 
     useEffect(() => {
         if (!channel) {
@@ -113,7 +112,6 @@ export default function RoomList() {
                 if (res.status !== 200) {
                     throw new Error("Failed to connect to server");
                 }
-                console.log(res.data?.channel)
                 setChannel(res.data?.channel)
                 setJoined(res.data?.joined)
             })

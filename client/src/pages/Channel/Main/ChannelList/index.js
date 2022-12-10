@@ -11,7 +11,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import ListSubheader from '@mui/material/ListSubheader';
 
-import { Box } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import { Stack, Typography } from "@mui/material";
 import { Divider } from "@mui/material";
 import SearchBar from "../../../../components/SearchBar";
@@ -35,6 +35,7 @@ export default function ChannelList() {
     const navigate = useNavigate();
     const [myChannels, setMyChannels] = useState([]);
     const [otherChannels, setOtherChannels] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         handleGetJoinedChannelsAPI(state.user.id)
@@ -50,6 +51,11 @@ export default function ChannelList() {
             })
             .catch(err => {
                 return toast.error(err.message);
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    setLoading(false);
+                }, 300)
             })
     }, [state.user.id])
 
@@ -153,16 +159,20 @@ export default function ChannelList() {
                 }}
                 subheader={<li />}
             >
-                <li key={`section-1`}>
-                    <ul>
-                        {renderChannelList(myChannels, "Your channels: ", '⭐')}
-                    </ul>
-                </li>
-                <li key={`section-2`}>
-                    <ul>
-                        {renderChannelList(otherChannels, "Joined channels: ", '⭐')}
-                    </ul>
-                </li>
+                {(loading)
+                    ? <Stack alignItems={"center"} pt={2}><CircularProgress /></Stack>
+                    : <>
+                        <li key={`section-1`}>
+                            <ul>
+                                {renderChannelList(myChannels, "Your channels: ", '⭐')}
+                            </ul>
+                        </li>
+                        <li key={`section-2`}>
+                            <ul>
+                                {renderChannelList(otherChannels, "Joined channels: ", '⭐')}
+                            </ul>
+                        </li>
+                    </>}
             </List>
         </Box>
     )
