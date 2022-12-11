@@ -78,9 +78,9 @@ export default function ChannelDetail() {
                     width: "100%",
                     height: 78,
                 }}
-                spacing={-2}
+                //spacing={-2}
             >
-                <Stack>
+                <Stack pl={3} width={"60%"}>
                     <SearchBar placeholder={"Search members..."} />
                 </Stack>
 

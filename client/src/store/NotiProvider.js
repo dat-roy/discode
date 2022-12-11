@@ -2,14 +2,31 @@ import React, { useEffect } from "react";
 import { useReducer } from "react";
 import reducer, { initialState } from "./reducers/notiReducer";
 import NotiContext from "./NotiContext";
-import { useStore } from "./hooks";
+import { useStore, useSocket } from "./hooks";
 import { handleCountAllUnreadMessagesAPI } from "../services";
 import { RoomTypes } from "../types/db.type";
 import { NotiActionTypes } from "./actions/constants";
 
 const NotiProvider = ({ children }) => {
     const [state,] = useStore();
+    const [socketState,] = useSocket();
+    const socket = socketState.instance;
+
     const [notiState, notiDispatch] = useReducer(reducer, initialState);
+    useEffect(() => {
+        socket.on("receiveChatMessageGlobally", () => {
+            notiDispatch({
+                type: NotiActionTypes.INCREASE,
+                payload: {
+                    badge: { message: 1 },
+                },
+            })
+        })
+        return () => {
+            socket.off("receiveChatMessageGlobally");
+        }
+    }, [])
+
     useEffect(() => {
         if (state.user.id) {
             Promise.all([

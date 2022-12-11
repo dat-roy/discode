@@ -130,14 +130,14 @@ export default function ChatList() {
         if (loading) return;
         if (singleRooms) {
             socket.on("receiveChatMessageAtChatList", newMsg => {
-                if (selected !== newMsg.sender_id && state.user.id !== newMsg.sender_id) {
-                    notiDispatch({
-                        type: NotiActionTypes.INCREASE,
-                        payload: {
-                            badge: { message: 1 },
-                        },
-                    })
-                }
+                // if (selected !== newMsg.sender_id && state.user.id !== newMsg.sender_id) {
+                //     notiDispatch({
+                //         type: NotiActionTypes.INCREASE,
+                //         payload: {
+                //             badge: { message: 1 },
+                //         },
+                //     })
+                // }
 
                 const roomList = singleRooms.map(room => {
                     if (room.room_id === newMsg.room_id) {

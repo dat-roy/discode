@@ -66,7 +66,7 @@ const socketHandler = (io, socket) => {
         message.room_id = roomId;
         io.to(roomId).emit("receiveChatMessage", message, roomId);
         io.to(roomId).emit("receiveChatMessageAtChatList", message, roomId);
-        //socket.broadcast.to(roomId).emit("receiveChatMessageAtMenuBar", message, roomId);
+        socket.broadcast.to(roomId).emit("receiveChatMessageGlobally", message, roomId);
         //console.log("Members: " + io.sockets.adapter.rooms.get(room_id).size)
     })
 
