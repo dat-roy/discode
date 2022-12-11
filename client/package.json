@@ -2,7 +2,6 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://dat-roy.github.io/",
   "dependencies": {
     "@emoji-mart/data": "^1.0.8",
     "@emoji-mart/react": "^1.0.1",

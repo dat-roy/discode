@@ -10,10 +10,11 @@ import { NotiActionTypes } from "./actions/constants";
 const NotiProvider = ({ children }) => {
     const [state,] = useStore();
     const [socketState,] = useSocket();
-    const socket = socketState.instance;
+    const socket = socketState?.instance;
 
     const [notiState, notiDispatch] = useReducer(reducer, initialState);
     useEffect(() => {
+        if (!socket) return;
         socket.on("receiveChatMessageGlobally", () => {
             notiDispatch({
                 type: NotiActionTypes.INCREASE,
@@ -25,7 +26,7 @@ const NotiProvider = ({ children }) => {
         return () => {
             socket.off("receiveChatMessageGlobally");
         }
-    }, [])
+    }, [socket])
 
     useEffect(() => {
         if (state.user.id) {

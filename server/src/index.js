@@ -6,7 +6,6 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const server = require('http').Server(app);
 
-const dbConnection = require("./config/db/index.db");
 const socketHandler = require('./services/socket');
 const dotenv = require('dotenv');
 const initRoutes = require('./routes/index.route');
@@ -38,8 +37,16 @@ app.use(bodyParser.json({
 //[body-parser] Parse urlencoded bodies: application/xwww-
 app.use(bodyParser.urlencoded({ extended: true }));
 
-
+//API routes
 initRoutes(app);
+
+//Serving React
+const root = path.join(__dirname, 'public', 'build');
+app.use(express.static(root));
+app.get('*', (req, res) => {
+    res.sendFile('index.html', { root });
+});
+
 io.on('connection', (socket) => {
     socketHandler(io, socket);
 });
