@@ -1,6 +1,5 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import { Box, Stack, Button, ButtonBase, Avatar, Typography } from '@mui/material';
+import { Avatar, Box, Button, ButtonBase, Stack, Typography } from '@mui/material';
+import React, { useEffect, useState } from "react";
 
 const ImageType = Object.freeze({
     AVATAR: "avatar",

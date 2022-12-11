@@ -1,8 +1,11 @@
 import { SocketActionTypes } from "../actions/constants";
 import io from "socket.io-client";
+const serverHost = (process.env.NODE_ENV === 'production')
+    ? process.env.REACT_APP_PROD_SERVER_HOST
+    : process.env.REACT_APP_DEV_SERVER_HOST
 
 const initialState = {
-    instance: io.connect(process.env.REACT_APP_SERVER_HOST),
+    instance: io.connect(serverHost),
 }
 
 function reducer(socketState, action) {
@@ -10,7 +13,7 @@ function reducer(socketState, action) {
         case SocketActionTypes.CONNECT:
             return {
                 ...socketState,
-                instance: io.connect(process.env.REACT_APP_SERVER_HOST),
+                instance: io.connect(serverHost),
             }
         case SocketActionTypes.DISCONNECT:
             if (socketState.instance) {
@@ -18,7 +21,7 @@ function reducer(socketState, action) {
             }
             return {
                 ...socketState,
-                //instance: io.connect(process.env.REACT_APP_SERVER_HOST), 
+                //instance: io.connect(serverHost), 
                 instance: null, 
             }
         default:

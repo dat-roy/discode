@@ -63,3 +63,13 @@ body {
 .ql-editor.ql-blank::before {
     color: white;
 }
+
+.channelCreatorDialog .css-rnmm7m-MuiPaper-root-MuiDialog-paper {
+    background-color: #011339;
+    color: inherit;
+}
+
+.css-cwpu7v {
+    background-color: #011339;
+    color: inherit;
+}

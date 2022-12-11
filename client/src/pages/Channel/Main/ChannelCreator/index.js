@@ -1,21 +1,19 @@
-import React from "react";
-import { useState } from "react";
-import { useStore } from "../../../../store/hooks";
-import { Box, Button, Typography, IconButton } from "@mui/material";
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { Box, Button, IconButton, Typography } from "@mui/material";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
-import StepOne from "./StepOne";
-import StepTwo from "./StepTwo";
-import StepThree from "./StepThree";
+import Stepper from '@mui/material/Stepper';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { handleCreateNewChannelAPI } from "../../../../services";
-import { useNavigate } from "react-router-dom";
-import "./dialog.css"
+import { useStore } from "../../../../store/hooks";
+import StepOne from "./StepOne";
+import StepThree from "./StepThree";
+import StepTwo from "./StepTwo";
 
 export default function ChannelCreator() {
     const [open, setOpen] = useState(false);
@@ -49,7 +47,7 @@ export default function ChannelCreator() {
                 aria-describedby="alert-dialog-description"
                 fullWidth
                 maxWidth="md"
-                className="channelCreatorDialog"
+                className={"channelCreatorDialog"}
             >
                 <DialogContent>
                     {
@@ -157,7 +155,7 @@ function HorizontalLinearStepper() {
                     };
                     const labelProps = {};
                     return (
-                        <Step key={label} sx={sx}>
+                        <Step key={index} sx={sx}>
                             <StepLabel {...labelProps}>{label}</StepLabel>
                         </Step>
                     );

@@ -1,19 +1,19 @@
-import React, { Fragment, useState } from 'react';
 import moment from "moment";
+import React, { Fragment, useState } from 'react';
 
 import GlobalStyles from '@mui/material/GlobalStyles';
 
-import PropTypes from 'prop-types';
-import cx from 'clsx';
-import Grid from '@material-ui/core/Grid';
-import Avatar from '@material-ui/core/Avatar';
-import Dialog from '@mui/material/Dialog';
-import Typography from '@material-ui/core/Typography';
+import { CardActionArea } from '@mui/material';
+import Avatar from '@mui/material/Avatar';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import { CardActionArea } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import Grid from '@mui/material/Grid';
 import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
 import { Image } from 'antd';
+import cx from 'clsx';
+import PropTypes from 'prop-types';
 
 import { MessageTypes } from '../../types/db.type';
 

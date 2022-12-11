@@ -11,6 +11,12 @@ const dotenv = require('dotenv');
 const initRoutes = require('./routes/index.route');
 
 dotenv.config();
+const ip = (process.env.NODE_ENV === 'production')
+    ? process.env.PROD_HTTPD_IP
+    : process.env.DEV_HTTPD_IP;
+const port = (process.env.NODE_ENV === 'production')
+    ? process.env.PROD_HTTPD_PORT
+    : process.env.DEV_HTTPD_PORT
 const frontendHostName = process.env.FRONTEND_HOST;
 
 const corsOptions = {
@@ -51,6 +57,7 @@ io.on('connection', (socket) => {
     socketHandler(io, socket);
 });
 
-server.listen(3030, () => {
-    console.log(`Running`);
+server.listen(port, ip, () => {
+    console.log(`Running on [${ip}]:${port}`);
+    console.log(`Mode: ${process.env.NODE_ENV}`)
 });

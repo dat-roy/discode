@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react"
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import PeopleIcon from '@mui/icons-material/People';
+import { Avatar, Button, CircularProgress, Stack, Typography } from "@mui/material";
 import { Modal } from "antd";
-import { Stack, Button, Typography, Avatar, CircularProgress } from "@mui/material";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { handleGetUserByIdAPI } from "../../services";
 import { useStore } from "../../store/hooks";
-import PeopleIcon from '@mui/icons-material/People';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import { toast } from "react-toastify";
-import moment from "moment";
 
-import "./modal.css";
+import "../../styles/modal.css";
 
 export default function ChannelModal(props) {
     const {

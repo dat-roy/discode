@@ -1,7 +1,10 @@
 import axios from 'axios';
+const serverHost = (process.env.NODE_ENV === 'production')
+    ? process.env.REACT_APP_PROD_SERVER_HOST
+    : process.env.REACT_APP_DEV_SERVER_HOST
 
 const instance = axios.create({
-    baseURL: process.env.REACT_APP_SERVER_HOST,
+    baseURL: serverHost,
 })
 
 /**:

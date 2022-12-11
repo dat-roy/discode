@@ -1,20 +1,19 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom"
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { useStore } from "../../../store/hooks";
 
 import { Grid } from "@mui/material";
 
-import PostLeft from "./PostLeft";
+import PageNotFound from '../../PageNotFound';
 import PostContent from "./PostContent";
+import PostLeft from "./PostLeft";
 import PostRight from "./PostRight";
-import PageNotFound from '../../PageNotFound'
 
-import {
-    handleGetPostByIdAPI,
-} from "../../../services"
+import 'react-quill/dist/quill.bubble.css';
 import 'react-quill/dist/quill.snow.css';
-import 'react-quill/dist/quill.bubble.css'
+import {
+    handleGetPostByIdAPI
+} from "../../../services";
 
 export default function PostView() {
     const params = useParams();

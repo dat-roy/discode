@@ -4,10 +4,10 @@ import { Modal } from "antd";
 import { Button, IconButton, Stack, Typography, Avatar, CircularProgress } from "@mui/material";
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { toast } from "react-toastify";
-import "./modal.css";
 import { useStore } from "../../../../../store/hooks";
 import { handleAddMemberAPI, handleGetChannelRequestsAPI, handleMarkOneNotiAsReadAPI } from "../../../../../services";
 import moment from "moment";
+import "../../../../../styles/modal.css"
 
 export default function ChannelNoti(props) {
     const {
