@@ -32,7 +32,8 @@ const io = require('socket.io')(server, {
 
 //------ Middleware -----//
 //[express] Serving static files in express
-app.use(express.static(path.join(__dirname, 'public')));
+const root = path.join(__dirname, 'public');
+app.use(express.static(root));
 //[cookie-parser] Parse cookie header
 app.use(cookieParser());
 //[body-parser] Parse request object as a JSON object: application/json
@@ -47,8 +48,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 initRoutes(app);
 
 //Serving React
-const root = path.join(__dirname, 'public', 'build');
-app.use(express.static(root));
 app.get('*', (req, res) => {
     res.sendFile('index.html', { root });
 });

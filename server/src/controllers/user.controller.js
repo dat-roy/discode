@@ -41,29 +41,24 @@ class userController {
                 //Existing email
                 res.status(200).json({
                     exist: true,
-                    user_data: user_data,
-                    token: token,
+                    user_data, token,
                     message: "Login successfully",
                 })
             } else {
                 //New account
                 res.status(200).json({
                     exist: false,
-                    user_data: {
-                        email: email,
-                    },
-                    token: null,
+                    user_data: { email },
                     message: "New account",
                 })
             }
 
         } catch (err) {
-            console.error(err.message);
+            console.error(err);
             res.status(500).json({
                 exist: false,
-                user_data: null,
-                token: null,
                 message: "An internal error from server",
+                error: err.message,
             })
         }
     }
@@ -115,13 +110,12 @@ class userController {
                 validInfo: false,
                 saved: false,
                 emailExists, usernameExists,
-                user_data: null,
-                token: null,
             })
         } catch (err) {
             console.error(err);
             res.status(500).json({
                 message: "An internal error from server",
+                error: err.message,
             })
         }
     }
