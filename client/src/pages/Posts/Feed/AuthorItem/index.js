@@ -23,11 +23,12 @@ const getTextColor = (rank) => {
     switch (rank) {
         case 1: return 'gold'
         case 2: return 'silver'
-        case 3: return 'bronze'
+        case 3: return '#cd7f32'
     }
 }
 
 export default function AuthorItem({ author, rank }) {
+    console.log(author);
     return (
         <Stack
             direction={"row"}
@@ -42,58 +43,61 @@ export default function AuthorItem({ author, rank }) {
                 borderRadius: 5,
             }}
         >
-            <Box>
+            <Box component={'img'}
+                src={getRankImg(rank)}
+                width={"42px"}
+                mt={0.4}
+            />
+            <Stack
+                flexGrow={1}
+                alignItems={"center"}
+                justifyContent={"flex-start"}
+                direction={"row"}
+                spacing={1}
+                pl={1}
+            >
                 <Link to={`/profile?username=${author?.username}`}>
                     <Avatar src={author?.avatar_url}
                         sx={{
-                            width: "3rem",
-                            height: "3rem",
+                            width: "2rem",
+                            height: "2rem",
                             border: `4px solid ${getBorderColor(rank)}`,
                         }}
                     />
                 </Link>
-            </Box>
-            <Stack
-                flexGrow={1}
-                justifyContent={"flex-start"}
-            >
-                <Stack direction={"row"} spacing={0.8}>
+                <Stack spacing={0.4} flexGrow={2}>
                     <Typography variant={"h6"} style={{ fontSize: "16px", color: getTextColor(rank) }}>@{author?.username}</Typography>
-                    <Box component={'img'}
-                        src={getRankImg(rank)}
-                        width={"26px"}
-                        mt={0.5}
-                    />
+                    <Typography
+                        variant={"caption"}
+                        align={'left'}
+                        style={{
+                            color: "lightgray",
+                            wordWrap: "break-word",
+                            whiteSpace: 'pre-line',
+                            overflow: "hidden",
+                            width: "100px",
+                            textOverflow: "ellipsis",
+                            display: "-webkit-box",
+                            WebkitLineClamp: "1",
+                            WebkitBoxOrient: "vertical",
+                        }}
+                        title={author?.description ? author?.description : '_'}
+                    >
+                        {/* {author?.description
+                            ? author?.description
+                            : <span style={{ color: "transparent" }}>_</span>} */}
+                        {author?.description}
+                    </Typography>
                 </Stack>
-                <Typography
-                    variant={"caption"}
-                    align={'left'}
-                    style={{
-                        color: "lightgray",
-                        wordWrap: "break-word",
-                        whiteSpace: 'pre-line',
-                        overflow: "hidden",
-                        width: "155px",
-                        textOverflow: "ellipsis",
-                        display: "-webkit-box",
-                        WebkitLineClamp: "2",
-                        WebkitBoxOrient: "vertical",
-                    }}
-                    title={author?.description ? author?.description : '_'}
-                >
-                    {author?.description
-                        ? author?.description
-                        : <span style={{ color: "transparent" }}>_</span>}
-                </Typography>
-            </Stack>
-            <Stack spacing={1} mt={1}>
-                <Stack direction={"row"} spacing={0.3} alignItems={"center"}>
-                    <FavoriteBorderIcon style={{ color: "pink", fontSize: 18 }} />
-                    <Typography variant="caption">20</Typography>
-                </Stack>
-                <Stack direction={"row"} spacing={0.3} alignItems={"center"}>
-                    <CreateIcon style={{ color: "lightgreen", fontSize: 18 }} />
-                    <Typography variant="caption">20</Typography>
+                <Stack spacing={1} mt={1}>
+                    <Stack direction={"row"} spacing={0.3} alignItems={"center"}>
+                        <FavoriteBorderIcon style={{ color: "pink", fontSize: 18 }} />
+                        <Typography variant="caption">{author?.sum_likes}</Typography>
+                    </Stack>
+                    <Stack direction={"row"} spacing={0.3} alignItems={"center"}>
+                        <CreateIcon style={{ color: "lightgreen", fontSize: 18 }} />
+                        <Typography variant="caption">{author?.sum_posts}</Typography>
+                    </Stack>
                 </Stack>
             </Stack>
         </Stack>

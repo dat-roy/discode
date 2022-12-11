@@ -61,7 +61,6 @@ export default function Profile() {
                 id={"backdrop"}
                 minHeight={250}
                 style={{
-                    //backgroundImage: "linear-gradient(to top, rgb(0 0 0), rgb(48 50 53 / 60%), rgb(54 64 73 / 70%), rgb(71 79 86 / 40%), rgb(0 0 0 / 0%))",
                     backgroundColor: "green"
                 }}
             >
@@ -149,7 +148,7 @@ export default function Profile() {
                 >
                     <Grid item xs border={"1px solid orange"} p={2}>
                         <Stack border={"1px solid black"}>
-                            Intro
+                            About:
                         </Stack>
                     </Grid>
                     <Grid item xs={7.5} border={"1px solid blue"}>

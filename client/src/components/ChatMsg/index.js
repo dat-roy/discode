@@ -142,17 +142,15 @@ const ChatMsg = (props) => {
                                         }}
                                         className={cx(`${side}Card`)}
                                     >
-                                        <Tooltip placement="left" title={convertedTime}>
-                                            <Image
-                                                src={message_attachments}
-                                                placeholder={
-                                                    <Image
-                                                        preview={false}
-                                                        src={message_attachments}
-                                                    />
-                                                }
-                                            />
-                                        </Tooltip>
+                                        <Image
+                                            src={message_attachments}
+                                            placeholder={
+                                                <Image
+                                                    preview={false}
+                                                    src={message_attachments}
+                                                />
+                                            }
+                                        />
                                     </Card>
                                 </div>
                             }

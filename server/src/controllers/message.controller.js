@@ -1,4 +1,3 @@
-const url = require('node:url');
 const path = require('path')
 const Rooms = require('../models/rooms.model')
 const Users = require('../models/users.model')
@@ -7,12 +6,11 @@ const Messages = require('../models/messages.model')
 const MessageRecipients = require('../models/message_recipients.model')
 const MessageAttachments = require('../models/message_attachments.model')
 const { MessageTypes } = require('../types/db.type')
-const dotenv = require('dotenv');
-dotenv.config();
-const backendHostname = process.env.BACKEND_HOST;
+const { formatMediaURL } = require('../utils/formatters/url-formatter')
 
 class messageController {
     //[POST] /api/message/get/old
+    //Deprecated
     async getOldMessages(req, res, next) {
         const { user_id, room_id } = req.body;
 
@@ -23,12 +21,12 @@ class messageController {
             const checkUserIdExists = await Users.checkExistence({ where: { id: user_id } });
 
             if (!checkRoomIdExists) {
-                return res.status(200).json({
+                return res.status(404).json({
                     message: "Room not found",
                 })
             }
             if (!checkUserIdExists) {
-                return res.status(200).json({
+                return res.status(404).json({
                     message: "User not found",
                 })
             }
@@ -40,7 +38,7 @@ class messageController {
                 })
 
                 if (!userRoomId) {
-                    return res.status(200).json({
+                    return res.status(404).json({
                         message: "User does not join this room",
                     })
                 } else {
@@ -61,12 +59,14 @@ class messageController {
                         if (message) {
                             message.message_attachments = null;
                             if (message.message_type == MessageTypes.IMAGE) {
-                                const messageAttachmentResult = await MessageAttachments.findOne({
+                                const attachment = await MessageAttachments.findOne({
                                     where: {
                                         message_id: messageID.message_id,
                                     }
                                 })
-                                message.message_attachments = url.parse(backendHostname + '/' + messageAttachmentResult?.attachment_content).href
+                                message.message_attachments = formatMediaURL(
+                                    attachment?.attachment_content
+                                );
                             }
                             allMessages.push(message);
                         }
@@ -75,6 +75,81 @@ class messageController {
                     res.status(200).json({
                         message: "Get all messages successfully",
                         messages: allMessages,
+                    })
+                }
+            }
+        } catch (err) {
+            console.log(err);
+            return res.status(500).json({
+                message: "Internal Server Error",
+                error: err.message,
+            })
+        }
+    }
+
+    //[POST] /api/message/get/old/with-offset
+    async getOldMessagesWithOffset(req, res, next) {
+        const { user_id, room_id, offset } = req.body;
+        try {
+            //check if room_id exists or not.
+            const checkRoomIdExists = await Rooms.checkExistence({ where: { id: room_id } });
+            //check if user_id exists or not.    
+            const checkUserIdExists = await Users.checkExistence({ where: { id: user_id } });
+            if (!checkRoomIdExists) {
+                return res.status(404).json({
+                    message: "Room not found",
+                })
+            }
+            if (!checkUserIdExists) {
+                return res.status(404).json({
+                    message: "User not found",
+                })
+            }
+            if (checkRoomIdExists && checkUserIdExists) {
+                //check if user_id joined room_id or not.
+                const userRoomId = await UserRoom.findOne({
+                    where: `user_id=${user_id} AND room_id=${room_id}`,
+                })
+
+                if (!userRoomId) {
+                    return res.status(404).json({
+                        message: "User does not join this room",
+                    })
+                } else {
+                    //find all messages_id < offset
+                    const offset_str = (offset) ? `AND message_id < ${offset} ` : ``;
+
+                    const allMessagesID = await MessageRecipients.findAll({
+                        attributes: ['message_id'],
+                        where:
+                            `recipient_id = ${user_id} AND recipient_room_id = ${userRoomId.id} `
+                            + offset_str
+                            + `ORDER BY message_id DESC LIMIT 20`,
+                    })
+
+                    const allMessages = []
+                    for (const messageID of allMessagesID) {
+                        const message = await Messages.findOneWithSenderData({
+                            msg_id: messageID.message_id,
+                        })
+                        if (message) {
+                            message.message_attachments = null;
+                            if (message.message_type == MessageTypes.IMAGE) {
+                                const attachment = await MessageAttachments.findOne({
+                                    where: {
+                                        message_id: messageID.message_id,
+                                    }
+                                })
+                                message.message_attachments = formatMediaURL(
+                                    attachment?.attachment_content
+                                );
+                            }
+                            allMessages.push(message);
+                        }
+                    }
+                    res.status(200).json({
+                        message: "Get all messages successfully",
+                        messages: allMessages.reverse(),
                     })
                 }
             }

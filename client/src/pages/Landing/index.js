@@ -9,18 +9,6 @@ export default function Landing() {
     const [state,] = useStore();
     const navigate = useNavigate();
 
-    // if (state.isLogged) {
-    //     return <Navigate to="/home" replace />
-    // } else {
-    //     return (
-    //         <div id="landing">
-    //             <h4>This is a landing page</h4>
-    //             <p>Welcome to discode!</p>
-    //             <Link to='/login'>Login</Link>
-    //         </div>
-    //     )
-    // }
-
     // Create reference to store the DOM element containing the animation 
     const el = useRef(null);
     // Create reference to store the Typed instance itself

@@ -15,6 +15,7 @@ import StepThree from "./StepThree";
 import { toast } from 'react-toastify';
 import { handleCreateNewChannelAPI } from "../../../../services";
 import { useNavigate } from "react-router-dom";
+import "./dialog.css"
 
 export default function ChannelCreator() {
     const [open, setOpen] = useState(false);
@@ -48,6 +49,7 @@ export default function ChannelCreator() {
                 aria-describedby="alert-dialog-description"
                 fullWidth
                 maxWidth="md"
+                className="channelCreatorDialog"
             >
                 <DialogContent>
                     {
@@ -134,10 +136,28 @@ function HorizontalLinearStepper() {
         <Box sx={{ width: '100%' }}>
             <Stepper activeStep={activeStep} alternativeLabel>
                 {steps.map((label, index) => {
-                    const stepProps = {};
+                    const sx = {
+                        '& .MuiStepLabel-root .Mui-completed': {
+                            color: 'secondary.dark', // circle color (COMPLETED)
+                        },
+                        '& .MuiStepLabel-label.Mui-completed.MuiStepLabel-alternativeLabel':
+                        {
+                            color: 'grey.500', // Just text label (COMPLETED)
+                        },
+                        '& .MuiStepLabel-root .Mui-active': {
+                            color: 'secondary.main', // circle color (ACTIVE)
+                        },
+                        '& .MuiStepLabel-label.Mui-active.MuiStepLabel-alternativeLabel':
+                        {
+                            color: 'common.white', // Just text label (ACTIVE)
+                        },
+                        '& .MuiStepLabel-root .Mui-active .MuiStepIcon-text': {
+                            fill: 'common', // circle's number (ACTIVE)
+                        },
+                    };
                     const labelProps = {};
                     return (
-                        <Step key={label} {...stepProps}>
+                        <Step key={label} sx={sx}>
                             <StepLabel {...labelProps}>{label}</StepLabel>
                         </Step>
                     );

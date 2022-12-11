@@ -20,7 +20,7 @@ import { toast } from 'react-toastify';
 
 export default function PostLeft(props) {
     const {
-        postData, author, 
+        postData, author,
     } = props;
 
     const post_id = postData.id;
@@ -76,9 +76,9 @@ export default function PostLeft(props) {
                     Back
                 </Button>
             </Box>
-            <Stack padding={5}>
-                <Typography variant={"h5"}>
-                    Author:
+            <Stack padding={5} alignItems={"center"} justifyContent={"space-between"} spacing={0.4}>
+                <Typography variant={"h6"} fontWeight={600} pb={2}>
+                    About:
                 </Typography>
                 <Link to={`/profile?username=${author?.username}`}>
                     <Avatar
@@ -89,12 +89,27 @@ export default function PostLeft(props) {
                 {
                     (state.user.id === author?.id) ? null
                         : <Button
-                            variant="contained"
+                            variant="outlined"
                         >
                             Follow
                         </Button>
                 }
-                <Typography>
+                <Typography
+                    variant={"subtitle2"}
+                    align={'center'}
+                    style={{
+                        color: "lightgray",
+                        wordWrap: "break-word",
+                        whiteSpace: 'pre-line',
+                        overflow: "hidden",
+                        width: "240px",
+                        textOverflow: "ellipsis",
+                        display: "-webkit-box",
+                        WebkitLineClamp: "5",
+                        WebkitBoxOrient: "vertical",
+                    }}
+                    title={author?.description}
+                >
                     {author?.description}
                 </Typography>
                 <br />
@@ -115,6 +130,7 @@ export default function PostLeft(props) {
                 <br />
                 <Divider />
                 <Stack
+                    width={"100%"}
                     direction={"row"}
                     alignItems={"center"}
                     justifyContent={"space-around"}

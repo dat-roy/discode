@@ -9,9 +9,6 @@ export default function PostRight(props) {
             <Typography>
                 More from <b>{author.username}</b>:
             </Typography>
-            <Typography>
-                Related topics:
-            </Typography>
         </Box>
     )
 }

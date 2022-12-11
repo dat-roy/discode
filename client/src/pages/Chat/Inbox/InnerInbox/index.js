@@ -27,8 +27,9 @@ import BadgeAvatar from "../../../../components/BadgeAvatar"
 import { MessageTypes } from "../../../../types/db.type"
 import {
     handleCreateNewSingleRoomAPI,
-    handleGetOldMessagesAPI, handleSaveNewMessageAPI, handleMarkReadMessagesAPI,
+    handleSaveNewMessageAPI, handleMarkReadMessagesAPI,
     handleGetReadStatusAPI,
+    handleGetOldMessagesWithOffsetAPI,
 } from "../../../../services";
 
 import { toast } from 'react-toastify';
@@ -47,9 +48,12 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
     const [imageFile, setImageFile] = useState(null);
     const [imageBase64, setImageBase64] = useState(null);
     const [seen, setSeen] = useState(false);
+    const [scroll, setScroll] = useState(true);
 
     const scrollToBottom = () => {
-        latestMessage.current.scrollIntoView({ behavior: "smooth" });
+        if (scroll) {
+            latestMessage.current.scrollIntoView({ behavior: "smooth" });
+        }
     }
 
     //Auto scroll to bottom when having a new message.
@@ -70,13 +74,12 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
     }, [params])
 
     useEffect(() => {
-        if (commonRoom?.room_id) {
-            socket.on('seenMessage', (userId, roomId) => {
-                if (roomId === commonRoom?.room_id && userId === otherUser?.id) {
-                    setSeen(true);
-                }
-            })
-        }
+        if (!commonRoom?.room_id) return;
+        socket.on('seenMessage', (userId, roomId) => {
+            if (roomId === commonRoom?.room_id && userId === otherUser?.id) {
+                setSeen(true);
+            }
+        })
         return () => {
             socket.off('seenMessage')
         }
@@ -84,71 +87,67 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
 
     //Handle receiving message from socket.
     useEffect(() => {
-        if (commonRoom?.room_id) {
-            socket.on('receiveChatMessage', (newMsg, roomId) => {
-                if (roomId === commonRoom?.room_id
-                    && parseInt(params?.id) === parseInt(newMsg.sender_id)) {
-                    setAllMessages(oldMsgs => [...oldMsgs, newMsg]);
-                    socket.emit("readMessage", state.user.id, commonRoom?.room_id)
-                }
-            })
-        }
+        if (!commonRoom?.room_id) return;
+        socket.on('receiveChatMessage', (newMsg, roomId) => {
+            if (roomId === commonRoom?.room_id
+                && parseInt(params?.id) === parseInt(newMsg.sender_id)) {
+                setAllMessages(oldMsgs => [...oldMsgs, newMsg]);
+                socket.emit("readMessage", state.user.id, commonRoom?.room_id)
+            }
+        })
         return () => {
             socket.off('receiveChatMessage');
         }
     }, [commonRoom?.room_id]);
 
-    //Get old messages.
+    //Get old messages at first time.
     useEffect(() => {
         if (!commonRoom?.room_id) {
             setLoading(false);
+            return;
         }
+        setTimeout(() => {
+            handleGetOldMessagesWithOffsetAPI(myID, commonRoom.room_id)
+                .then(res => {
+                    if (res.status !== 200) {
+                        throw new Error(res.message)
+                    }
+                    setAllMessages(res.data.messages);
+                })
+                .catch(err => {
+                    return toast.error(err.message)
+                })
+                .finally(() => {
+                    setLoading(false);
+                })
+        }, 300)
 
-        if (commonRoom?.room_id) {
-            setTimeout(() => {
-                handleGetOldMessagesAPI(myID, commonRoom.room_id)
-                    .then(res => {
-                        if (res.status !== 200) {
-                            throw new Error(res.message)
-                        }
-                        setAllMessages(res.data.messages);
-                    })
-                    .catch(err => {
-                        return toast.error(err.message)
-                    })
-                    .finally(() => {
-                        setLoading(false);
-                    })
-            }, 500)
-        }
     }, [myID, commonRoom?.room_id])
 
     //Mark all messages as read.
     useEffect(() => {
-        if (commonRoom?.room_id) {
-            if (allMessages.length) {
-                handleMarkReadMessagesAPI(state.user.id, commonRoom?.room_id)
-                    .then((res) => {
-                        if (!res.data?.result?.affectedRows) return;
-                        socket.emit("readMessage", state.user.id, commonRoom?.room_id)
-                    })
-            }
+        if (!commonRoom?.room_id) return;
+        if (allMessages.length) {
+            handleMarkReadMessagesAPI(state.user.id, commonRoom?.room_id)
+                .then((res) => {
+                    if (!res.data?.result?.affectedRows) return;
+                    socket.emit("readMessage", state.user.id, commonRoom?.room_id)
+                })
         }
     }, [params, commonRoom?.room_id, state.user.id, socket, allMessages.length])
 
     //Get seen status of member(s).
     useEffect(() => {
-        if (commonRoom?.room_id) {
-            if (allMessages.length) {
-                //Check last message only.
-                handleGetReadStatusAPI(state.user.id, commonRoom?.room_id)
-                    .then((res) => {
-                        const users = res.data?.users;
-                        if (users.find(user => user.id === otherUser?.id)) {
-                            setSeen(true)
-                        }
-                    })
-            }
+        if (!commonRoom?.room_id) return;
+        if (allMessages.length) {
+            //Check last message only.
+            handleGetReadStatusAPI(state.user.id, commonRoom?.room_id)
+                .then((res) => {
+                    const users = res.data?.users;
+                    if (users.find(user => user.id === otherUser?.id)) {
+                        setSeen(true)
+                    }
+                })
         }
     }, [commonRoom?.room_id, state.user.id, otherUser?.id, allMessages.length])
 
@@ -216,7 +215,7 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                 message_type: MessageTypes.TEXT,
                 sender_id: myID,
                 room_id: newRoom.room_id,
-                content: "HELLO HELLO",
+                content: "Hello 👋",
                 parent_message_id: null,
             }
 
@@ -370,6 +369,32 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
     }
 
     function BoxChatMessages() {
+        const [loadingMore, setLoadingMore] = useState(false);
+        const [hasMore, setHasMore] = useState(true);
+
+        const handleLoadingMore = () => {
+            if (!commonRoom?.room_id) return;
+            setLoadingMore(true);
+            //console.log(allMessages);
+            const offset = allMessages[0]?.id;
+            handleGetOldMessagesWithOffsetAPI(myID, commonRoom.room_id, offset)
+                .then(res => {
+                    if (!res.data?.messages?.length) {
+                        setHasMore(false);
+                        return;
+                    }
+                    setScroll(false);
+                    setAllMessages(old => [...res.data?.messages, ...old]);
+                })
+                .catch(err => {
+                    return toast.error(err.message);
+                })
+                .finally(() => {
+                    setLoadingMore(false);
+                })
+        }
+
+
         if (loading) {
             return (
                 <Stack alignItems={"center"}>
@@ -382,15 +407,35 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
         }
 
         return (
-            <>
-                <Button
+            <Box id={"innerBoxChat"}>
+                <Stack alignItems={"center"} pt={2}
                     style={{
-                        display: (commonRoom) ? "none" : "block"
+                        display: (commonRoom) ? "none" : "flex"
                     }}
-                    onClick={handleCreateNewRoom}
                 >
-                    Start a chat
-                </Button>
+                    <Button
+                        onClick={handleCreateNewRoom}
+                        variant={"contained"} color={"success"}
+                        style={{ borderRadius: 16, backgroundColor: "#2e7d5b"}}
+                    >
+                        Start a chat
+                    </Button>
+                </Stack>
+                <Stack alignItems={"center"} pb={2}
+                    style={{
+                        display: (!commonRoom) ? "none" : "flex"
+                    }}
+                >
+                    {
+                        (loadingMore)
+                            ? <CircularProgress size={30} />
+                            : (hasMore)
+                                ? <Button onClick={handleLoadingMore}>More messages</Button>
+                                : <Typography variant="caption" style={{ color: "gray", fontStyle: "italic" }}>
+                                    (No more messages)
+                                </Typography>
+                    }
+                </Stack>
                 {renderAllMessages}
                 <Stack direction={"row"} justifyContent={"flex-end"} pt={0.4}>
                     {(() => {
@@ -435,7 +480,7 @@ export default function InnerInbox({ myID, otherUser, commonRoom, setCommonRoom 
                     }}
                     ref={latestMessage}
                 />
-            </>
+            </Box>
         )
     }
 

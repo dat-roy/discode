@@ -7,6 +7,13 @@ const handleGetOldMessagesAPI = (my_id, room_id) => {
     })
 }
 
+const handleGetOldMessagesWithOffsetAPI = (my_id, room_id, offset) => {
+    return axios.post(`api/message/get/old/with-offset`, {
+        user_id: my_id, 
+        room_id, offset, 
+    })
+}
+
 const handleMarkReadMessagesAPI = (my_id, room_id) => {
     return axios.post(`api/message/mark/read`, {
         user_id: my_id, 
@@ -31,6 +38,7 @@ const handleSaveNewMessageAPI = (formData) => {
 
 export {
     handleGetOldMessagesAPI,
+    handleGetOldMessagesWithOffsetAPI, 
     handleMarkReadMessagesAPI, 
     handleCountAllUnreadMessagesAPI, 
     handleSaveNewMessageAPI,
