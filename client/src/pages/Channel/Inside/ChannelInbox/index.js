@@ -241,7 +241,6 @@ export default function ChannelInbox() {
                 key="sendBox"
                 style={{
                     width: "100%",
-                    height: 75,
                 }}
             >
                 <Stack

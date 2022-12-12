@@ -85,12 +85,11 @@ export default function ChatList() {
         try {
             setLoading(true);
             fetchData()
+                .finally(() => {
+                    setLoading(false);
+                }, 500)
         } catch (err) {
             toast.error(err.message);
-        } finally {
-            setTimeout(() => {
-                setLoading(false);
-            }, 500)
         }
     }, [state.user.id])
 

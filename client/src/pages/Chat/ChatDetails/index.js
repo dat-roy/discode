@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import { Box, Stack, Avatar, Typography, IconButton } from "@mui/material"
+import { Box, Stack, Avatar, Typography, IconButton, Divider } from "@mui/material"
 import CallIcon from '@mui/icons-material/Call';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import { Accordion, AccordionDetails, AccordionSummary } from '../../../components/Accordion';
@@ -125,14 +125,18 @@ export default function ChatDetails() {
                 </Stack>
                 <Stack
                     style={{
-                        maxWidth: "90%",
+                        width: "100%",
                         wordWrap: "break-word",
-                        marginTop: 30,
                     }}
+                    p={2}
+                    justifyContent={"left"}
                 >
-                    <Typography>About: a simple person.</Typography>
-                    <Typography>Work: Lottery seller.</Typography>
-                    <Typography>Working at: University of Engineering and Technology</Typography>
+                    <Stack pl={3} pr={3}>
+                        <Divider color={"lightgray"} style={{marginBottom: 10, }}/>
+                        <Typography><b>About:</b> A simple person.</Typography>
+                        <Typography><b>Work:</b> Lottery seller.</Typography>
+                        <Typography><b>Work at:</b> University of Engineering and Technology - VNU</Typography>
+                    </Stack>
                 </Stack>
             </Stack>
             <CustomizedAccordions />
@@ -142,7 +146,7 @@ export default function ChatDetails() {
 
 function CustomizedAccordions() {
     const [expanded, setExpanded] = useState('');
-    const handleChange = (panel) => (event, newExpanded) => {
+    const handleChange = (panel) => (_, newExpanded) => {
         setExpanded(newExpanded ? panel : false);
     };
 
