@@ -22,8 +22,7 @@ export default function Notification() {
             handleGetGlobalNotisAPI(state.user.id, 'channel'),
         ])
             .then(results => {
-                //console.log(results);
-                setPostNotis([...results[0].data?.notis, ...results[0].data?.notis, ...results[0].data?.notis, ...results[0].data?.notis]);
+                setPostNotis(results[0].data?.notis);
                 setChannelNotis(results[1].data?.notis);
             })
             .catch(err => {
@@ -277,6 +276,7 @@ function ChannelNotiElem({ noti }) {
                         </Typography>
                     </Stack>
                     <ChannelModal
+                        channel={channel}
                         openModal={openModal}
                         handleClose={e => {
                             e.stopPropagation();

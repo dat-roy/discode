@@ -28,10 +28,6 @@ export default function CommentBox(props) {
     const [emojiMartDisplay, setEmojiMartDisplay] = useState(false);
 
     const saveNewComment = () => {
-        // console.log(postId);
-        // console.log(parentCommentId);
-        // console.log(commentRef.current.value);
-
         handleSaveCommentsAPI(
             postId,
             state.user.id,
@@ -162,7 +158,6 @@ export default function CommentBox(props) {
             />
 
             <Stack
-                //alignItems={"center"}
                 paddingTop={0.5}
                 paddingLeft={0.5}
                 paddingRight={0.5}
