@@ -30,6 +30,11 @@ export default function PostLeft(props) {
     const [likesNumber, setLikesNumber] = useState(0);
     const [liked, setLiked] = useState(false);
     const [commentList, setCommentList] = useState([]);
+    const [commentNum, setCommentNum] = useState(0);
+
+    useEffect(() => {
+        setCommentNum(commentList?.length);
+    }, [commentList])
 
     useEffect(() => {
         if (post_id) {
@@ -158,9 +163,11 @@ export default function PostLeft(props) {
                             anchor={"right"}
                             postId={post_id}
                             commentList={commentList}
+                            commentNum={commentNum}
+                            setCommentNum={setCommentNum}
                         />
                         <Typography>
-                            {commentList.length}
+                            {commentNum}
                         </Typography>
                     </Stack>
 

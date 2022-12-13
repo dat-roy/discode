@@ -11,7 +11,7 @@ import CommentElement from './CommentElement';
 import { CommentTypes } from '../../../../../types/comment.type';
 import { useStore } from '../../../../../store/hooks';
 
-export default function Comments({ anchor, postId, commentList }) {
+export default function Comments({ anchor, postId, commentList, commentNum, setCommentNum }) {
     const [anchorState, setAnchorState] = useState({
         top: false,
         left: false,
@@ -75,6 +75,8 @@ export default function Comments({ anchor, postId, commentList }) {
             appendRecursion(newComment, copyComments);
             setComments(copyComments);
         }
+
+        setCommentNum(old => old + 1);
     }
 
     const toggleDrawer = (anchor, open) => () => {
@@ -98,7 +100,7 @@ export default function Comments({ anchor, postId, commentList }) {
                     fontWeight: 600,
                 }}
             >
-                Comments ({commentList.length})
+                Comments ({commentNum})
             </Typography>
             <Box id="main-comment-box">
                 <CommentBox
