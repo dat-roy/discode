@@ -1,22 +1,18 @@
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+    handleCheckLikedAPI, handleGetCommentsAPI, handleGetLikesNumberAPI, handleToggleLikeButtonAPI
+} from "../../../../services";
 import { useStore } from "../../../../store/hooks";
 
-import {
-    handleCheckLikedAPI,
-    handleToggleLikeButtonAPI, handleGetLikesNumberAPI,
-    handleGetCommentsAPI
-} from "../../../../services"
-
-import { Box } from "@mui/system";
-import { Divider, Chip, IconButton, Stack, Button } from "@mui/material";
-import { Typography } from "@mui/material";
-import { Avatar } from '@mui/material';
-import ShareIcon from '@mui/icons-material/Share';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import Comments from "./Comments";
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import ShareIcon from '@mui/icons-material/Share';
+import { Avatar, Chip, Divider, IconButton, Stack, Typography } from "@mui/material";
+import { Box } from "@mui/system";
 import { toast } from 'react-toastify';
+import Comments from "./Comments";
 
 export default function PostLeft(props) {
     const {
@@ -24,6 +20,7 @@ export default function PostLeft(props) {
     } = props;
 
     const post_id = postData.id;
+    const navigate = useNavigate();
 
     const [state,] = useStore();
 
@@ -75,33 +72,53 @@ export default function PostLeft(props) {
     }
 
     return (
-        <Stack>
-            <Box padding={1}>
-                <Button href="#back">
+        <Stack maxWidth={"100%"}>
+            <Stack pl={0.7} pt={1} direction={"row"} alignItems={"center"}>
+                <IconButton style={{color: "lightgray"}}
+                    onClick={() => navigate(`/posts`)}
+                >
+                    <ArrowBackIcon style={{fontSize: 20, }}/>
+                </IconButton>
+                <Typography variant='caption' fontSize={16} style={{color: "lightgray"}}>
                     Back
-                </Button>
-            </Box>
-            <Stack padding={5} alignItems={"center"} justifyContent={"space-between"} spacing={0.4}>
-                <Typography variant={"h6"} fontWeight={600} pb={2}>
+                </Typography>
+            </Stack>
+            <Stack padding={5} alignItems={"left"} justifyContent={"space-between"} spacing={0.4}>
+                <Typography variant={"h6"} fontWeight={700} pb={2}
+                    style={{
+                        lineHeight: "28.8px",
+                        letterSpacing: "1.5px",
+                    }}
+                >
                     About:
                 </Typography>
-                <Link to={`/profile?username=${author?.username}`}>
-                    <Avatar
-                        alt={author?.username}
-                        src={author?.avatar_url}
-                    />
-                </Link>
-                {
-                    (state.user.id === author?.id) ? null
-                        : <Button
-                            variant="outlined"
-                        >
-                            Follow
-                        </Button>
-                }
+                <Stack direction={"row"} spacing={2}>
+                    <Link to={`/profile?username=${author?.username}`}>
+                        <Avatar
+                            alt={author?.username}
+                            src={author?.avatar_url}
+                        />
+                    </Link>
+                    <Stack>
+                        <Typography variant="subtitle2" style={{
+                            fontSize: 14, fontWeight: 500, color: "yellow",
+                            letterSpacing: "1.5px",
+                            lineHeight: "20px",
+                        }}>
+                            @{author?.username}
+                        </Typography>
+                        <Typography variant="subtitle2" style={{
+                            fontSize: 13, fontWeight: 400, color: "#DADEED",
+                            letterSpacing: "1.5px",
+                            lineHeight: "20px",
+                        }}>
+                            Student.
+                        </Typography>
+                    </Stack>
+                </Stack>
                 <Typography
                     variant={"subtitle2"}
-                    align={'center'}
+                    pt={2}
                     style={{
                         color: "lightgray",
                         wordWrap: "break-word",
@@ -110,8 +127,11 @@ export default function PostLeft(props) {
                         width: "240px",
                         textOverflow: "ellipsis",
                         display: "-webkit-box",
-                        WebkitLineClamp: "5",
+                        WebkitLineClamp: "10",
                         WebkitBoxOrient: "vertical",
+                        lineHeight: "23px",
+                        letterSpacing: "0.5px",
+                        fontWeight: 400,
                     }}
                     title={author?.description}
                 >

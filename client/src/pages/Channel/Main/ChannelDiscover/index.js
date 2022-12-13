@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Box, Card, CardMedia, CardContent, Stack, Typography, Avatar, Grid } from "@mui/material";
 import PeopleIcon from '@mui/icons-material/People';
-import SearchBar from "../../../../components/SearchBar"
 import TravelExploreIcon from '@mui/icons-material/TravelExplore';
+import { Avatar, Box, Card, CardContent, CardMedia, Grid, Stack, Typography } from "@mui/material";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { handleGetFeaturedChannelsAPI, handleRequestJoiningAPI } from "../../../../services";
 import ChannelModal from "../../../../components/ChannelModal";
+import SearchBar from "../../../../components/SearchBar";
+import { handleGetFeaturedChannelsAPI, handleRequestJoiningAPI } from "../../../../services";
 import { useStore } from "../../../../store/hooks";
 
 export default function Discover() {

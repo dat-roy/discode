@@ -43,11 +43,14 @@ export default function PostView() {
                 width: "100%",
                 height: "100vh",
                 border: "1px solid #3E4042",
+                overflowY: "auto",
             }}
         >
             <Grid item xs
                 style={{
-                    //backgroundColor: "rgba(19, 47, 76, 0.4)"
+                    position: "sticky", 
+                    top: 0, 
+                    left: 0, 
                 }}
             >
                 <PostLeft
@@ -58,7 +61,6 @@ export default function PostView() {
             <Grid item xs={7}
                 sx={{
                     height: "100vh",
-                    overflowY: "auto",
                 }}
             >
                 <PostContent
@@ -66,11 +68,7 @@ export default function PostView() {
                     author={author}
                 />
             </Grid>
-            <Grid item xs
-                style={{
-                    //backgroundColor: "rgba(19, 47, 76, 0.4)"
-                }}
-            >
+            <Grid item xs>
                 <PostRight
                     author={author}
                 />

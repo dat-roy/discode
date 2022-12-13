@@ -1,13 +1,13 @@
-import { Link } from "react-router-dom";
-import { Box, Button, Avatar, Stack, Typography } from "@mui/material";
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import CreateIcon from '@mui/icons-material/Create';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import { Avatar, Box, Stack, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
 
 const getRankImg = (rank) => {
     switch (rank) {
-        case 1: return 'https://raw.githubusercontent.com/dat-roy/a4k29-contest/main/assets/img/1st.png'
-        case 2: return 'https://raw.githubusercontent.com/dat-roy/a4k29-contest/main/assets/img/2nd.png'
-        case 3: return 'https://raw.githubusercontent.com/dat-roy/a4k29-contest/main/assets/img/3rd.png'
+        case 1: return `${process.env.PUBLIC_URL}/assets/img/rank/1st.png`
+        case 2: return `${process.env.PUBLIC_URL}/assets/img/rank/2nd.png`
+        case 3: return `${process.env.PUBLIC_URL}/assets/img/rank/3rd.png`
     }
 }
 

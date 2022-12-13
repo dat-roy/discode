@@ -1,9 +1,10 @@
-import React, { Fragment } from "react";
-import { Link } from "react-router-dom";
-import { Stack, Avatar, Typography, IconButton } from "@mui/material";
-import ReactQuill from "react-quill";
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import { Avatar, Divider, IconButton, Stack, Typography } from "@mui/material";
+import React from "react";
+import ReactQuill from "react-quill";
+import { Link } from "react-router-dom";
 
 export default function PostContent(props) {
     const { postData, author } = props;
@@ -16,7 +17,7 @@ export default function PostContent(props) {
                 marginTop={9}
                 textAlign={"center"}
                 style={{
-                    fontSize: 40, fontWeight: 700, 
+                    fontSize: 40, fontWeight: 700,
                     color: "lightblue",
                 }}
             >
@@ -33,7 +34,7 @@ export default function PostContent(props) {
                         alt={author?.username}
                         src={author?.avatar_url}
                         style={{
-                            width: 50, height: 50, 
+                            width: 50, height: 50,
                         }}
                     />
                 </Link>
@@ -44,19 +45,22 @@ export default function PostContent(props) {
                     <Typography variant="subtitle2" style={{
                         fontSize: 18, fontWeight: 600, color: "yellow",
                     }}>
-                        @{author?.username}
+                        By @{author?.username}
                     </Typography>
-                    <Typography variant="caption" style={{
-                        fontSize: 14, color: "lightgray", 
-                    }}>
-                        {postData.created_at}
-                    </Typography>
+                    <Stack direction={"row"} spacing={1} alignItems={"center"}>
+                        <CalendarMonthIcon style={{ color: "lightyellow", fontSize: 18 }} />
+                        <Typography variant="caption" style={{
+                            fontSize: 14, color: "lightgray",
+                        }}>
+                            {postData.created_at}
+                        </Typography>
+                    </Stack>
                 </Stack>
                 <Stack direction={"row"}>
-                    <IconButton style={{color: "inherit"}}>
+                    <IconButton style={{ color: "inherit" }}>
                         <BookmarkBorderIcon />
                     </IconButton>
-                    <IconButton style={{color: "inherit"}}>
+                    <IconButton style={{ color: "inherit" }}>
                         <MoreHorizIcon />
                     </IconButton>
                 </Stack>
@@ -77,6 +81,16 @@ export default function PostContent(props) {
                     className="not-found-controller"
                     dangerouslySetInnerHTML={{ __html: postData.content }}
                 /> */}
+
+            <Divider color={"gray"} />
+            <Stack p={2} pb={5} spacing={2}>
+                <Typography variant='h6'>
+                    Read More:
+                </Typography>
+                <Typography variant='caption' color={"gray"}>
+                    Comming soon...
+                </Typography>
+            </Stack>
         </Stack>
     )
 }
