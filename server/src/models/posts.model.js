@@ -74,7 +74,7 @@ class Posts extends Model {
         const pl = PostLike.tableName;
         const pc = PostComments.tableName;
 
-        let sql = `SELECT id, author_id, title, content, created_at,\
+        let sql = `SELECT id, author_id, title, content, background_url, created_at,\
                         (SELECT COUNT(*) FROM ${pl} WHERE post_id=${p}.id) likes,\
                         (SELECT COUNT(*) FROM ${pc} WHERE post_id=${p}.id) comments\
                     FROM ${p}\

@@ -1,7 +1,7 @@
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import { Avatar, Divider, IconButton, Stack, Typography } from "@mui/material";
+import { Avatar, CircularProgress, Divider, IconButton, Stack, Typography } from "@mui/material";
 import React from "react";
 import ReactQuill from "react-quill";
 import { Link } from "react-router-dom";
@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 export default function PostContent(props) {
     const { postData, author } = props;
     if (!postData) {
-        return <></>
+        return <CircularProgress />
     }
     return (
         <Stack spacing={2}>

@@ -23,9 +23,9 @@ class NotificationReceivers extends Model {
 
     async markOneAsRead(params) {
         let user_id = mysql.escape(params.user_id);
-        let noti_id = mysql.escape(params.noti_id);
+        let noti_r_id = mysql.escape(params.noti_r_id);
         const sql = `UPDATE ${this.tableName}\
-                    SET status=1 WHERE receiver_id=${user_id} AND notification_id=${noti_id}`
+                    SET status=1 WHERE receiver_id=${user_id} AND id=${noti_r_id}`
         return await dbConnection.query(sql);
     }
 

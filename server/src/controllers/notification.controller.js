@@ -306,10 +306,10 @@ class notificationController {
 
     //[POST] /api/notification/read/one
     async markOneAsRead(req, res, next) {
-        const { user_id, noti_id } = req.body;
+        const { user_id, noti_r_id } = req.body;
         try {
             const result = await NotificationReceivers.markOneAsRead({
-                user_id, noti_id,
+                user_id, noti_r_id,
             })
             return res.status(200).json({
                 message: "Success",

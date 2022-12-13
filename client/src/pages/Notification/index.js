@@ -1,20 +1,22 @@
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import { Avatar, Button, Grid, IconButton, Stack, Typography } from "@mui/material";
+import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Avatar, Button, Grid, IconButton, Stack, Typography } from "@mui/material"
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import { ChannelNotificationTypes } from "../../types/db.type";
-import ChannelModal from "../../components/ChannelModal";
 import { toast } from "react-toastify";
-import { handleGetGlobalNotisAPI, handleMarkOneNotiAsReadAPI, handleReplyInvitationAPI } from "../../services";
-import { useStore } from "../../store/hooks";
-import moment from "moment";
+import ChannelModal from "../../components/ChannelModal";
 import NoData from "../../components/NoData";
+import { handleGetGlobalNotisAPI, handleMarkAllNotiAsReadAPI, handleMarkOneNotiAsReadAPI, handleReplyInvitationAPI } from "../../services";
+import { NotiActionTypes } from "../../store/actions/constants";
+import { useNoti, useStore } from "../../store/hooks";
+import { ChannelNotificationTypes, PostNotificationTypes } from "../../types/db.type";
 
 export default function Notification() {
     const [state,] = useStore();
     const [postNotis, setPostNotis] = useState([])
     const [channelNotis, setChannelNotis] = useState([])
+    const [, notiDispatch] = useNoti();
 
     useEffect(() => {
         Promise.all([
@@ -22,6 +24,7 @@ export default function Notification() {
             handleGetGlobalNotisAPI(state.user.id, 'channel'),
         ])
             .then(results => {
+                console.log(results)
                 setPostNotis(results[0].data?.notis);
                 setChannelNotis(results[1].data?.notis);
             })
@@ -31,92 +34,149 @@ export default function Notification() {
     }, [state.user.id])
 
     return (
-        <Stack
-            maxHeight={"94vh"}
+        <Stack height={"100vh"}
             borderLeft={"1px solid #3E4042"}
-            p={16}
-            pt={4}
-            pb={1}
-            mb={8}
-            style={{
-                overflowY: "scroll",
-            }}
         >
-            <Typography variant="h5" fontWeight={600} style={{color: "lightorange"}}>Notifications</Typography>
-            <Grid container spacing={2} justifyContent="center" mt={3}>
-                <Grid item xs={7.5}>
-                    <Stack
-                        spacing={2}
-                        p={3}
-                        style={{
-                            height: "100%",
-                            backgroundColor: "#11273c",
-                            borderRadius: 10,
-                        }}
-                    >
-                        <Stack
-                            direction={"row"}
-                            alignItems={"center"}
-                            justifyContent={"space-between"}
-                        >
-                            <Typography variant={"h6"}>General</Typography>
-                            <Button>Mark all as read</Button>
-                        </Stack>
-                        <Stack>
-                            {
-                                (postNotis.length === 0)
-                                    ? <NoData />
-                                    : postNotis.map((noti, index) => {
-                                        return <GeneralNotiElem
-                                            key={index}
-                                            noti={noti}
-                                        />
-                                    })
-                            }
-                        </Stack>
-                    </Stack>
-                </Grid>
+            <Stack
+                height={"94vh"}
 
-                <Grid item xs>
-                    <Stack
-                        spacing={2}
-                        p={3}
-                        style={{
-                            height: "100%",
-                            backgroundColor: "#11273c",
-                            borderRadius: 10,
-                        }}
-                    >
+                p={16}
+                pt={4}
+                pb={1}
+                mb={8}
+                style={{
+                    overflowY: "scroll",
+                }}
+            >
+                <Typography variant="h5" fontWeight={600} style={{ color: "lightorange" }}>Notifications</Typography>
+                <Grid container spacing={2} justifyContent="center" mt={3}>
+                    <Grid item xs={7.5}>
                         <Stack
-                            direction={"row"}
-                            alignItems={"center"}
-                            justifyContent={"space-between"}
+                            spacing={2}
+                            p={3}
+                            style={{
+                                height: "100%",
+                                backgroundColor: "#11273c",
+                                borderRadius: 10,
+                            }}
                         >
-                            <Typography variant={"h6"}>Channel</Typography>
-                            <Button>Mark all as read</Button>
+                            <Stack
+                                direction={"row"}
+                                alignItems={"center"}
+                                justifyContent={"space-between"}
+                            >
+                                <Typography variant={"h6"}>General</Typography>
+                                <Button
+                                    onClick={() => {
+                                        const unread_general = (postNotis.filter(noti => noti.status === 0)).length;
+                                        if (unread_general === 0) return;
+                                        handleMarkAllNotiAsReadAPI(state.user.id, 'post',
+                                            [
+                                                PostNotificationTypes.POST_COMMENTS,
+                                            ]
+                                        )
+                                            .then(() => {
+                                                notiDispatch({
+                                                    type: NotiActionTypes.DECREASE,
+                                                    payload: {
+                                                        badge: { notification: unread_general, }
+                                                    }
+                                                })
+                                            })
+                                            .catch(err => {
+                                                console.error(err.message);
+                                            })
+                                    }}
+                                >Mark all as read</Button>
+                            </Stack>
+                            <Stack>
+                                {
+                                    (postNotis.length === 0)
+                                        ? <NoData />
+                                        : postNotis.map((noti, index) => {
+                                            return <GeneralNotiElem
+                                                key={index}
+                                                noti={noti}
+                                            />
+                                        })
+                                }
+                            </Stack>
                         </Stack>
-                        <Stack>
-                            {
-                                (channelNotis.length === 0)
-                                    ? <NoData />
-                                    : channelNotis.map((noti, index) => {
-                                        return <ChannelNotiElem
-                                            key={index}
-                                            noti={noti}
-                                        />
-                                    })
-                            }
+                    </Grid>
+
+                    <Grid item xs>
+                        <Stack
+                            spacing={2}
+                            p={3}
+                            style={{
+                                height: "100%",
+                                backgroundColor: "#11273c",
+                                borderRadius: 10,
+                            }}
+                        >
+                            <Stack
+                                direction={"row"}
+                                alignItems={"center"}
+                                justifyContent={"space-between"}
+                            >
+                                <Typography variant={"h6"}>Channel</Typography>
+                                <Button
+                                    onClick={() => {
+                                        const unread_channel = (channelNotis.filter(noti => noti.status === 0)).length;
+                                        if (unread_channel === 0) return;
+                                        console.log("Hello")
+                                        handleMarkAllNotiAsReadAPI(state.user.id, 'channel',
+                                            [
+                                                ChannelNotificationTypes.CHANNEL_DECLINED,
+                                                ChannelNotificationTypes.CHANNEL_REQUEST,
+                                            ]
+                                        )
+                                            .then(() => {
+                                                notiDispatch({
+                                                    type: NotiActionTypes.DECREASE,
+                                                    payload: {
+                                                        badge: { notification: unread_channel, }
+                                                    }
+                                                })
+
+                                                setChannelNotis(old => old.map(elem => {
+                                                    elem.status = 1;
+                                                    return elem;
+                                                }))
+                                            })
+                                            .catch(err => {
+                                                console.error(err.message);
+                                            })
+                                    }}
+                                >Mark all as read</Button>
+                            </Stack>
+                            <Stack>
+                                {
+                                    (channelNotis.length === 0)
+                                        ? <NoData />
+                                        : channelNotis.map((noti, index) => {
+                                            return <ChannelNotiElem
+                                                key={index}
+                                                noti={noti}
+                                            />
+                                        })
+                                }
+                            </Stack>
                         </Stack>
-                    </Stack>
+                    </Grid>
                 </Grid>
-            </Grid>
+            </Stack>
         </Stack>
     )
 }
 
-function NotiElemWrapper({ children, onClick, isRead }) {
-    //const [state,] = useStore();
-    const [read, setRead] = useState(isRead);
+function NotiElemWrapper({ children, onClick, noti, notiId }) {
+    const [state,] = useStore();
+    const [, notiDispatch] = useNoti();
+    const [read, setRead] = useState(noti?.status);
+    useEffect(() => {
+        setRead(noti?.status);
+    }, [noti?.status])
     return (
         <Stack
             direction={"row"}
@@ -147,14 +207,19 @@ function NotiElemWrapper({ children, onClick, isRead }) {
                 <IconButton
                     onClick={(event) => {
                         event.stopPropagation();
-                        // handleMarkOneNotiAsReadAPI(state.user.id, notiId)
-                        //     .then(() => {
-                        //         setRead(true);
-                        //     })
-                        //     .catch(err => {
-                        //         return toast.error(err.message);
-                        //     })
-                        setRead(old => !old);
+                        handleMarkOneNotiAsReadAPI(state.user.id, notiId)
+                            .then(() => {
+                                setRead(true);
+                                notiDispatch({
+                                    type: NotiActionTypes.DECREASE,
+                                    payload: {
+                                        badge: { notification: 1, }
+                                    }
+                                })
+                            })
+                            .catch(err => {
+                                return toast.error(err.message);
+                            })
                     }}
                 >
                     <MoreHorizIcon style={{ color: "gray", fontSize: 30, }} />
@@ -172,8 +237,7 @@ function GeneralNotiElem({ noti }) {
             onClick={() => {
                 navigate(`/posts/view/${noti?.comment_data?.post_id}`)
             }}
-            notiId={noti?.id}
-            isRead={noti?.status}
+            noti={noti}
         >
             <Link to={`/profile?username=${sender?.username}`}
                 onClick={(event) => {

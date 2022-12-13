@@ -15,7 +15,7 @@ import MuiListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 
-import { Avatar, Box, Button, TextField } from "@mui/material";
+import { Avatar, Box, Button, CircularProgress, TextField } from "@mui/material";
 import { Stack, Typography } from "@mui/material";
 import { Divider } from "@mui/material";
 import { Modal } from "antd";
@@ -85,22 +85,13 @@ export default function RoomList() {
     const [state,] = useStore();
     const params = useParams();
     const channel_id = parseInt(params.id);
-    //const location = useLocation();
 
     const [channel, setChannel] = useState([])
     const [rooms, setRooms] = useState([]);
     const [joined, setJoined] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const [selected, setSelected] = useState(parseInt(params.room_id));
-
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        if (!channel) {
-            //TODO: display 404 not found
-            return navigate('/home')
-        }
-    }, [channel, navigate])
 
     useEffect(() => {
         setSelected(parseInt(params.room_id))
@@ -109,14 +100,16 @@ export default function RoomList() {
     useEffect(() => {
         handleGetChannelByIdAPI(state.user.id, channel_id)
             .then(res => {
-                if (res.status !== 200) {
-                    throw new Error("Failed to connect to server");
-                }
                 setChannel(res.data?.channel)
                 setJoined(res.data?.joined)
             })
             .catch(err => {
                 return toast.error(err.message);
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    setLoading(false);
+                }, 300);
             })
     }, [state?.user?.id, params.id, channel_id])
 
@@ -139,6 +132,14 @@ export default function RoomList() {
 
     if (!joined) {
         return <></>
+    }
+    if (!loading && !channel?.id) {
+        return <></>
+    }
+    if (loading) {
+        return <Stack alignItems={"center"} pt={3}>
+            <CircularProgress size={30}/>
+        </Stack>
     }
     return (
         <Box style={{ height: "100%" }}>
@@ -319,7 +320,7 @@ export default function RoomList() {
                         label="Enter room name"
                         style={{
                             width: "100%",
-                            paddingBottom: 20, 
+                            paddingBottom: 20,
                         }}
                         inputProps={{
                             style: {

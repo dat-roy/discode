@@ -60,7 +60,7 @@ export default function Profile() {
                         height: "100%",
                         width: "74%",
                         margin: "auto",
-                        backgroundImage: "url('https://media.istockphoto.com/photos/3d-abstract-background-with-ultraviolet-neon-lights-empty-frame-picture-id1191719793?b=1&k=20&m=1191719793&s=612x612&w=0&h=OMpsFvr6bZiuBkj0HnFyNNTU401COhP317Q_QSwmVpg=')",
+                        backgroundImage: `url(${userInfo?.background_url})`,
                         backgroundSize: "cover",
                         borderBottomLeftRadius: 12,
                         borderBottomRightRadius: 12,
@@ -197,6 +197,7 @@ export default function Profile() {
                                 >
                                     {userInfo?.description}
                                 </Typography>
+                                <br />
                                 <Divider width={"100%"} color={"gray"} />
                             </Stack>
                             <Stack id={"info"} spacing={1.5}>

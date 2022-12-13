@@ -44,7 +44,7 @@ export default function MenuBar() {
         {
             path: "/notifications",
             element: <NotificationsIcon />,
-            badge: null,
+            badge: notiState?.badge?.notification,
         },
         {
             path: "/chat",

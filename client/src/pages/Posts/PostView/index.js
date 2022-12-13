@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useStore } from "../../../store/hooks";
 
-import { Grid } from "@mui/material";
+import { CircularProgress, Grid, Stack } from "@mui/material";
 
 import PageNotFound from '../../PageNotFound';
 import PostContent from "./PostContent";
@@ -14,11 +14,13 @@ import 'react-quill/dist/quill.snow.css';
 import {
     handleGetPostByIdAPI
 } from "../../../services";
+import { toast } from "react-toastify";
 
 export default function PostView() {
     const params = useParams();
     const post_id = parseInt(params.id);
     const [state,] = useStore();
+    const [loading, setLoading] = useState(true);
 
     const [postData, setPostData] = useState({});
     const [author, setAuthor] = useState({});
@@ -29,12 +31,26 @@ export default function PostView() {
                 setPostData(res.data?.post);
                 setAuthor(res.data?.author);
             })
+            .catch(err => {
+                return toast.error(err.message);
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    setLoading(false);
+                }, 300)
+            })
     }, [params, post_id, state.user.id])
 
-    if (!postData) {
+    if (!loading && !postData?.id) {
         return (
             <PageNotFound />
         )
+    }
+
+    if (loading) {
+        return <Stack alignItems={"center"} pt={5}>
+            <CircularProgress size={30}/>
+        </Stack>
     }
 
     return (
@@ -48,9 +64,9 @@ export default function PostView() {
         >
             <Grid item xs
                 style={{
-                    position: "sticky", 
-                    top: 0, 
-                    left: 0, 
+                    position: "sticky",
+                    top: 0,
+                    left: 0,
                 }}
             >
                 <PostLeft

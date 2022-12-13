@@ -123,6 +123,7 @@ export default function Feed() {
                         }}
                     >
                         <Stack
+                            id={"sticky-header"}
                             direction={"row"}
                             justifyContent={"space-between"}
                             sx={{
@@ -134,6 +135,7 @@ export default function Feed() {
                                 top: 0,
                                 bgcolor: "rgba(10, 25, 41, 0.8)",
                                 backdropFilter: "blur(8px)",
+                                zIndex: 1000, 
                             }}
                         >
                             <Tabs

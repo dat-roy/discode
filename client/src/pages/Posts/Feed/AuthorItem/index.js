@@ -8,6 +8,7 @@ const getRankImg = (rank) => {
         case 1: return `${process.env.PUBLIC_URL}/assets/img/rank/1st.png`
         case 2: return `${process.env.PUBLIC_URL}/assets/img/rank/2nd.png`
         case 3: return `${process.env.PUBLIC_URL}/assets/img/rank/3rd.png`
+        default: return ``
     }
 }
 
@@ -16,6 +17,7 @@ const getBorderColor = (rank) => {
         case 1: return 'rgba(255,223,0,0.3)'
         case 2: return 'rgba(192,192,192,0.3)'
         case 3: return 'rgba(205,127,50,0.3)'
+        default: return ``
     }
 }
 
@@ -24,6 +26,7 @@ const getTextColor = (rank) => {
         case 1: return 'gold'
         case 2: return 'silver'
         case 3: return '#cd7f32'
+        default: return ``
     }
 }
 

@@ -1,12 +1,12 @@
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import ModeCommentOutlinedIcon from '@mui/icons-material/ModeCommentOutlined';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import { Avatar, Card, CardHeader, Chip, Stack } from "@mui/material";
+import CardMedia from '@mui/material/CardMedia';
+import Typography from '@mui/material/Typography';
+import moment from "moment";
 import React from 'react';
 import { useNavigate } from "react-router-dom";
-import Typography from '@mui/material/Typography';
-import { Stack, Chip, Avatar, Card, CardHeader } from "@mui/material";
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import ModeCommentOutlinedIcon from '@mui/icons-material/ModeCommentOutlined';
-import CardMedia from '@mui/material/CardMedia';
-import moment from "moment";
 
 const getRandInt = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -20,7 +20,6 @@ export default function PostItem({ post }) {
             onClick={() => navigate(`/posts/view/${post?.id}`)}
             sx={{
                 width: 300,
-                //marginBottom: 4,
                 borderRadius: 3,
                 boxShadow: "4px 4px 11px rgba(33,33,33,.2)",
                 "&:hover": {
@@ -32,7 +31,7 @@ export default function PostItem({ post }) {
             <CardMedia
                 component="img"
                 height="200rem"
-                image="https://scontent.fhan2-5.fna.fbcdn.net/v/t1.15752-9/317148613_1325253711560506_7042031332465161735_n.png?_nc_cat=107&ccb=1-7&_nc_sid=ae9488&_nc_ohc=kPpGdud764sAX-L-sKQ&tn=9CcJtFlzIttL4SQ0&_nc_ht=scontent.fhan2-5.fna&oh=03_AdRtsfjfCpHEcDVOjSHlL4yQmY1sFyrzXP6yQsxEyYGSQA&oe=63BBB739"
+                image={post?.background_url}
                 alt="post image"
             />
             <CardHeader

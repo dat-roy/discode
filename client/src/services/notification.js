@@ -14,9 +14,9 @@ const handleGetChannelRequestsAPI = (admin_id, channel_id) => {
     })
 }
 
-const handleMarkOneNotiAsReadAPI = (user_id, noti_id) => {
+const handleMarkOneNotiAsReadAPI = (user_id, noti_r_id) => {
     return axios.post(`/api/notification/read/one`, {
-        user_id, noti_id, 
+        user_id, noti_r_id, 
     })
 }
 

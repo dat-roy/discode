@@ -3,7 +3,10 @@ import { useReducer } from "react";
 import reducer, { initialState } from "./reducers/notiReducer";
 import NotiContext from "./NotiContext";
 import { useStore, useSocket } from "./hooks";
-import { handleCountAllUnreadMessagesAPI } from "../services";
+import {
+    handleCountAllUnreadMessagesAPI,
+    handleGetGlobalNotisAPI,
+} from "../services";
 import { RoomTypes } from "../types/db.type";
 import { NotiActionTypes } from "./actions/constants";
 
@@ -32,13 +35,19 @@ const NotiProvider = ({ children }) => {
         if (state.user.id) {
             Promise.all([
                 handleCountAllUnreadMessagesAPI(state.user.id, RoomTypes.SINGLE),
+                handleGetGlobalNotisAPI(state.user.id, 'post'),
+                handleGetGlobalNotisAPI(state.user.id, 'channel'),
             ])
                 .then(responses => {
+                    const unread_post_notis =
+                        (responses[1].data?.notis).filter(noti => noti.status === 0).length;
+                    const unread_channel_notis =
+                        (responses[2].data?.notis).filter(noti => noti.status === 0).length;
                     notiDispatch({
                         type: NotiActionTypes.INCREASE,
                         payload: {
                             badge: {
-                                notification: 0,
+                                notification: unread_post_notis + unread_channel_notis,
                                 message: responses[0].data?.unread,
                                 channel: 0,
                             }

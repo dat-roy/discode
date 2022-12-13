@@ -144,7 +144,8 @@ class userController {
             }
             const result = await Users.findOne({
                 attributes: [
-                    "id", "username", "email", "avatar_url", "description", "last_active",
+                    "id", "username", "email", "avatar_url", "background_url", 
+                    "description", "last_active",
                 ],
                 where: whereClause,
             })
