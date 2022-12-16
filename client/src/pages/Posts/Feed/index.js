@@ -161,7 +161,7 @@ export default function Feed() {
                                 />
                             </Tabs>
 
-                            <Stack alignItems={"center"} justifyContent={"center"} p={1} pt={0} pb={0}>
+                            <Stack alignItems={"center"} justifyContent={"center"} pt={0} pb={0}>
                                 <SearchBar
                                     inputRef={searchTextRef}
                                     placeholder={"Search posts..."}

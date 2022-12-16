@@ -2,6 +2,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ModeCommentOutlinedIcon from '@mui/icons-material/ModeCommentOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { Avatar, Card, CardHeader, Chip, Stack } from "@mui/material";
+import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import moment from "moment";
@@ -65,9 +66,12 @@ export default function PostItem({ post }) {
                         >
                             By @{author?.username}
                         </Typography>
-                        <Typography variant="caption">
-                            {moment(post?.created_at).format("HH:mm (YYYY-MM-DD)")}
-                        </Typography>
+                        <Stack direction={"row"} spacing={0.6} alignItems={"center"}>
+                            <AccessTimeOutlinedIcon style={{ color: "lightgray", fontSize: 14 }} />
+                            <Typography variant="caption">
+                                {moment(post?.created_at).format("HH:mm | YYYY-MM-DD")}
+                            </Typography>
+                        </Stack>
 
                         <Stack direction={"row"} spacing={2}>
                             <Stack direction={"row"} spacing={0.3} alignItems={"center"}>
