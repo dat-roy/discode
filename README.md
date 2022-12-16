@@ -20,7 +20,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/dat-roy/discode">
-    <img src="client/public/assets/logo.png" alt="Logo" width="80" height="80">
+    <img src="https://raw.githubusercontent.com/dat-roy/discode/main/client/public/assets/img/logo.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Discode</h3>
@@ -86,7 +86,6 @@ This project uses a variant of <a href="https://www.mongodb.com/mern-stack">MERN
   
   [![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white)][MySQL-url]
 
-![Tech Stack](https://raw.githubusercontent.com/dat-roy/discode/assets/images/tech-stack.png)
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
