@@ -134,7 +134,7 @@ export default function ChatDetails() {
                     <Stack pl={3} pr={3}>
                         <Divider color={"lightgray"} style={{marginBottom: 10, }}/>
                         <Typography><b>About:</b> A simple person.</Typography>
-                        <Typography><b>Work:</b> Lottery seller.</Typography>
+                        <Typography><b>Work:</b> Lottery retailer.</Typography>
                         <Typography><b>Work at:</b> University of Engineering and Technology - VNU</Typography>
                     </Stack>
                 </Stack>

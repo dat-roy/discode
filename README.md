@@ -42,7 +42,6 @@
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
-        <li><a href="#architecture-pattern">Architecture Pattern</a></li>
         <li><a href="#technical-stack">Technical Stack</a></li>
       </ul>
     </li>
@@ -58,9 +57,6 @@
 
 ![Discode Landing Page](https://raw.githubusercontent.com/dat-roy/discode/assets/images/intro.png)
 
-### Architecture Pattern
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Technical Stack
 This project uses a variant of <a href="https://www.mongodb.com/mern-stack">MERN Stack</a>, where MongoDB is replaced by MySQL.
@@ -86,6 +82,128 @@ This project uses a variant of <a href="https://www.mongodb.com/mern-stack">MERN
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Features
+<details>
+<summary><font size="+0">Profile</font></summary>
+
+![Profile page](https://raw.githubusercontent.com/dat-roy/discode/assets/images/profile/profile.png)
+
+</details>
+
+<details>
+<summary><font size="+0">Notifications</font></summary>
+
+Here you can see your notification history. There are 2 types of notifications:
+* Post notifications (when someone liked or commented on one of your posts).
+* Channel notifications (when someone invited you to join a channel, or your request to join was declined).
+  
+![Notifications Page](https://raw.githubusercontent.com/dat-roy/discode/assets/images/notifications/notifications.png)
+  
+</details>
+
+<details>
+<summary><font size="+0">Private chat</font></summary>
+
+<em>It is a space for private messages, inspired by Messenger of Meta.</em>
+
+
+Main view:
+
+![](https://raw.githubusercontent.com/dat-roy/discode/assets/images/chat/chat--first-view.png)
+
+After click any room:
+
+![](https://raw.githubusercontent.com/dat-roy/discode/assets/images/chat/chat--inner-view.png)
+
+You can send some texts, some emojis or an image:
+
+![](https://raw.githubusercontent.com/dat-roy/discode/assets/images/chat/chat--input.png)
+
+You can also click on the an image to see the preview:
+
+![](https://raw.githubusercontent.com/dat-roy/discode/assets/images/chat/chat--image-preview.png)
+
+In addition to the above, this feature also shows you the online status of the people you have chatted with, and the status of viewing messages or not <b>in real-time</b>. 
+
+</details>
+
+<details>
+<summary><font size="+0">Channel</font></summary>
+
+<em>This feature is inspired by Discord.</em>
+
+    This is a suitable place for people to connect with each other and share useful experiences.
+
+Main view:
+
+![](https://raw.githubusercontent.com/dat-roy/discode/assets/images/channel/channel--main-view.png)
+
+Click on a channel to see the preview and be able to send a request to join:
+
+![](https://raw.githubusercontent.com/dat-roy/discode/assets/images/channel/channel--preview.png)
+
+You can search channels by enter a keyword into search bar.<br/>
+<em>Toggle highlight</em> will help you to know which results are the most suitable to the keyword.
+
+![](https://raw.githubusercontent.com/dat-roy/discode/assets/images/channel/channel--search.png)
+
+If you want to create your own communities, this channel creator will be helpful, within only two easy steps:
+
+![](https://raw.githubusercontent.com/dat-roy/discode/assets/images/channel/channel--creator-1.png)
+
+![](https://raw.githubusercontent.com/dat-roy/discode/assets/images/channel/channel--creator-2.png)
+
+![](https://raw.githubusercontent.com/dat-roy/discode/assets/images/channel/channel--creator-3.png)
+
+Inside a channel:
+
+![](https://raw.githubusercontent.com/dat-roy/discode/assets/images/channel/channel--inner-view.png)
+
+Every members can invite other people to join:
+
+![](https://raw.githubusercontent.com/dat-roy/discode/assets/images/channel/channel--invite.png)
+
+But only admin can receive people's requests to join and decide whether to approve it or not:
+
+![](https://raw.githubusercontent.com/dat-roy/discode/assets/images/channel/channel--admin-notifications.png)
+
+And only admin has permission to create rooms:
+
+![](https://raw.githubusercontent.com/dat-roy/discode/assets/images/channel/channel--create-room.png)
+
+
+</details>
+
+<details>
+<summary><font size="+0">Posts</font></summary>
+
+<em>This feature is inspired by Medium.</em>
+
+    Here you can publish posts/articles to share your knowledge with everyone.
+
+This is the main page where we can view featured posts, authors and topics.
+
+![](https://raw.githubusercontent.com/dat-roy/discode/assets/images/post/post--feed.png)
+
+Searching posts:
+
+![](https://raw.githubusercontent.com/dat-roy/discode/assets/images/post/post--search.png)
+
+Create your own posts:
+
+![](https://raw.githubusercontent.com/dat-roy/discode/assets/images/post/post--creator.png)
+
+Read a post:
+
+![](https://raw.githubusercontent.com/dat-roy/discode/assets/images/post/post--view.png)
+
+Comment box:
+
+![](https://raw.githubusercontent.com/dat-roy/discode/assets/images/post/post--comment.png)
+
+</details>
+<br/>
+
+> **_NOTE:_** For a visual look, please <a href="https://drive.google.com/drive/folders/1d7FXsUYkdc67q2gSqXH5yPMawXFfe8qg">view demo</a>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
