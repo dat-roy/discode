@@ -1,5 +1,5 @@
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { Box, Button, IconButton, Typography } from "@mui/material";
+import { Box, Button, IconButton, Stack, Typography } from "@mui/material";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -24,7 +24,7 @@ export default function ChannelCreator() {
         setStart(false);
     };
 
-    const handleClose = (event, reason) => {
+    const handleClose = (_, reason) => {
         if (reason && reason === "backdropClick") return;
         setOpen(false);
     };
@@ -52,12 +52,19 @@ export default function ChannelCreator() {
                 <DialogContent>
                     {
                         !start
-                            ? <>
-                                <Typography variant="h4" style={{ textAlign: "center" }}>Welcome to Channel creator:</Typography>
+                            ? <Stack alignItems={'center'}>
+                                <Typography variant="h4" style={{ fontSize: 28, textAlign: "center" }}>Welcome to <span style={{ color: "lightblue" }}><b>Channel Creator</b></span>:</Typography>
                                 <br />
-                                <Typography>Let's make your own community!</Typography>
-                                [Image]
-                            </>
+                                <Typography variant='subtitle1' style={{color: "lightgray"}}>Here you can create your own communities!</Typography>
+                                <Stack alignItems={"center"}>
+                                    <Box component={"img"}
+                                        src={"https://miro.medium.com/max/828/0*uin1w4zeb8DWs5Sa.webp"}
+                                        width={"400px"}
+                                        borderRadius={10}
+                                        pt={5}
+                                    />
+                                </Stack>
+                            </Stack>
                             : <>
                                 <HorizontalLinearStepper />
                             </>
@@ -75,8 +82,8 @@ export default function ChannelCreator() {
 }
 
 const steps = [
-    'Which purpose, type',
-    'Which name, description',
+    'Choose type',
+    'Choose name & description',
     'Upload image'
 ];
 
@@ -98,7 +105,7 @@ function HorizontalLinearStepper() {
         } else {
             //Call API
             const { avatarFile, backgroundFile, ...document } = info;
-            info.admin_id = state.user.id;
+            document.admin_id = state.user.id;
 
             const formData = new FormData();
             formData.append("document", JSON.stringify(document))
@@ -135,16 +142,16 @@ function HorizontalLinearStepper() {
             <Stepper activeStep={activeStep} alternativeLabel>
                 {steps.map((label, index) => {
                     const sx = {
-                        '& .MuiStepLabel-root .Mui-completed': {
-                            color: 'secondary.dark', // circle color (COMPLETED)
-                        },
+                        // '& .MuiStepLabel-root .Mui-completed': {
+                        //     color: 'secondary.white', // circle color (COMPLETED)
+                        // },
                         '& .MuiStepLabel-label.Mui-completed.MuiStepLabel-alternativeLabel':
                         {
-                            color: 'grey.500', // Just text label (COMPLETED)
+                            color: "gray", // Just text label (COMPLETED)
                         },
-                        '& .MuiStepLabel-root .Mui-active': {
-                            color: 'secondary.main', // circle color (ACTIVE)
-                        },
+                        // '& .MuiStepLabel-root .Mui-active': {
+                        //     color: 'primary.main', // circle color (ACTIVE)
+                        // },
                         '& .MuiStepLabel-label.Mui-active.MuiStepLabel-alternativeLabel':
                         {
                             color: 'common.white', // Just text label (ACTIVE)
@@ -152,6 +159,13 @@ function HorizontalLinearStepper() {
                         '& .MuiStepLabel-root .Mui-active .MuiStepIcon-text': {
                             fill: 'common', // circle's number (ACTIVE)
                         },
+                        '& .MuiStepLabel-labelContainer': {
+                            color: "gray",
+                        },
+                        '& .MuiSvgIcon-root .MuiStepIcon-root': {
+                            color: "gray",
+                            fill: "gray",
+                        }
                     };
                     const labelProps = {};
                     return (

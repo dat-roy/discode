@@ -296,7 +296,7 @@ class messageController {
                                 message_id: messagesSaving.insertId,
                             }
                         })
-                        message.message_attachments = url.parse(backendHostname + '/' + messageAttachmentResult?.attachment_content).href
+                        message.message_attachments = formatMediaURL(messageAttachmentResult?.attachment_content);
                     }
                 }
 

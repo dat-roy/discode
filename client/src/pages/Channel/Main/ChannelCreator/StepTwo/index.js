@@ -1,6 +1,5 @@
-import React from "react";
-import { useRef, useState } from "react";
-import { Box, Stack, Button, TextField } from '@mui/material';
+import { Box, Button, Stack, TextField } from '@mui/material';
+import React, { useRef, useState } from "react";
 
 import { handleCheckChannelExistenceAPI } from "../../../../../services/";
 
@@ -11,7 +10,7 @@ export default function StepTwo(props) {
         handleBack,
         handleNext,
         info, setInfo,
-        toast, 
+        toast,
     } = props.commonProps;
 
     const titleRef = useRef();
@@ -40,7 +39,7 @@ export default function StepTwo(props) {
                 setInfo({
                     ...info,
                     title: titleRef.current.value,
-                    description: descriptionRef.current.value, 
+                    description: descriptionRef.current.value,
                 })
                 handleNext();
             })
@@ -50,43 +49,85 @@ export default function StepTwo(props) {
     }
 
     return (
-        <>
-            <TextField
-                required
-                inputRef={titleRef}
-                label="Channel name"
-                defaultValue={info?.title}
-                error={titleError ? true : false}
-                helperText={titleError ? titleError : null}
-            />
-            <TextField
-                multiline
-                inputRef={descriptionRef}
-                maxRows={4}
-                minRows={4}
-                label="Description"
-                defaultValue={info?.description}
-                error={descriptionError ? true : false}
-                helperText={descriptionError ? descriptionError : null}
-                style={{
-                    width: "400px"
-                }}
-            />
-            <Stack direction="row" sx={{ pt: 2 }}>
+        <Stack alignItems={"center"}>
+            <Stack spacing={2}>
+                <TextField
+                    required
+                    inputRef={titleRef}
+                    label="Channel name"
+                    defaultValue={info?.title}
+                    error={titleError ? true : false}
+                    helperText={titleError ? titleError : null}
+                    style={{
+                        width: "500px"
+                    }}
+                    variant="filled"
+                    inputProps={{
+                        style: {
+                            color: "lightblue",
+                            fontSize: 30,
+                            fontWeight: 500,
+                            letterSpacing: 0.5,
+                            lineHeight: 1,
+                        }
+                    }}
+                    InputLabelProps={{
+                        sx: {
+                            color: "#073d73c9",
+                        }
+                    }}
+                />
+                <TextField
+                    multiline
+                    required
+                    inputRef={descriptionRef}
+                    maxRows={5}
+                    minRows={5}
+                    label="Description"
+                    defaultValue={info?.description}
+                    error={descriptionError ? true : false}
+                    helperText={descriptionError ? descriptionError : null}
+                    style={{
+                        width: "500px"
+                    }}
+                    variant="filled"
+                    inputProps={{
+                        style: {
+                            color: "lightblue",
+                            letterSpacing: 0.5,
+                            lineHeight: 1,
+                        }
+                    }}
+                    InputLabelProps={{
+                        sx: {
+                            color: "#073d73c9",
+                        }
+                    }}
+                />
+            </Stack>
+            <Stack direction="row" sx={{ pt: 2 }} spacing={1}>
                 <Button
-                    color="inherit"
+                    variant={"contained"}
                     disabled={activeStep === 0}
                     onClick={handleBack}
-                    sx={{ mr: 1 }}
+                    sx={{
+                        mr: 1, bgcolor: "#ab5810",
+                        "&:hover": {
+                            bgcolor: "#f57f17"
+                        }
+                    }}
                 >
                     Back
                 </Button>
                 <Box sx={{ flex: '1 1 auto' }} />
 
-                <Button onClick={validateStep}>
+                <Button
+                    onClick={validateStep}
+                    variant={"contained"}
+                >
                     {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                 </Button>
             </Stack>
-        </>
+        </Stack>
     )
 }

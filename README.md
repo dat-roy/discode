@@ -14,7 +14,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/dat-roy/discode">
-    <img src="https://raw.githubusercontent.com/dat-roy/discode/main/client/public/assets/img/logo.png" alt="Logo" width="80" height="80">
+    <img src="https://github.com/dat-roy/discode/blob/assets/images/logo.png?raw=true" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Discode</h3>
@@ -26,7 +26,7 @@
     <br />
     <br />
     <b>
-    <a href="#comming-soon">View Demo</a>
+    <a href="https://drive.google.com/drive/folders/1d7FXsUYkdc67q2gSqXH5yPMawXFfe8qg">View Demo</a>
     ·
     <a href="https://github.com/dat-roy/discode/issues">Report Bug</a>
     ·
@@ -92,6 +92,8 @@ This project uses a variant of <a href="https://www.mongodb.com/mern-stack">MERN
 ## Database
 
 ![Database Relational Diagram](https://raw.githubusercontent.com/dat-roy/discode/assets/images/database.png)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Roadmap
 

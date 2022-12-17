@@ -1,5 +1,5 @@
+import { Box, Button, Stack, Typography } from '@mui/material';
 import React from "react";
-import { Box, Stack, Button } from '@mui/material';
 
 export default function StepOne(props) {
     const {
@@ -10,23 +10,34 @@ export default function StepOne(props) {
     } = props.commonProps;
 
     return (
-        <>
-            Which type?
-            <Stack direction="row" sx={{ pt: 2 }}>
+        <Stack alignItems={"center"} spacing={2}>
+            <Typography variant="caption" align="center" fontStyle={"italic"}>
+                Comming soon... (just click next)
+            </Typography>
+            <Stack direction="row" sx={{ pt: 2 }} spacing={1}>
                 <Button
-                    color="inherit"
+                    variant={"contained"}
+                    // color="inherit"
                     disabled={activeStep === 0}
                     onClick={handleBack}
-                    sx={{ mr: 1 }}
+                    sx={{
+                        mr: 1, bgcolor: "#ab5810",
+                        "&:hover": {
+                            bgcolor: "#f57f17"
+                        }
+                    }}
                 >
                     Back
                 </Button>
                 <Box sx={{ flex: '1 1 auto' }} />
 
-                <Button onClick={handleNext}>
+                <Button
+                    variant={"contained"}
+                    onClick={handleNext}
+                >
                     {activeStep === steps?.length - 1 ? 'Finish' : 'Next'}
                 </Button>
             </Stack>
-        </>
+        </Stack>
     )
 }

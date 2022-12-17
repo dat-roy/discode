@@ -20,7 +20,7 @@ export default function StepThree(props) {
         handleBack,
         handleNext,
         info, setInfo,
-        toast, 
+        toast,
     } = props.commonProps;
 
     const [avatarBase64, setAvatarBase64] = useState(null);
@@ -32,7 +32,7 @@ export default function StepThree(props) {
                 setAvatarBase64(res);
             })
             .catch(err => {
-                console.log(err);
+                //console.log(err);
             })
     }, [info?.avatarFile])
 
@@ -42,14 +42,14 @@ export default function StepThree(props) {
                 setBackgroundBase64(res);
             })
             .catch(err => {
-                console.log(err);
+                //console.log(err);
             })
     }, [info?.backgroundFile])
 
     const validateStep = () => {
         if (!info?.avatarFile) {
             return toast.error("Avatar can not be empty")
-        } 
+        }
         if (!info?.backgroundFile) {
             return toast.error("Background can not be empty")
         }
@@ -65,26 +65,36 @@ export default function StepThree(props) {
     }
 
     return (
-        <>
-            <AvatarInput />
-            <BackgroundInput />
-
-            <Stack direction="row" sx={{ pt: 2 }}>
+        <Stack alignItems={"center"} spacing={2}>
+            <Stack alignItems={"center"} direction={"row"} spacing={2}>
+                <AvatarInput />
+                <BackgroundInput />
+            </Stack>
+            <Stack direction="row" sx={{ pt: 2 }} spacing={1}>
                 <Button
-                    color="inherit"
                     disabled={activeStep === 0}
                     onClick={handleBack}
-                    sx={{ mr: 1 }}
+                    variant={"contained"}
+                    sx={{
+                        mr: 1, bgcolor: "#ab5810",
+                        "&:hover": {
+                            bgcolor: "#f57f17"
+                        }
+                    }}
                 >
                     Back
                 </Button>
                 <Box sx={{ flex: '1 1 auto' }} />
 
-                <Button onClick={validateStep}>
+                <Button
+                    color='success'
+                    onClick={validateStep}
+                    variant={"contained"}
+                >
                     {activeStep === steps?.length - 1 ? 'Finish' : 'Next'}
                 </Button>
             </Stack>
-        </>
+        </Stack>
     )
 
     function AvatarInput() {
@@ -104,7 +114,7 @@ export default function StepThree(props) {
                         height: 120,
                         width: 120,
                         borderRadius: 20,
-                        border: "1px dotted black",
+                        border: "1px dotted lightgray",
                         textAlign: "center"
                     }}
                 >
@@ -137,7 +147,7 @@ export default function StepThree(props) {
                     sx={{
                         height: 200,
                         width: 500,
-                        border: "1px dotted black",
+                        border: "1px dotted lightgray",
                         textAlign: "center"
                     }}
                 >

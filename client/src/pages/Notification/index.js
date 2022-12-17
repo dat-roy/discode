@@ -124,7 +124,6 @@ export default function Notification() {
                                     onClick={() => {
                                         const unread_channel = (channelNotis.filter(noti => noti.status === 0)).length;
                                         if (unread_channel === 0) return;
-                                        console.log("Hello")
                                         handleMarkAllNotiAsReadAPI(state.user.id, 'channel',
                                             [
                                                 ChannelNotificationTypes.CHANNEL_DECLINED,
@@ -207,6 +206,7 @@ function NotiElemWrapper({ children, onClick, noti, notiId }) {
                 <IconButton
                     onClick={(event) => {
                         event.stopPropagation();
+                        if (read) return;
                         handleMarkOneNotiAsReadAPI(state.user.id, notiId)
                             .then(() => {
                                 setRead(true);
