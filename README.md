@@ -118,7 +118,7 @@ You can send some texts, some emojis or an image:
 
 ![](https://raw.githubusercontent.com/dat-roy/discode/assets/images/chat/chat--input.png)
 
-You can also click on the an image to see the preview:
+You can also click on an image to see the preview:
 
 ![](https://raw.githubusercontent.com/dat-roy/discode/assets/images/chat/chat--image-preview.png)
 
