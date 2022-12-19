@@ -1,11 +1,7 @@
 const mysql = require('mysql2/promise');
 const dbConnection = require("../config/db/index.db");
 const { Model } = require('./Model');
-const UserChannel = require('./user_channel.model');
-const ChannelRequests = require('./channel_requests.model')
-const Notifications = require('./notifications.model');
-const Notifiable = require('./notifiable.model');
-const PostComments = require('./post_comments.model')
+const { TABLES } = require('./config');
 const { ChannelNotificationTypes, NotiSourceTypes } = require('../types/db.type');
 
 class NotificationReceivers extends Model {
@@ -16,7 +12,8 @@ class NotificationReceivers extends Model {
     async create(params) {
         let notification_id = mysql.escape(params.notification_id);
         let receiver_id = mysql.escape(params.receiver_id);
-        const sql = `INSERT INTO ${this.tableName} (notification_id, receiver_id, status, created_at)\
+        const sql = `INSERT INTO ${this.tableName}\
+                    (notification_id, receiver_id, status, created_at)\
                 VALUES(${notification_id}, ${receiver_id}, 0, NOW())`;
         return await dbConnection.query(sql);
     }
@@ -37,8 +34,8 @@ class NotificationReceivers extends Model {
         const typeStr = types?.join(', ');
 
         const noti_r = this.tableName;
-        const noti = Notifications.tableName;
-        const noti_i = Notifiable.tableName;
+        const noti = TABLES.NOTIFICATIONS;
+        const noti_i = TABLES.NOTIFIABLE;
         const sql = `UPDATE ${noti_r}\
                     INNER JOIN ${noti} ON ${noti}.id = ${noti_r}.notification_id\
                     SET ${noti_r}.status=1\
@@ -56,10 +53,9 @@ class NotificationReceivers extends Model {
         const offset = mysql.escape(parseInt(params.offset));
 
         const noti_r = this.tableName;
-        const noti_i = Notifiable.tableName;
-        const noti = Notifications.tableName;
-        const pc = PostComments.tableName;
-
+        const noti = TABLES.NOTIFICATIONS;
+        const noti_i = TABLES.NOTIFIABLE;
+        const pc = TABLES.POST_COMMENTS;
 
         const offset_str = ((isNaN(offset)) ? `` : `AND ${noti_r}.id < ${offset} `);
 
@@ -81,9 +77,9 @@ class NotificationReceivers extends Model {
         const offset = mysql.escape(parseInt(params.offset));
 
         const noti_r = this.tableName;
-        const noti_i = Notifiable.tableName;
-        const noti = Notifications.tableName;
-        const uc = UserChannel.tableName;
+        const noti = TABLES.NOTIFICATIONS;
+        const noti_i = TABLES.NOTIFIABLE;
+        const uc = TABLES.USER_CHANNEL;
 
         const offset_str = ((isNaN(offset)) ? `` : `AND ${noti_r}.id < ${offset} `);
 
@@ -107,9 +103,9 @@ class NotificationReceivers extends Model {
         const offset = mysql.escape(params.offset);
 
         const noti_r = this.tableName;
-        const noti_i = Notifiable.tableName;
-        const noti = Notifications.tableName;
-        const cr = ChannelRequests.tableName;
+        const noti = TABLES.NOTIFICATIONS;
+        const noti_i = TABLES.NOTIFIABLE;
+        const cr = TABLES.CHANNEL_REQUESTS;
 
         const offset_str = ((isNaN(offset)) ? `` : `AND ${noti_r}.id < ${offset} `);
 
@@ -119,8 +115,8 @@ class NotificationReceivers extends Model {
                 WHERE ${noti_r}.receiver_id = ${admin_id}\
                     AND ${noti}.type = ${ChannelNotificationTypes.CHANNEL_REQUEST}\
                     AND ${noti_i}.source_type = '${NotiSourceTypes.USER}' `
-                    + offset_str +
-                    `AND (\
+            + offset_str +
+            `AND (\
                         SELECT channel_id FROM ${cr}\
                         WHERE ${cr}.notifiable_id = ${noti_i}.id\
                     ) = ${channel_id}\
@@ -132,9 +128,9 @@ class NotificationReceivers extends Model {
         let receiver_id = mysql.escape(params.receiver_id);
         let source_type = mysql.escape(params.source_type);
 
-        const noti_r = this.tableName
-        const noti = Notifications.tableName;
-        const noti_i = Notifiable.tableName;
+        const noti_r = this.tableName;
+        const noti = TABLES.NOTIFICATIONS;
+        const noti_i = TABLES.NOTIFIABLE;
         const sql = `SELECT count(*) AS number FROM ${noti_r}\
                     INNER JOIN ${noti} ON ${noti_r}.notification_id = ${noti}.id\
                     WHERE receiver_id=${receiver_id} AND (\
@@ -149,9 +145,9 @@ class NotificationReceivers extends Model {
         const receiver_id = mysql.escape(params.receiver_id);
         const channel_id = mysql.escape(params.channel_id);
 
-        const uc = UserChannel.tableName;
-        const noti = Notifications.tableName;
         const noti_r = this.tableName;
+        const uc = TABLES.USER_CHANNEL;
+        const noti = TABLES.NOTIFICATIONS;
 
         const sql
             = `SELECT EXISTS (\
@@ -176,9 +172,9 @@ class NotificationReceivers extends Model {
         const receiver_id = mysql.escape(params.receiver_id);
         const channel_id = mysql.escape(params.channel_id);
 
-        const cr = ChannelRequests.tableName;
-        const noti = Notifications.tableName;
         const noti_r = this.tableName;
+        const cr = TABLES.CHANNEL_REQUESTS;
+        const noti = TABLES.NOTIFICATIONS;
 
         const sql
             = `SELECT EXISTS (\
@@ -199,4 +195,4 @@ class NotificationReceivers extends Model {
     }
 }
 
-module.exports = new NotificationReceivers("notification_receivers")
+module.exports = new NotificationReceivers(TABLES.NOTIFICATION_RECEIVERS)

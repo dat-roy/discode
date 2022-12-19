@@ -1,10 +1,8 @@
 const mysql = require('mysql2/promise');
 const dbConnection = require("../config/db/index.db");
 const { RoomTypes } = require('../types/db.type');
+const { TABLES } = require('./config');
 const { Model } = require('./Model');
-const Users = require('./users.model')
-const Rooms = require('./rooms.model')
-const Channels = require('./channels.model')
 
 class UserRoom extends Model {
     constructor(tableName) {
@@ -33,7 +31,7 @@ class UserRoom extends Model {
         let user_id = mysql.escape(params.user_id);
 
         const ur = this.tableName;
-        const r = Rooms.tableName;
+        const r = TABLES.ROOMS;
         let sql = `SELECT ${ur}.id, ${ur}.user_id, ${ur}.room_id,\
                     ${r}.channel_id, ${r}.type, ${r}.created_at, ${r}.removable\
                 FROM ${ur}\
@@ -45,8 +43,11 @@ class UserRoom extends Model {
     async getPartnerData(params) {
         let user_id = mysql.escape(params.user_id);
         let room_id = mysql.escape(params.room_id);
+
+        const u = TABLES.USERS;
+
         let sql = `SELECT * FROM ${this.tableName}\
-                INNER JOIN ${Users.tableName} ON ${this.tableName}.user_id = ${Users.tableName}.id\
+                INNER JOIN ${u} ON ${this.tableName}.user_id = ${u}.id\
                 WHERE ${this.tableName}.user_id != ${user_id} AND ${this.tableName}.room_id = ${room_id}`;
         return (await dbConnection.query(sql))[0];
     }
@@ -54,10 +55,10 @@ class UserRoom extends Model {
     async getGroupRooms(params) {
         let user_id = mysql.escape(params.user_id);
         let channel_id = mysql.escape(params.channel_id);
-        
+
         const ur = this.tableName;
-        const r = Rooms.tableName;
-        const c = Channels.tableName;
+        const r = TABLES.ROOMS;
+        const c = TABLES.CHANNELS;
 
         let sql = `SELECT\
                     ${ur}.user_id,\
@@ -76,4 +77,4 @@ class UserRoom extends Model {
     }
 }
 
-module.exports = new UserRoom("user_room")
+module.exports = new UserRoom(TABLES.USER_ROOM)

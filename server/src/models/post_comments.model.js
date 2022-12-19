@@ -1,7 +1,7 @@
 const mysql = require('mysql2/promise');
 const dbConnection = require("../config/db/index.db");
+const { TABLES } = require('./config');
 const { Model } = require('./Model');
-const Users = require('./users.model');
 
 class PostComments extends Model {
     constructor(tableName) {
@@ -26,8 +26,8 @@ class PostComments extends Model {
 
         const result = (await dbConnection.query(sql))[0][0];
         return {
-            insertId: result['@post_comment_id'], 
-            notifiable_id: result['@notifiable_id'], 
+            insertId: result['@post_comment_id'],
+            notifiable_id: result['@notifiable_id'],
         }
     }
 
@@ -44,7 +44,7 @@ class PostComments extends Model {
         let post_id = mysql.escape(params.post_id);
 
         const pc = this.tableName;
-        const u = Users.tableName;
+        const u = TABLES.USERS;
 
         let sql = `SELECT
                     ${pc}.id, ${pc}.post_id, ${pc}.sender_id, 
@@ -57,4 +57,4 @@ class PostComments extends Model {
     }
 }
 
-module.exports = new PostComments("post_comments")
+module.exports = new PostComments(TABLES.POST_COMMENTS)

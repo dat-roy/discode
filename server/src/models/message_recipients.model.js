@@ -1,6 +1,7 @@
 const mysql = require('mysql2/promise');
 const dbConnection = require("../config/db/index.db");
 const { Model } = require('./Model');
+const { TABLES } = require('./config');
 
 class MessageRecipients extends Model {
     constructor(tableName) {
@@ -21,7 +22,7 @@ class MessageRecipients extends Model {
     async markAsReadForAll(params) {
         let recipient_id = mysql.escape(params.recipient_id);
         let recipient_room_id = mysql.escape(params.recipient_room_id);
-        
+
         let sql = `UPDATE ${this.tableName} SET is_read=1\
                 WHERE recipient_id=${recipient_id} AND recipient_room_id=${recipient_room_id}\
                     AND is_read=0`;
@@ -37,4 +38,4 @@ class MessageRecipients extends Model {
     }
 }
 
-module.exports = new MessageRecipients("message_recipients")
+module.exports = new MessageRecipients(TABLES.MESSAGE_RECIPIENTS)

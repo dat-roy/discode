@@ -2,18 +2,17 @@ const mysql = require('mysql2/promise');
 const dbConnection = require("../config/db/index.db");
 const { NotiSourceTypes } = require('../types/db.type');
 const { Model } = require('./Model');
-const Notifiable = require('./notifiable.model');
+const { TABLES } = require('./config');
 
 class ChannelRequests extends Model {
     constructor(tableName) {
         super(tableName);
     }
-
     async create(params) {
         let user_id = mysql.escape(params.user_id);
         let channel_id = mysql.escape(params.channel_id);
 
-        const noti_i = Notifiable.tableName;
+        const noti_i = TABLES.NOTIFIABLE;
         const cr = this.tableName;
         let sql = `INSERT INTO ${noti_i}(source_type)\
                     SELECT '${NotiSourceTypes.USER}'\
@@ -33,4 +32,4 @@ class ChannelRequests extends Model {
     }
 }
 
-module.exports = new ChannelRequests("channel_requests");
+module.exports = new ChannelRequests(TABLES.CHANNEL_REQUESTS);

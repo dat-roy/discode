@@ -1,8 +1,9 @@
 const mysql = require('mysql2/promise');
 const dbConnection = require("../config/db/index.db");
 const { Model } = require('./Model');
-const { formatDate } = require('../utils/formatters/date-formatter');
+// const { formatDate } = require('../utils/formatters/date-formatter');
 const { formatGender } = require('../utils/formatters/gender-formatter');
+const { TABLES } = require('./config');
 
 class Users extends Model {
     constructor(tableName) {
@@ -41,4 +42,4 @@ class Users extends Model {
 }
 
 //Table name is passed to `constructor`
-module.exports = new Users("users");
+module.exports = new Users(TABLES.USERS);

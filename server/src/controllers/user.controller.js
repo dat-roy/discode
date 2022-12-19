@@ -156,6 +156,9 @@ class userController {
                     user_data: null,
                 })
             }
+            // res.status(200).send({
+            //     user_data: result, 
+            // })
             res.status(200).json({
                 message: "Get user successfully",
                 user_data: result

@@ -1,9 +1,7 @@
 const mysql = require('mysql2/promise');
 const dbConnection = require("../config/db/index.db");
 const { Model } = require('./Model');
-const Users = require('./users.model')
-const MessageRecipients = require('./message_recipients.model')
-const UserRoom = require('./user_room.model')
+const { TABLES } = require('./config');
 
 class Messages extends Model {
     constructor(tableName) {
@@ -34,7 +32,7 @@ class Messages extends Model {
     async findOneWithSenderData(params) {
         let msg_id = mysql.escape(params.msg_id);
         const m = this.tableName;
-        const u = Users.tableName;
+        const u = TABLES.USERS;
         let sql = `SELECT ${m}.id, ${m}.content, ${m}.message_type,\
                         ${m}.parent_message_id, ${m}.created_at, ${m}.deleted_at,\
                         ${m}.sender_id, ${u}.avatar_url, ${u}.username, ${u}.gender, ${u}.email\
@@ -48,8 +46,8 @@ class Messages extends Model {
         let room_id = mysql.escape(params.room_id);
 
         const m = this.tableName;
-        const mr = MessageRecipients.tableName;
-        const ur = UserRoom.tableName;
+        const mr = TABLES.MESSAGE_RECIPIENTS;
+        const ur = TABLES.USER_ROOM;
 
         let sql = `SELECT * FROM ${m}\
                 INNER JOIN ${mr}\
@@ -66,8 +64,8 @@ class Messages extends Model {
         let room_id = mysql.escape(params.room_id);
 
         const m = this.tableName;
-        const mr = MessageRecipients.tableName;
-        const ur = UserRoom.tableName;
+        const mr = TABLES.MESSAGE_RECIPIENTS;
+        const ur = TABLES.USER_ROOM;
 
         let sql = `SELECT * FROM ${m}\
                 INNER JOIN ${mr}\
@@ -81,4 +79,4 @@ class Messages extends Model {
     }
 }
 
-module.exports = new Messages("messages")
+module.exports = new Messages(TABLES.MESSAGES)

@@ -1,5 +1,6 @@
 const mysql = require('mysql2/promise');
 const dbConnection = require("../config/db/index.db");
+const { TABLES } = require('./config');
 const { Model } = require('./Model');
 
 class PostLikes extends Model {
@@ -26,4 +27,4 @@ class PostLikes extends Model {
     }
 }
 
-module.exports = new PostLikes('post_likes')
+module.exports = new PostLikes(TABLES.POST_LIKES)

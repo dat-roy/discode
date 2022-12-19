@@ -1,5 +1,6 @@
 const mysql = require('mysql2/promise');
 const dbConnection = require("../config/db/index.db");
+const { TABLES } = require('./config');
 const { Model } = require('./Model');
 
 class Tags extends Model {
@@ -35,4 +36,4 @@ class Tags extends Model {
     }
 }
 
-module.exports = new Tags("tags")
+module.exports = new Tags(TABLES.TAGS)

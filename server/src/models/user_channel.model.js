@@ -1,7 +1,7 @@
 const mysql = require('mysql2/promise');
 const dbConnection = require("../config/db/index.db");
+const { TABLES } = require('./config');
 const { Model } = require('./Model');
-const Users = require('./users.model');
 
 class UserChannel extends Model {
     constructor(tableName) {
@@ -53,7 +53,7 @@ class UserChannel extends Model {
         let channel_id = mysql.escape(params.channel_id)
 
         const uc = this.tableName;
-        const u = Users.tableName;
+        const u = TABLES.USERS;
 
         let sql = `SELECT\
                     ${uc}.user_id, ${uc}.channel_id,\
@@ -67,7 +67,7 @@ class UserChannel extends Model {
         let member_id = mysql.escape(params.member_id);
 
         const uc = this.tableName;
-        const c = "channels";
+        const c = TABLES.CHANNELS;
 
         let sql = `SELECT * FROM ${uc}\
                 INNER JOIN ${c}\
@@ -78,10 +78,11 @@ class UserChannel extends Model {
     async countMembersNumber(params) {
         let channel_id = mysql.escape(params.channel_id);
 
-        let sql = `SELECT COUNt(*) AS number FROM ${this.tableName} WHERE channel_id=${channel_id}`;
+        let sql = `SELECT COUNt(*) AS number FROM ${this.tableName}\
+                WHERE channel_id=${channel_id}`;
         return (await dbConnection.query(sql))[0]?.number;
     }
 }
 
 //Table name is passed to `constructor`
-module.exports = new UserChannel("user_channel");
+module.exports = new UserChannel(TABLES.USER_CHANNEL);

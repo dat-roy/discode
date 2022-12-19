@@ -1,6 +1,7 @@
 const mysql = require('mysql2/promise');
 const dbConnection = require("../config/db/index.db");
 const { Model } = require('./Model');
+const { TABLES } = require('./config');
 
 class MessageAttachments extends Model {
     constructor(tableName) {
@@ -17,4 +18,4 @@ class MessageAttachments extends Model {
     }
 }
 
-module.exports = new MessageAttachments("message_attachments")
+module.exports = new MessageAttachments(TABLES.MESSAGE_ATTACHMENTS)

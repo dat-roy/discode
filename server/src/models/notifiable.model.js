@@ -1,5 +1,6 @@
 //const mysql = require('mysql2/promise');
 //const dbConnection = require("../config/db/index.db");
+const { TABLES } = require('./config');
 const { Model } = require('./Model');
 
 class Notifiable extends Model {
@@ -12,7 +13,7 @@ class Notifiable extends Model {
         //Instead, it is called in MySQL procedures:   
         //  + (insert_notifiable_user_channel.
         //  + insert_notifiable_post_comments.
-    }   
+    }
 }
 
-module.exports = new Notifiable("notifiable")
+module.exports = new Notifiable(TABLES.NOTIFIABLE)

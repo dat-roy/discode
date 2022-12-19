@@ -1,10 +1,7 @@
 const mysql = require('mysql2/promise');
 const dbConnection = require("../config/db/index.db");
-const Users = require('./users.model')
+const { TABLES } = require('./config');
 const { Model } = require('./Model');
-const PostLike = require('./post_likes.model');
-const PostComments = require('./post_comments.model');
-
 
 class Posts extends Model {
     constructor(tableName) {
@@ -45,7 +42,7 @@ class Posts extends Model {
         const post_id = mysql.escape(params.post_id);
 
         const p = this.tableName;
-        const u = Users.tableName;
+        const u = TABLES.USERS;
 
         let sql = `SELECT * FROM ${p} WHERE ${p}.id = ${post_id};\
                 SELECT id, email, username, avatar_url, description FROM ${u} WHERE ${u}.id = (\
@@ -56,8 +53,8 @@ class Posts extends Model {
 
     async getFeaturedAuthorsTop3() {
         const p = this.tableName;
-        const u = Users.tableName;
-        const pl = PostLike.tableName;
+        const u = TABLES.USERS;
+        const pl = TABLES.POST_LIKES;
 
         let sql = `SELECT ${u}.id, ${u}.username, ${u}.avatar_url, ${u}.description, \
                         COUNT(${p}.id) AS sum_posts,\
@@ -71,8 +68,8 @@ class Posts extends Model {
 
     async getHotPosts() {
         const p = this.tableName;
-        const pl = PostLike.tableName;
-        const pc = PostComments.tableName;
+        const pl = TABLES.POST_LIKES;
+        const pc = TABLES.POST_COMMENTS;
 
         let sql = `SELECT id, author_id, title, content, background_url, created_at,\
                         (SELECT COUNT(*) FROM ${pl} WHERE post_id=${p}.id) likes,\
@@ -83,4 +80,4 @@ class Posts extends Model {
     }
 }
 
-module.exports = new Posts("posts")
+module.exports = new Posts(TABLES.POSTS)

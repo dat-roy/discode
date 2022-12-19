@@ -1,7 +1,7 @@
 const mysql = require('mysql2/promise');
 const dbConnection = require("../config/db/index.db");
 const { Model } = require('./Model');
-const UserChannels = require('./user_channel.model');
+const { TABLES } = require('./config');
 
 class Channels extends Model {
     constructor(tableName) {
@@ -32,7 +32,7 @@ class Channels extends Model {
 
     async getFeaturedChannelsDTB() {
         const c = this.tableName;
-        const uc = UserChannels.tableName;
+        const uc = TABLES.USER_CHANNEL;
         let sql = `SELECT ${c}.id, ${c}.admin_id, ${c}.title, ${c}.description,\
                         ${c}.avatar_url, ${c}.background_url, ${c}.created_at,\
                         numOfMem.members\
@@ -46,4 +46,4 @@ class Channels extends Model {
     }
 }
 
-module.exports = new Channels("channels")
+module.exports = new Channels(TABLES.CHANNELS)

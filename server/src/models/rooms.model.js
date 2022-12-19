@@ -2,6 +2,7 @@ const mysql = require('mysql2/promise');
 const dbConnection = require("../config/db/index.db");
 const { Model } = require('./Model');
 const { RoomTypes } = require('../types/db.type');
+const { TABLES } = require('./config');
 
 class Rooms extends Model {
     constructor(tableName) {
@@ -11,9 +12,9 @@ class Rooms extends Model {
     async create(params) {
         let type = mysql.escape(params.type);
         let channel_id = (type === RoomTypes.SINGLE)
-                        ? null : mysql.escape(params.channel_id);
+            ? null : mysql.escape(params.channel_id);
         let title = mysql.escape(params.title);
-        let removable = mysql.escape(params.removable); 
+        let removable = mysql.escape(params.removable);
 
         let sql = `INSERT INTO\ 
             ${this.tableName}(channel_id, type, title, removable, created_at)\
@@ -24,7 +25,7 @@ class Rooms extends Model {
 
     async delete(params) {
         let { room_id, removable } = params;
-        if (! removable) {
+        if (!removable) {
             return "Deleting this room is restricted"
         }
         let sql = `DELETE FROM ${this.tableName} WHERE id = ${room_id}`;
@@ -32,4 +33,4 @@ class Rooms extends Model {
     }
 }
 
-module.exports = new Rooms("rooms")
+module.exports = new Rooms(TABLES.ROOMS)
